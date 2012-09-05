@@ -6,10 +6,10 @@ use warnings;
 use Apache::Session::File;
 use Apache2::Cookie;
 
-my $cookie_name = 'groo'; # Not a meaningful name
+my $cookie_name = 'groo'; 
 my $expires = '+1h';
-my $secure = 1;
-my $session_dir;
+my $secure = 1; # Will be read from config.conf
+my $session_dir; # Will be read from config.conf
 
 sub login {
     my ( $r, $person_id ) = @_;
@@ -120,7 +120,7 @@ GDACAP::Web::Session -- Login session management
 
 Every request creates a new session no matter if the previous session is valid.
 
-Session is save in a file and stores only the id of logged in person. The cookie only holds session id. It is a root cookie with name of groo and expires in half hour. The secure flag can also be set.
+Session is save in a file and stores only the id of logged in person. The cookie only holds session id. It is an application root cookie - the path is /gdacap with a name of groo and expires in an hour. The secure flag of cookie can also be set by setting has_https in config.conf.
 
 =head1 METHODS
 
