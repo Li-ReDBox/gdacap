@@ -1,0 +1,8 @@
+<h3>[% message %]</h3>
+<form method="POST" action="[% action %]">
+  <input type="hidden"    name="project_id"          value="[% project_id %]"                                                            />
+  <ul>
+  [% INCLUDE study_info.tt2 %]
+    <li><input type="submit" value="Save" /></li>
+  </ul>
+</form>

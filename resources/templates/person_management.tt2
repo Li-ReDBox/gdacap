@@ -1,0 +1,86 @@
+[% BLOCK table_head %]
+  <thead>
+    <tr>
+      <th></th>
+	  <th>Name</th>
+	  <th>Email</th>
+	  <th>Phone</th>
+	  <th>Username</th>
+    </tr>
+  </thead>
+[% END %]
+
+[% BLOCK edit_button %]
+<form action="[% edit_user_link %]" method="post">
+  <input type="hidden" name="person_id" value="[% person.id %]" />
+  <input type="submit" value="Edit" />
+</form>
+[% END %]
+
+[% BLOCK person_record %]
+	  <td>[% person.title %] [% person.given_name %] [% person.family_name %]</td>
+	  <td>[% person.email %]</td>
+	  <td>[% person.phone %]</td>
+	  <td>[% person.username %]</td>
+[% END %]	
+
+<h3>Administrators</h3>
+<table border="1">
+  [% PROCESS table_head %]	
+  <tbody>
+  [% FOREACH person IN administrators %]
+       <tr>
+          <td> </td>
+		[% PROCESS person_record %]
+        </tr>
+   [% END %]
+  </tbody>
+</table>
+
+[% IF active.size > 0 %]
+<h3>Users</h3>
+<table border="1" class="tblSortable tablesorter">
+  [% PROCESS table_head %]	
+  <tbody>
+  [% FOREACH person IN active %]
+       <tr>
+          <td>   [% PROCESS edit_button %]	</td>
+		[% PROCESS person_record %]
+        </tr>
+   [% END %]
+  </tbody>
+</table>
+<form action="[% create_new %]" method="post">
+  <input type="submit" value="Add" />
+</form>
+[% END %]
+
+[% IF pending.size > 0 %]
+<h3>Pending (users not accepted yet)</h3>
+<table border="1">
+  [% PROCESS table_head %]	
+  <tbody>
+  [% FOREACH person IN pending %]
+       <tr>
+          <td>   [% PROCESS edit_button %]	</td>
+		[% PROCESS person_record %]
+        </tr>
+   [% END %]
+  </tbody>
+</table>
+[% END %]
+
+[% IF inactive.size > 0 %]
+<h3>Banned users</h3>
+<table border="1">
+  [% PROCESS table_head %]	
+  <tbody>
+  [% FOREACH person IN inactive %]
+       <tr>
+          <td>   [% PROCESS edit_button %]	</td>
+		[% PROCESS person_record %]
+        </tr>
+   [% END %]
+  </tbody>
+</table>
+[% END %]

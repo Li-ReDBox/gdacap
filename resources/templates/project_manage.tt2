@@ -1,0 +1,55 @@
+<h3 class="msg">[% message %]</h3>
+
+  <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH person IN personroles %]        
+              <tr>
+                <td>[% person.title %] [% person.given_name%] [% person.family_name %]</td>
+                <td>[% person.role %]</td>
+                <td>
+                  <form method="POST" action="[% action %]">
+                      <input type="hidden" name="command"       value="remove" />
+                      <input type="hidden" name="project_id"    value="[% project_id %]" />
+                      <input type="hidden" name="person_id"     value="[% person.id %]" />
+                      <input type="hidden" name="role_type_id"  value="[% person.role_type_id %]" />
+                      <input type="submit" value="Remove" />
+                  </form>
+                </td>
+              </tr>
+        [% END %]
+		[% IF persons.size > 0 %]
+			<tr>
+            <form method="POST" action="[% action %]">
+            <input type="hidden" name="command"         value="add" />
+            <input type="hidden" name="project_id" value="[% project_id %]" />
+			<td>
+              <select name="person_id" required="required">
+                <option value=""                ></option>
+                [% FOREACH person IN persons %]
+                  <option value="[% person.id %]"   >[% person.title %] [% person.given_name %] [% person.family_name %]</option>
+               [% END %]
+              </select>
+              </td>
+              <td>
+               <select name="role_type_id" required="required">
+                <option value=""                ></option>
+              [% FOREACH role IN roletypes %]
+                <option value="[% role.id %]"   >[% role.iname %]</option>
+              [% END %]
+               </select>
+             </td>
+          <td>
+            <input type="submit" value="Assign" />
+          </td>
+			</form>
+			</tr>
+		[% END %]	
+      </tbody>   
+  </table>

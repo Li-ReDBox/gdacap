@@ -1,0 +1,48 @@
+[% IF write_permission %]
+<form action="[% edit_study_link %]" method="post">
+  <input type="hidden" name="study_id" value="[% study.id %]" />
+  <input type="submit" value="Edit" />
+</form>
+[% END %]
+
+<table>
+  <tr>
+    <td><strong>Name</strong></td>
+    <td>[% study.iname %]</td>
+  </tr>
+  <tr>
+    <td><strong>Study type</strong></td>
+    <td>[% study.study_type %]</td>
+  </tr>
+  <tr>
+    <td><strong>abstract</strong></td>
+    <td>[% study.abstract %]</td>
+  </tr>
+  <tr>
+    <td><strong>Description</strong></td>
+    <td>[% study.description %]</td>
+  </tr>
+  <tr>
+    <td><strong>Status</strong></td>
+    <td>[% study.phase %]</td>
+  </tr>
+  <tr>
+    <td><strong>Accession</strong></td>
+    <td>[% study.accession %]</td>
+  </tr>
+</table>
+
+[% IF experiments.size > 0 %]
+<h3>Experiments</h3>
+[% INCLUDE study_experiments.tt2 %]
+[% END %]
+
+[% IF write_permission %]
+[% IF experiments.size == 0 %]
+<h3>Experiments</h3>
+[% END %]
+  <form method="POST" action="[% add_experiment_link %]">
+    <input type="hidden"    name="study_id"           value="[% study.id %]" />
+    <input type="submit" value="Add" />
+  </form>
+[% END %]

@@ -1,0 +1,17 @@
+<h3>[% message %]</h3>
+<form method="POST" action="[% action %]">
+  <input type="hidden"      name="study_id"      value="[% study.id %]" />
+  <ul>
+[% INCLUDE study_info.tt2 %] 	
+    <li>Status*</li>
+    <li>
+      <select               name="phase_status_id"                                 required="required">
+          <option                                value=""                            [% IF study.phase_status_id == '' %]            selected="selected"[% END %]></option>
+          [% FOREACH phase_status IN phases %]
+              <option                            value="[% phase_status.id %]" [% IF study.phase_status_id == phase_status.id %]selected="selected"[% END %]>[% phase_status.description %]</option>
+          [% END %]
+      </select>
+    </li>
+    <li><input type="submit" value="Save" /></li>
+  </ul>
+</form>

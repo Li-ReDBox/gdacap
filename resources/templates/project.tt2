@@ -1,0 +1,142 @@
+[% IF write_permission %]
+<form action="[% edit_project_link %]" method="post">
+  <input type="hidden" name="project_id" value="[% project.id %]" />
+  <input type="submit" value="Edit" />
+</form>
+[% END %]
+
+<table>
+  <tr>
+    <td><strong>Name</strong></td>
+    <td>[% project.iname %]</td>
+  </tr>
+  <tr>
+    <td><strong>Alias</strong></td>
+    <td>[% project.alias %]</td>
+  </tr>
+  <tr>
+    <td><strong>Description</strong></td>
+    <td>[% project.description %]</td>
+  </tr>
+  <tr>
+    <td><strong>Start date</strong></td>
+    <td>[% project.start_date %]</td>
+  </tr>
+  <tr>
+    <td><strong>End date</strong></td>
+    <td>[% project.end_date %]</td>
+  </tr>
+  <tr>
+    <td><strong>ANZSRC FOR</strong></td>
+    <td>[% project.anzsrc_for %]</td>
+  </tr>
+  <tr>
+    <td><strong>Status</strong></td>
+    <td>[% project.phase %]</td>
+  </tr>
+  <tr>
+    <td><strong>Memo</strong></td>
+    <td>[% project.memo %]</td>
+  </tr>
+</table>
+
+<h3>Members</h3>
+  <table>
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH person IN members %]        
+              <tr>
+                <td>[% person.role %]</td>  
+                <td>[% person.title %] [% person.given_name%] [% person.family_name %]</td>
+                <td>[% person.phone %]</td>
+                <td>[% person.email %]</td>
+                <td></td>
+              </tr>
+        [% END %]
+      </tbody>   
+  </table>
+[% IF write_permission %]
+<form action="[% project_manage_url %]" method="post">
+  <input type="hidden" name="project_id" value="[% project.id %]" />
+  <input type="submit" value="Manage" />
+</form>
+[% END %]
+
+[% INCLUDE project_studies.tt2 %]  
+[% IF write_permission %]
+[% IF studies.size == 0 %] <h3>Study/studies</h3> [% END %]
+    <form method="POST" action="[% add_study_link %]">
+        <input type="hidden" name="project_id" value="[% project.id %]" />
+        <input type="submit" value="Add" />
+    </form>
+[% END %]	
+[% INCLUDE project_samples.tt2 %]  	
+[% IF write_permission %]
+[% IF samples.size == 0 %] <h3>Samples</h3> [% END %]
+    <form method="POST" action="[% add_sample_link %]">
+        <input type="hidden" name="project_id" value="[% project.id %]" />
+        <input type="submit" value="Add" />
+    </form>
+[% END %]
+
+[% IF processes.size > 0 %]
+<h3>Root processes</h3>
+[% INCLUDE processes.tt2 %]
+    <form method="POST" action="[% process_link %]/show">
+        <input type="hidden" name="project_id" value="[% project.id %]" />
+        <input type="submit" value="Show all" />
+    </form>
+[% END %]
+
+[% IF write_permission %]
+<h3>New pipeline <span style="color:red; font-size:60%; font-weight: bolder;">Under development*</span></h3> 
+[% IF processes.size == 0 %] <h3>Root processes</h3> [% END %]
+    <form method="POST" action="[% process_link %]/create">
+        <input type="hidden" name="project_id" value="[% project.id %]" />
+        <input type="submit" value="Design" />
+    </form>
+[% END %]
+
+[% IF fileinfo.size > 0 %]
+<h3>Files:</h3>
+<table border="1" class="tblSortable tablesorter">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Hash</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th>Added time</th>
+    </tr>
+  </thead>
+  <tbody>
+  [% max_file = 2 %]
+  [% IF fileinfo.size > max_file %]
+	[% n = [1 .. max_file] %]
+    [% FOREACH i IN n %]
+	  [% f = fileinfo.$i %]
+	  [% INCLUDE project_fileinfo.tt2 %]
+    [% END %]
+  [% ELSE %]  
+    [% FOREACH f IN fileinfo %]
+	  [% INCLUDE project_fileinfo.tt2 %]
+    [% END %]
+  [% END %]	
+  </tbody>
+</table>
+  [% IF fileinfo.size > max_file %] 
+	<form action="[% show_more_file %]" method="post">
+	  <input type="hidden" name="project_id" value="[% project.id %]" />
+	  <input type="submit" value="Show all" />
+	</form>
+  [% END %]
+[% END %]

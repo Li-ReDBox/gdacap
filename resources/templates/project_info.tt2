@@ -1,0 +1,30 @@
+<!-- Basic project information, used in creating and editing -->
+    <li>Name*</li>
+    <li><input type="text"      name="iname"          value="[% project.iname %]"             required="required" /></li>
+    <li>Alias* (A short, informal name to identify your projcet. Has to be unique in the system)</li>
+    <li><input type="text"      name="alias"  value="[% project.alias %]"             required="required" /></li>
+    <li>Description*</li>
+    <li><textarea               name="description"                                          required="required" >[% project.description %]</textarea></li>
+    <li>Start date*</li>
+    <li><input type="date"      name="start_date"     value="[% project.start_date %]" required="required" /></li>
+    <li>End date</li>
+    <li><input type="date"      name="end_date"       value="[% project.end_date %]"                       /></li>
+    <li>ANZSRC</li>
+    <li class="liSearchAnzsrc">Search <button type="button" id="btnShowChoosenAnzsrc">hide search</button></li>
+    <li class="liSearchAnzsrc">
+        <div class="ui-widget">
+          <input type="hidden"                        id="anzsrc_url" value="[% anzsrc_url %]"                                        />
+          <input type="text"    name="anzsrc"         id="anzsrc"                                                                     />
+        </div>
+    </li>
+    <li class="liChoosenAnzsrc">Select or click this button * <button type="button" id="btnShowSearchAnzsrc">or search</button></li>
+    <li class="liChoosenAnzsrc">
+      <select name="anzsrc_for_code"  id="anzsrc_for_code" required="required">
+        <option value=""                          [% IF project.anzsrc_for_code == '' %]                  selected="selected" [% END %]></option>
+		[% FOREACH anzsrc IN anzsrcs %]
+		  <option value="[% anzsrc.for_code %]"     [% IF project.anzsrc_for_code == anzsrc.for_code %]     selected="selected" [% END %]>[% anzsrc.for_name %] ([% anzsrc.for_code %])</option>
+		[% END %]
+      </select>
+    </li>
+    <li>Memo</li>
+    <li><textarea name="memo">[% project.memo %]</textarea></li>

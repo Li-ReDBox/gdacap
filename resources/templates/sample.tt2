@@ -1,0 +1,34 @@
+[% IF write_permission %]
+<form action="[% edit_sample_link %]" method="post">
+  <input type="hidden" name="sample_id"     value="[% sample.id %]" />
+  <input type="hidden" name="project_id"    value="[% sample.project_id %]" />
+  <input type="submit" value="Edit" />
+</form>
+[% END %]
+
+<table>
+  <tr>
+    <td><strong title="Formal name for public">Title</strong></td>
+    <td>[% sample.iname %]</td>
+  </tr>
+  <tr>
+    <td><strong title="Something informal, matches your lab record">Internal name</strong></td>
+    <td>[% sample.internal_name %]</td>
+  </tr>
+  <tr>
+    <td><strong>Taxonomy ID</strong></td>
+    <td>[% sample.tax_id %]</td>
+  </tr>
+  <tr>
+    <td><strong>Description</strong></td>
+    <td>[% sample.description %]</td>
+  </tr>
+  <tr>
+    <td><strong>Accession</strong></td>
+    <td>[% sample.accession %]</td>
+  </tr>
+  <tr>
+    <td><strong>Allow sharing to other projects</strong></td>
+	<td>[% IF sample.accessible %]Yes[% ELSE %]No[% END %]</td>    
+  </tr>
+</table>

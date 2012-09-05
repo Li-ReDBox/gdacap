@@ -1,0 +1,10 @@
+ Dear [% person.title %] [% person.given_name %] [% person.family_name %], 
+
+ The reason you received this email is because either you or someone applied an account with us.
+ If you would like to confirm the application, please click this link: [% confirm_handler %].
+ 
+ Otherwise, please ignore this email.
+ 
+ Kind regards,
+ 
+ Genomics Data Capturer

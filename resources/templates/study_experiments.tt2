@@ -1,0 +1,26 @@
+  <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Sample</th>
+          <th>Platform</th>
+          <th>Accession</th>
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH experiment IN experiments %]        
+              <tr>
+                <td>
+                <form method="POST" action="[% experiment_action %]">
+                  <input type="hidden"    name="experiment_id"      value="[% experiment.id %]" />
+                  <input type="submit" value="Open" />
+                </form>
+                <td>[% experiment.iname %]</td>  
+                <td>[% experiment.sample %]</td>
+                <td>[% experiment.platform %]</td>
+                <td>[% experiment.accession %]</td>  
+              </tr>
+        [% END %]
+      </tbody>   
+  </table>

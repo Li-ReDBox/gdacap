@@ -1,0 +1,68 @@
+[% IF write_permission %]
+<form action="[% edit_experiment_link %]" method="post">
+  <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
+  <input type="submit" value="Edit" />
+</form>
+[% END %]
+
+<table>
+  <tr>
+    <td><strong>Name</strong></td>
+    <td>[% experiment.iname %]</td>
+  </tr>
+  <tr>
+    <td><strong>Design</strong></td>
+    <td>[% experiment.design %]</td>
+  </tr>
+  <tr>
+    <td><strong>Sample</strong></td>
+    <td>   [% experiment.sample %] </td>
+  </tr>
+  <tr>
+    <td><strong>Platform</strong></td>
+    <td>   [% experiment.platform %] </td>
+  </tr>
+  <tr>
+    <td><strong>Accession</strong></td>
+    <td>[% experiment.accession %]</td>
+  </tr>
+</table>
+
+<h3>Library </h3>
+	<strong> Source: </strong> [% experiment.lib_source %].
+	<strong> Layout: </strong> 
+	[% IF experiment.nominal_size %]	Paired.
+	<strong> Nominal size: </strong>[% experiment.nominal_size %]
+	[% ELSE %]
+	Single
+	[% END %]
+
+[% BLOCK run_edit %]
+[% IF write_permission %]
+<form method="POST" action="[% run_edit_action %]">
+<!-- input type="hidden" name="experiment_id" value="[% experiment.id %]" /-->
+<input type="hidden" name="run_id" value="[% run.id %]" />
+<input type="submit" value="Edit" />
+</form>
+[% END %]
+[% END %]
+
+[% IF runs.size > 0 %]
+<h3>Runs</h3>	
+[% INCLUDE run_fastq.tt2 %]
+[% END %]
+
+[% IF write_permission %]
+[% IF runs.size == 0 %] <h3>Runs</h3> [% END %]
+<form action="[% add_experiment_run %]" method="post">
+  <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
+  <input type="submit" value="Add" />
+</form>
+<h3>Submit to EBI</h3>
+<p> A submission can be held up to maximum of two years.</p>
+<form action="[% submit2ebi %]" method="post" onsubmit="return confirm('Are you sure to submit now?');">
+  <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
+  <label>Release date <input type="date" name="release_date" required/></label>
+  <input type="submit" value="Submit" />
+</form>
+[% END %]

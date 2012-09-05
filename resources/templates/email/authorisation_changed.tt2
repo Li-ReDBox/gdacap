@@ -1,0 +1,11 @@
+Dear [% person.title %] [% person.given_name %] [% person.family_name %],
+ 
+[% IF right %]
+Congratulations! You have been granted access to the system. Enjoy!
+[% ELSE %]
+You have been baned to access the system. If you think you should not have been banned, please contact us.
+[% END %]
+
+Kind regards,
+ 
+Genomics Data Capturer 

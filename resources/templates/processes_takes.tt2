@@ -1,0 +1,27 @@
+<h3>Asscoicated process of [% file_copy %]</h3>
+<h3>From:</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+	  <th>Tool</th>
+	  <th>Configuration</th>
+	  <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+   <tr>
+      <td><a href='[% process_link %]/show?id=[% process_from.id %]'>[% process_from.name %]</a></td>
+      <td>[% process_from.tool %]</td>
+      <td>[% process_from.configuration %]</td>
+      <td>[% process_from.creation_time %]</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Further processed by</h3>
+[% IF processes.size > 0 %]
+[% INCLUDE processes.tt2 %]
+[% ELSE %]
+<h3>None</h3>
+[% END %]

@@ -1,0 +1,13 @@
+<h3>[% message %]</h3>
+
+<h3>Personal details</h3>
+<form method="POST" action="[% action %]">
+  <input type="hidden" name="person_id" value="[% person.id %]" />
+  <ul>
+[% INCLUDE personal_info.tt2 %]
+  </ul>
+   <input type="hidden" name="section" value="person_info" />  
+   <input type="submit" value="Save" />
+</form>
+
+[% INCLUDE affiliation.tt2 %]

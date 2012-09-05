@@ -1,0 +1,47 @@
+<h3>[% message %]</h3>
+<table>
+  <tr>
+    <td><strong>Name</strong></td>
+    <td>[% experiment.iname %]</td>
+  </tr>
+</table>
+
+[% IF runs.size > 0 %]
+[% BLOCK run_edit %]
+<!-- Bypass the editing option in run create-->
+[% END %]
+
+<h3>Runs</h3>
+[% INCLUDE run_fastq.tt2 %]
+[% END %]			  
+<p>A run is atthached to an experiment and can be identified by its <em>run date</em>. It either has one file or two files depends on the experiment. Only the files were uploaded through processes in 'run upload' category are listed here and can be added to a <em>run</em>. Run files should be in <em>FASTQ</em> format, so please ensure quality scores are in Phred scale and ASCII encoded. If not, conversion is needed. Score offset can either be 33 ('!') or 64 ('@'). </p> 
+
+[% IF files.size > 0 %]
+	[% BLOCK file_select %] 
+	  <select name="file_copy_id" required="required">
+	  [% FOREACH f IN files %]        
+			<option value="[% f.0 %]" > [% f.1 %]</option>
+	  [% END %]
+	  </select>
+	[% END %] 
+
+<form method="POST" action="[% action %]">
+<input type="hidden" name="experiment_id" value="[% experiment.id %]" />
+  <table>
+    <thead>
+        <tr>
+          <th>Run date</th> <th>File name</th> [% IF experiment.nominal_size %] <th>File name</th> [% END %] <th>Score offset</th>
+        </tr>
+	</thead>
+    <tbody>
+		<tr>
+		  <td><input type="date" name = "run_date" required/></td>
+		  <td> [% PROCESS file_select %] </td>
+		[% IF experiment.nominal_size %] <td> [% PROCESS file_select %] </td> [% END %]			  
+		  <td> <select name="score_offset" required="required"><option value="@" selected>@</option><option value="!">!</option></select> </td>
+		</tr>
+      </tbody>   
+  </table>
+<input type="submit" value="Save" />
+</form>  
+[% END %]

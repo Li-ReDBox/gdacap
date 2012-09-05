@@ -1,0 +1,6 @@
+<h3>[% message %]</h3>
+<form method="POST" action="[% action %]">
+<ul>
+  <li><input type="submit" value="Logout" /></li>
+</ul>
+</form>

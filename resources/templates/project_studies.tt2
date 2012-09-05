@@ -1,0 +1,31 @@
+[% IF studies.size > 0 %]
+<h3>Study/studies</h3>
+  <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Abstract</th>
+          <th>Status</th>
+          <th>Accession</th>
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH study IN studies %]        
+            <tr>
+              <td>
+                <form action="[% goto_study_link %]" method="post">
+                  <input type="hidden" name="project_id" value="[% project.id %]" />
+                  <input type="hidden" name="study_id" value="[% study.id %]" />
+                  <input type="submit" value="Open" />
+                </form>
+              </td>  
+              <td>[% study.iname %]</td>
+              <td>[% study.abstract %]</td>
+              <td>[% study.phase %]</td>
+              <td>[% study.accession %]</td>
+            </tr>
+        [% END %]
+      </tbody>   
+  </table>
+[% END %]

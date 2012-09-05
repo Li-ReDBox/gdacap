@@ -1,0 +1,8 @@
+      <tr>
+        <td></td>  
+        <td><a href=[% process_link %]/extend/?file_copy_id=[% f.id %] onclick="process_popup(this.href);return false">[% f.original_name %]</a></td>  
+        <td>[% f.hash %]</td>
+        <td>[% f.type %]</td>
+        <td>[% IF f.size.defined %] [% f.size %] [% END %]</td>		
+        <td>[% f.added_time %]</td>
+      </tr>

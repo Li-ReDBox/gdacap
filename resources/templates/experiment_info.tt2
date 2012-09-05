@@ -1,0 +1,55 @@
+[% lib_sources = [ 'GENOMIC', 'TRANSCRIPTOMIC','METAGENOMIC', 'METATRANSCRIPTOMIC', 'SYNTHETIC', 'VIRAL RNA', 'OTHER'] %]			  
+
+    <li><label for="iname">Name*</label></li>
+    <li><input type="text"      name="iname"         value="[% experiment.iname %]"         required="required" /></li>
+    <li><label for="design">Design*</label></li>
+    <li><textarea               name="design"                                               required="required" >[% experiment.design %]</textarea></li>
+    <li><label for="sample_id">Sample*</label></li>
+    <li>
+        <select name="sample_id"                                                            required="required">
+			<option value=""></option>
+			[% FOREACH sample IN samples %]
+				<option value="[% sample.id %]"   [% IF sample.id == experiment.sample_id %]  selected="selected" [% END %]>[% sample.iname %] [% sample.internal_name %]</option>
+			[% END %]
+        </select>
+    </li>
+    <li><label for="platform_id">Platform*</label></li>
+	<li>
+        <select name="platform_id"                                                required="required">
+			<option value=""></option>
+			[% FOREACH platform IN platforms %]
+				<option value="[% platform.id %]"  [% IF platform.id == experiment.platform_id %]  selected="selected" [% END %] >[% platform.iname %] [% platform.model %]</option>
+			[% END %]
+        </select>
+	</li>
+	<li><label for="lib_source"> Source*</label></li>
+	<li>
+		<select name="lib_source" required>
+		<option value=""></option>
+		[% FOREACH source IN lib_sources %]
+		<option value="[% source %]" [% IF source == experiment.lib_source %] selected="selected" [% END %]>[% source %]</option>
+		[% END %]  
+		</select>
+	</li>
+[% IF layout_changble %]	
+	<li><label for="library_layout"> Layout*</label></li>
+	<li>
+		<select name="library_layout" 
+				onchange="this.value == 'paired' ? document.getElementById('liNominalSize' ).setAttribute('class',''): document.getElementById('liNominalSize' ).setAttribute('class','hidden');
+						  this.value == 'paired' ? document.getElementById('liNominalSize2').setAttribute('class',''): document.getElementById('liNominalSize2').setAttribute('class','hidden');
+						  this.value == 'paired' ? document.getElementById('nominal_size'  ).required = true         : document.getElementById('nominal_size').value =''; document.getElementById('nominal_size').required = false;"
+				required="required">
+			<option value=""></option>
+			<option value="single" [% IF !experiment.nominal_size %]selected="selected"[% END %]>Single</option>
+			<option value="paired" [% IF  experiment.nominal_size %]selected="selected"[% END %]>Paired</option>
+		</select>
+    </li>
+    <li id="liNominalSize" [% IF !experiment.nominal_size %]class="hidden"[% END %]>
+        Nominal Size*
+    </li>
+    <li id="liNominalSize2" [% IF !experiment.nominal_size %]class="hidden"[% END %]>
+        <input type="text" id="nominal_size" name="nominal_size" [% IF experiment.nominal_size %]value="[% experiment.nominal_size %]"[% END %]/>
+    </li>
+[% ELSE %]
+    <li> Layout: [% IF  experiment.nominal_size %] Paired [% ELSE %] Single [% END %]</option></li>
+[% END %]	

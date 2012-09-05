@@ -1,0 +1,7 @@
+Dear [% person.title %] [% person.given_name %] [% person.family_name %], 
+
+This message is to inform you that your email with us has been changed from [% old_email %] to [% person.email %]. 
+ 
+Kind regards,
+ 
+Genomics Data Capturer 

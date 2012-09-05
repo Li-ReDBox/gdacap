@@ -1,0 +1,36 @@
+    <li>Title*</li>
+    <li>
+      <select name="title" required="required">
+		<option value="" [% IF person.title == '' %] selected="selected" [% END %]></option>
+		[% FOREACH title IN titles.pairs %]
+		  <option value="[% title.key %]" [% IF person.title == title.value %] selected="selected" [% END %]>[% title.value %]</option>
+		[% END %]
+      </select>
+    </li>
+    <li>Given Name*</li>
+    <li><input type="text" name="given_name"   value="[% person.given_name %]"     required="required" /></li>
+    <li>Family name*</li>
+    <li><input type="text" name="family_name"  value="[% person.family_name %]"    required="required" /></li>
+    <li>Email*</li>
+    <li><input type="email" name="email"       value="[% person.email %]"          required="required" /></li>
+    <li>Phone*</li>
+    <li><input type="text" name="phone"        value="[% person.phone %]"          required="required" /></li>
+    <li>ANZSRC</li>
+    <li class="liSearchAnzsrc">Search <button type="button" id="btnShowChoosenAnzsrc">hide search</button></li>
+    <li class="liSearchAnzsrc">
+        <div class="ui-widget">
+          <input type="hidden" id="anzsrc_url" value="[% anzsrc_url %]" />
+          <input type="text" name="anzsrc" id="anzsrc" />
+        </div>
+    </li>
+    <li class="liChoosenAnzsrc">Please select* <button type="button" id="btnShowSearchAnzsrc">or search</button></li>
+    <li class="liChoosenAnzsrc">
+      <select name="anzsrc_for_code"  id="anzsrc_for_code"  required="required">
+		<option value="" [% IF person.anzsrc_for_code == '' %] selected="selected" [% END %]></option>
+		[% FOREACH anzsrc IN anzsrcs %]
+		<option value="[% anzsrc.for_code %]" [% IF person.anzsrc_for_code == anzsrc.for_code %] selected="selected" [% END %]>[% anzsrc.for_name %] ([% anzsrc.for_code %]) </option>
+		[% END %]
+      </select>
+    </li>
+    <li>Webpage</li>
+    <li><input type="url" name="webpage" value="[% person.webpage %]" /></li>

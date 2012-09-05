@@ -1,0 +1,20 @@
+<div id="gviz">
+[% svg %]
+</div>
+
+<script type="text/javascript">
+function save_svg(formObj) {
+	var gviz = document.getElementById('gviz').innerHTML;
+	if (gviz !== "") {
+		formObj.elements["svg_xml"].value = gviz;
+		formObj.submit();
+	}
+}
+</script>
+<form action="[% action %]" method="post">
+  <input type="hidden" name="svg_xml" value="" />
+  <input type="submit" value="Save SVG" onclick="save_svg(this.form);" />
+</form>
+<p>Save function has passed the test with Opera and Chrome. No test has been done with Safari.</p>
+<p>If the browser is IE, right click the drawing and choose "Save picture as.." to save a SVG file.</p>
+<p>If the browser is Firefox, after you saved the file, open it in a text editor. Find <u>xlink="http://www.w3.org/1999/xlink"</u> and add <u>xmlns:</u> in front of <u>xlink</u>. The final result should look like: <u>xmlns:xlink="http://www.w3.org/1999/xlink"</u>.</p>

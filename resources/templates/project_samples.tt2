@@ -1,0 +1,33 @@
+[% IF samples.size > 0 %]	
+<h3>Samples</h3>
+  <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Title</th>
+          <th>Internal name</th>
+          <th>Tax ID</th>
+          <th>Accession</th>
+          <th>Sharing</th>
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH sample IN samples %]        
+            <tr>
+              <td>
+                <form action="[% goto_sample_link %]" method="post">
+                  <input type="hidden" name="project_id" value="[% project.id %]" />
+                  <input type="hidden" name="sample_id" value="[% sample.id %]" />
+                  <input type="submit" value="Open" />
+                </form>
+              </td>  
+              <td>[% sample.iname %]</td>
+              <td>[% sample.internal_name %]</td>
+              <td>[% sample.tax_id %]</td>
+              <td>[% sample.accession %]</td>
+              <td>[% IF sample.accessible %]Yes[% ELSE %]No[% END %]</td>
+            </tr>
+        [% END %]
+      </tbody>   
+  </table>
+[% END %]

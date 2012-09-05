@@ -1,0 +1,7 @@
+Dear System Administrator,
+
+Please be advised that the email address of [% person.given_name %] [% person.family_name %] (user name: [% person.username %]) has been confirmed and the application is waiting for approval.
+ 
+Regards,
+
+Genomics Data Capturer

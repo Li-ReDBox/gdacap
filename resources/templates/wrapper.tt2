@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<!--[if lt IE 9]> <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
+	    
+		[% FOREACH url IN css.pairs %]
+				<link rel="stylesheet" type="text/css" href="[% url.value %]" />
+		[% END %]
+		
+		[% FOREACH url IN jquery.pairs %]
+				<script type="text/javascript" src="[% url.value %]" ></script>
+		[% END %]
+		
+		[% FOREACH url IN javascript.pairs %]
+				<script type="text/javascript" src="[% url.value %]"></script>
+		[% END %]
+        <title>[% page_title %]</title>
+  </head>
+  <body>
+		[% IF logged_in.size > 0 %]
+				<div id="divLoggedInBar">
+						<ul>
+								<li>Logged in as [% logged_in.user %] 
+								 <a href="[% logged_in.edit_profile_url %]">edit profile</a> | <a href="[% logged_in.logout_url %]">logout</a></li>
+						</ul>
+				</div>
+		[% END %]
+		
+		<div id="divHeaderGradient"></div>
+		<header id="pageHeader">
+		    <div id="divWrapper">
+		        <div id="divHeaderTxt">Genomics Data Capture</div>
+			    <div id="divHeaderImg"><a href="http://www.adelaide.edu.au/" title="The University of Adelaide"><img src="[% images.logo %]" alt="The University of Adelaide Logo"/></a></div>
+		    </div>
+		</header>
+	    <nav>	
+		    <ul id="ulMenu" class="ui-red-grad">
+            		[% FOREACH order IN menu.pairs %]
+            		    [% # order.key == menu order (1,2,3,4..) and order.value == hash to link %]
+            		    [% FOREACH pair IN order.value.pairs %]
+							<li><a href="[% pair.value %]">[% pair.key %]</a></li>
+            		    [% END %]
+            		[% END %]
+          	</ul>
+	    </nav>
+	    <section id="section[% section_article_id %]">
+			<article id="article[% section_article_id %]">
+				<header>
+				    <h2>
+						[% header %]
+						[% IF help_url %]<a href="[% help_url %]" target="_blank"><img id="imgHelp" src="[% images.help %]" alt="help" /></a>[% END %]
+					</h2>
+				</header>
+				[% content %]
+			</article>
+		</section>
+        [% IF project_navigation.size > 0 %]
+    		<aside class="project_navigation">
+    		    <ul id="ulHideProjectNavigationLinks" class="hidden">
+	    	        <li>Close panel</li>
+	    	    </ul>
+	    	    <ul id="ulProjectNavigationLinks"  class="hidden">
+					<li><a href="[% project_navigation.location %]/project/show?project_id=[% project_navigation_project_id %]"> Project meta</a></li>
+					<li class="section_title">Samples</li>
+					[% FOREACH item IN project_navigation.samples %]
+					<li><a href="[% project_navigation.location %]/sample/show?sample_id=[% item.id %]"> [% item.iname %]</a></li>
+					[% END %]
+					<li class="section_title">Studies</li>
+					[% FOREACH item IN project_navigation.studies %]
+					<li><a href="[% project_navigation.location %]/study/show?study_id=[% item.id %]"> [% item.iname %]</a></li>
+					<li class="section_title">Experiments</li>
+					[% FOREACH exp IN item.experiments %]
+					<li><a href="[% project_navigation.location %]/experiment/show?experiment_id=[% exp.id %]">[% exp.iname %]</a> </li>
+					[% END %]
+					[% END %]
+	    	    </ul>
+	    	    <ul id="ulShowProjectNavigationLinks">
+	    	        <li>Project Navigation</li>
+	    	    </ul>
+	    	</aside>
+		[% END %]
+  </body>
+</html>

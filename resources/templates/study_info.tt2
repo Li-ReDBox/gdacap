@@ -1,0 +1,17 @@
+    <li>Name*</li>
+    <li><input type="text"      name="iname"         value="[% study.iname %]"         required="required"                                 /></li>
+    <li>Internal name*</li>
+    <li><input type="text"      name="internal_name" value="[% study.internal_name %]" required="required"                                 /></li>
+    <li>Type*</li>
+    <li>
+      <select               name="study_type_id"                                   required="required" >
+          <option           value=""                            [% IF study.study_type_id == '' %] selected="selected"[% END %]></option>
+          [% FOREACH study_type IN studytypes %]
+              <option       value="[% study_type.id %]"         [% IF study.study_type_id == study_type.id %] selected="selected"[% END %]>[% study_type.description %]</option>
+          [% END %]
+      </select>
+    </li>
+    <li>Abstract*</li>
+    <li><textarea               name="abstract"                                        required="required" >[% study.abstract %]</textarea></li>
+    <li>Description*</li>
+    <li><textarea               name="description"                                     required="required" >[% study.description %]</textarea></li>

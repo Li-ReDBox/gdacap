@@ -1,0 +1,20 @@
+<table border="1" class="tblSortable tablesorter">
+  <thead>
+    <tr>
+      <th>Name</th>
+	  <th>Tool</th>
+	  <th>Configuration</th>
+	  <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  [% FOREACH process IN processes %]
+   <tr>
+      <td><a href='[% process_link %]/show?id=[% process.id %]'>[% process.name %]</a></td>
+      <td>[% process.tool %]</td>
+      <td>[% process.configuration %]</td>
+      <td>[% process.creation_time %]</td>
+    </tr>
+   [% END %]
+  </tbody>
+</table>

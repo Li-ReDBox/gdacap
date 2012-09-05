@@ -1,0 +1,130 @@
+<h3>[% message %]</h3>
+[%#
+# div movable object appearance
+<div id="div1" draggable="true" ondragstart="onDragStart(event)" class="draggableItem permanent">
+    <input type="hidden" id="fileType1" value="fastq" />
+    <input type="hidden" id="fileId1"   value="12345" />
+    <table>
+        <thead><tr><th></th><th>Name</th><th>Type</th><th>Hash</th></tr></thead><tbody><tr>
+        <td></td><td>name1</td><td>fastq</td><td>12345</td></tr></tbody>
+    </table>
+</div>
+
+# droppable place appearance
+<div id="div2" draggable="true" ondragstart="onDragStart(event)" class="draggableItem permanent">
+    <input type="hidden" id="fileType2" value="fasta" />
+    <input type="hidden" id="fileId2"   value="54321" />
+    <table >
+        <thead><tr><th></th><th>Name</th><th>Type</th><th>Hash</th></tr></thead><tbody><tr>
+        <td></td><td>name2</td><td>fasta</td><td>54321</td></tr></tbody>
+    </table>
+</div>
+
+# example of a help button, change PROCENT to real sign and move to live code if you want it to work, you do not need to use a button for jquery to work...
+<button id="btnGetHelpDialog" onclick="getHelpJson('[PROCENT info_url.analyse_files PROCENT]')">Get help dialog about analyse_files</button>
+%]
+<div>
+    <h3>Files</h3>
+    <div id="projectFiles" class="scroll floatleft">
+      <ul>
+[% IF files.size > 0 %]
+            [% FOREACH file IN files %]
+              <li>
+                <div id="div[% file.hash %]" draggable="true" ondragstart="dragStart(event, clientCommandConstructor)" ondragend="dragEnd(event)" title="hash:[% file.hash %]" class="draggableItem permanent">
+                  <input type="hidden" id="fileType[% file.hash %]" value="[% file.type %]" /> <!-- Andor used filetype_id, not type -->
+                  <input type="hidden" id="fileId[% file.hash %]"   value="[% file.hash %]" />
+                  <table>
+                    <thead><tr><th>Name</th><th>Type</th></tr></thead><tbody><tr>
+                      <td>[% file.original_name %]</td><td>[% file.type %]</td></tr></tbody>
+                  </table>
+                </div>
+              </li>
+            [% END %]
+[% END %]
+        <li><button id="btnShowAllFiles" onclick="showFiles(clientCommandConstructor, 'all')">Show all files</button></li>
+      </ul>
+    </div>
+
+    <div class="divPreviewGraphWrapperAnchor">
+        <div id="divPreviewGraphLabel" class="divPreviewGraphLabel">Preview/Job</div>
+        <div class="divPreviewGraphWrapper">
+            <div id="divPreviewGraph"  class="divPreviewGraph"></div>
+        </div>
+        <div id="divSavePreviewGraph"  class="divSavePreviewGraph">
+            <button id="btnEditGraphvizObject" onclick="analyseAction( 'editGraphvizObject', { 'commandConstructor': clientCommandConstructor } );" class="hidden">edit</button>
+            <a id="aGraphSvg" class="hidden">graph.svg</a>
+        </div>
+    </div>
+
+    <div class="clear">
+</div>
+
+<h3>What to do</h3>
+<ul>
+    <li><input type="radio" name="createMethod" value="fromCommand" onchange="removeClasses(document.getElementById('divFromCommand'),['hidden']);addClasses(document.getElementById('divFromHistory'), ['hidden']);" checked="checked" />Add command</li>
+    <li><input type="radio" name="createMethod" value="fromHistory" onchange="removeClasses(document.getElementById('divFromHistory'),['hidden']);addClasses(document.getElementById('divFromCommand'), ['hidden']);" />Add command(s) from template or jobs</li>
+</ul>
+
+<div id="divFromCommand" class="">
+    <h4>Add command</h4>
+    <ul>
+      <li>
+        <select name="command_id" id="command_id">
+          <option value=""                ></option>
+          [% FOREACH command IN commands %]
+            <option value="[% command.id %]"   >[% command.iname %] (software_[% command.software_id %])</option>
+          [% END %]
+        </select>
+        
+        <input type="hidden" id="get_command_url" value="[% get_command_url %]"/>
+        <button id="btnAddCommand">Add</button>
+      </li>
+</div>
+
+<div id="divFromHistory" class="hidden">
+    <h4>Add command(s) from template or jobs</h4>
+    <ul>
+      <li>
+        [% pid = []# ids of processes that was created in this project %]
+        [% FOREACH process IN processes %]
+            [% pid.push(process.id) %]
+        [% END %]
+        <select name="process_id" id="process_id" onchange="// if process was created in this project show the button to load the graph with files
+                                                            '[% pid.join(',') %]'.split(',').indexOf(this.value) > -1 ? 
+                                                            document.getElementById('btnAddProcessWithDependencies').classList.remove('hidden') :
+                                                            document.getElementById('btnAddProcessWithDependencies').classList.add('hidden');
+                                                            ">
+          <option value=""                     ></option>
+          [% FOREACH process IN processes %]
+            <option value="[% process.id %]"   >[% process.iname %] (software_from_command_[% process.command_id %])</option>
+          [% END %]
+        </select>
+        
+        <input type="hidden" id="get_process_with_dependencies_url" value="[% get_process_with_dependencies_url %]"/>
+        <button id="btnAddProcess">Add</button>
+        <button id="btnGetGraphFromProcess" onclick="getGraphvizSvgFromProcessId('process_id')">Show graph</button>
+        <button id="btnAddProcessWithDependencies" class="hidden">Add with  files</button>
+      </li>
+    </ul>
+</div>
+
+<ul>
+    <li>
+        <input type="hidden" id="create_process_url"               value="[% create_process_url %]"/>
+        <input type="hidden" id="del_no_focus_url"                 value="[% images.del_no_focus %]"/>
+        <input type="hidden" id="del_focus_url"                    value="[% images.del_focus %]"/>
+        <input type="hidden" id="get_bash_command_url"             value="[% get_bash_command_url %]"/>
+        <input type="hidden" id="get_graphviz_url"                 value="[% get_graphviz_url %]"/>
+        <input type="hidden" id="get_graphviz_with_process_id_url" value="[% get_graphviz_with_process_id_url %]"/>
+        <input type="hidden" id="hiJsonStepValues" />
+        <input type="hidden" id="hiPersonId"                       value="[% person_id %]"/>
+        <input type="hidden" id="hiProcessType"                    value=""/>
+        <input type="hidden" id="hiProjectId"                      value="[% project.id %]"/>
+    </li>
+    <li id="liBuildRun" class="hidden"><li>
+    <li id="liJobButtons" class="hidden">
+        <button id="btnShowCommandPreview">Preview job</button>
+        <button id="btnSaveCommandsAsTemplate">Save as template</button>
+        <button id="btnSaveCommandsAsProcess">Create job</button>
+    </li>
+</ul>

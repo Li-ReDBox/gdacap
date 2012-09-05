@@ -1,0 +1,511 @@
+/* fixes html5 not implemented in browser stuff */
+section, article, header, footer, aside, nav { display: block; margin: 0; padding: 0; }
+
+body {text-align: center; margin: 0 auto; background-color: #dde5ee; font-family: "lucida grande",tahoma,verdana,arial,sans-serif; font-size: 0.8em;}
+
+#divLoggedInBar {
+  position: absolute;
+  top: 0;
+  height: 20px;
+  width: 100%;
+  min-width: 1000px;
+  z-index: 0;
+  background-color: #bacbdc;
+  color: #5f87ae;
+}
+#divLoggedInBar li { list-style: none; }
+
+/* gradient from 4491ca to 013f73 */
+#divHeaderGradient {
+  position: absolute;
+  top: 0;
+  height: 200px;
+  width: 100%;
+  min-width: 1000px;
+  z-index: -1;
+  background-color: #4491ca;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#4491ca), to(#013f73)); 
+  background-image: -webkit-linear-gradient(top, #4491ca, #013f73); 
+  background-image:    -moz-linear-gradient(top, #4491ca, #013f73); 
+  background-image:     -ms-linear-gradient(top, #4491ca, #013f73); 
+  background-image:      -o-linear-gradient(top, #4491ca, #013f73); 
+  background-image:         linear-gradient(top, #4491ca, #013f73);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#4491ca', EndColorStr='#013f73'); 
+}
+
+.ui-red-grad {
+    background: #ed1c2e;
+    background: -moz-linear-gradient(top, #ed1c2e 0%, #a2131f 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ed1c2e), color-stop(100%,#a2131f));
+    background: -webkit-linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+    background: -o-linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+    background: -ms-linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed1c2e', endColorstr='#a2131f',GradientType=0 );
+    background: linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+}
+
+h4 {clear: both;}
+section article h3 { margin-top: 1em; }
+section article table h3 { margin-top: 0em; }
+section article header { color: #b38807; }
+
+#pageHeader, nav, section { min-width: 1000px; }
+
+#pageHeader { height: 160px; border: 0px solid Green; width: 60%; margin: 0 auto; }
+#pageHeader #divWrapper { margin: 0; padding: 0; }
+#pageHeader #divWrapper #divHeaderTxt { float:left;  line-height:160px; text-align: center; border: 0px solid black; font-size: 2.3em; font-weight: normal; font-family: Georgia,Times,serif; color: #ffffff; }
+#pageHeader #divWrapper #divHeaderImg { float:right; line-height:160px; border: 0px solid black; }
+#pageHeader #divWrapper #divHeaderImg img { vertical-align: middle; border: 0px solid red; }
+
+section { background-color: #ffffff; width: 60%; margin: 0 auto; -moz-box-shadow: 0 15px 20px #c4cad2; -webkit-box-shadow: 0 15px 20px #c4cad2; box-shadow: 0 15px 20px #c4cad2;}
+article { margin: 0 2em 0 2em; text-align: left; padding: 0.5em 0.5em 0 0.5em; min-height: 600px; }
+input[type=text], input[type=password],input[type=email], input[type=url], textarea { width: 300px; }
+input[type=submit] {
+	font-weight: bold;
+	background: #E5E5E5;
+	border:1px solid #9F9F9F;
+	padding: 5px 12px;
+	margin: 3px;
+	margin-left: 0;
+	cursor: pointer;
+
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+textarea { height: 200px; }
+
+.liSearchAnzsrc {display: none;}
+.btnHideTaxInfo {display: none;}
+.hidden {display: none;}
+
+/* nav */ /* change number of element in menu by hardocing font-size with margin in li and width in li */
+nav { margin: 0 auto; padding: 0; width: 60%; display: block; font-weight: normal; font-family: Georgia,Times,serif; font-size: 1.4em; }
+nav ul { height: 40px; line-height: 40px; list-style: none; margin: 0; padding: 0; }
+nav li { color: white; display: inline; margin: 0 1em 0.15em 1em; width: 50em; border: 0px solid black; cursor: pointer; }
+nav li a { text-decoration: none; color: white }
+nav li:hover a { color: blue; } 
+
+fieldset {overflow: hidden; clear: both;}
+form, fieldset, legend, ul{
+margin:0;
+padding:0;
+}
+
+table {
+    border-collapse: collapse;
+    border-style: hidden;
+}
+
+table td, table th {
+    border: 1px solid black;
+    padding: 0.3em;
+}
+
+
+/* default for all sections, all sections and articles have id though */
+section ul { list-style: none; margin: 0 0 1em 0; }
+section ul li { margin-left: 1em; margin-right: 1em; clear: both; }
+
+
+/* #sectionEditpersonadmin */
+#sectionEditpersonadmin ul { list-style: none; margin: 0 0 1em 0; }
+#sectionEditpersonadmin ul li { margin-left: 1em; clear: both; }
+#sectionEditpersonadmin article form ul li input[type=url] { width: 300px;}
+#sectionEditpersonadmin article table { margin: 0 0 1em 0; }
+
+/* input validation */
+input:required:invalid, textarea:required:invalid, select:required:invalid { 
+  border-color: #e88;
+  -webkit-box-shadow: 0 0 5px rgba(255, 0, 0, .8);
+  -moz-box-shadow: 0 0 5px rbba(255, 0, 0, .8);
+  -o-box-shadow: 0 0 5px rbba(255, 0, 0, .8);
+  -ms-box-shadow: 0 0 5px rbba(255, 0, 0, .8);
+  box-shadow:0 0 5px rgba(255, 0, 0, .8);
+}
+
+input:required:valid, textarea:required:valid { 
+  border-color: #000000;
+  border: 1px inset;
+}
+
+/* drag n drop css */
+.maxTableWidth {
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.tblCreateAnalyse {
+    //background-color: rgba(0,0,0,0.1);    
+    margin: 2px;
+    width: 100%;
+    word-wrap: break-word;
+    border-radius: 6px;
+    
+    border-collapse: separate;
+    border-style: hidden;
+}
+
+.tblCreateAnalyse td, .tblCreateAnalyse th {
+    border: 0px solid black;
+    padding: 0.3em;
+    border-collapse: collapse;
+}
+
+.tblCreateAnalyse>tbody>tr {
+    border-color: rgba(255,0,0,0.1);
+}
+.tblCreateAnalyse>tbody>tr>td:first-child { /* first tds */
+    background-color: rgba(0,0,0,0.2);
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+
+.tblCreateAnalyse>tbody>tr>td:nth-child(2) { /* second tds */
+    background-color: rgba(0,0,0,0.2);
+    vertical-align: top; /* for inline objects/text to stock at the top of the td */
+}
+
+.tblCreateAnalyse>tbody>tr>td:last-child {  /* last tds */
+    background-color: rgba(0,0,0,0.2);
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    vertical-align: top; /* for inline objects/text to stock at the top of the td */
+}
+
+.divInsideTdForRelativeToWork{
+    position: relative;
+    padding: 0 22px 0 0;
+    min-height: 100%;
+    height: 100%;
+}
+
+.droppable{
+    background-color: Grey;
+    display: inline-block;
+    border-radius: 6px;
+    margin: 2px;
+    vertical-align: top
+}
+
+.permanent{
+    display: inline-block;
+    border-radius: 6px;
+    border: 4px solid rgba(0,0,0,0.0);
+}
+.permanent table{
+    border: 1px solid rgba(0,0,0,1);
+}
+.permanent td, .permanent th{
+    border: 0px solid rgba(0,0,0,1);
+}
+
+.draggableItem{
+    border: 2px solid rgba(0,0,210,1);
+    border-radius: 6px;
+    display: inline-block; /* makes the class to collapse to smallest size */
+    background-color: rgba(255,255,255,0.5);
+    margin: 2px;
+    position: relative; /* for the delete button inside to be able to have position absolute */
+    cursor: move;
+}
+.draggableItem table{
+    border: 0px solid rgba(0,0,0,1);
+    position: relative;
+}
+
+.draggableOutputItem{
+    border: 2px solid rgba(255,255,0,1);
+    border-radius: 6px;
+    margin: 2px;
+    display: inline-block; /* makes the class to collapse to smallest size */
+    background-color: rgba(255,255,255,0.5);
+    position: relative; /* for the delete button inside to be able to have position absolute */
+    cursor: move;
+}
+.draggableOutputItem table{
+    border: 0px solid black;
+}
+
+.okToDrop{
+    background-color: #00FF00;
+}
+
+.notOkToDrop{
+    background-color: red;
+}
+
+.scroll{
+    max-height: 300px;
+    overflow: auto;
+}
+
+.hasObject{
+    border: 4px solid rgba(0,160,0,1);/* green border around input */
+}
+
+.hasNotObject{
+    border: 4px solid rgba(240,0,0,1);/* red border around input */
+}
+
+.btnJobOkToPress{
+    border-color: rgba(0,150,0,0.8);
+}
+
+.btnJobNotOkToPress{
+    border-color: rgba(230,0,0,0.8);
+}
+
+.processDescription{
+    //background-color: White;
+}
+
+.okToProcess{
+    border: 4px solid yellow;
+    border-radius: 6px;
+    margin: 2px;
+    display: inline-block; /* makes the class to collapse to smallest size */
+    background-color: rgba(255,255,255,0.5);
+    position:relative; /* for the delete button inside to be able to have position absolute */
+    cursor: move;
+}
+.okToProcess table{
+    border: 0px solid black;
+}
+
+.hidden{
+    display: none;
+}
+
+.left{
+    text-align: left;
+}
+
+.right{
+    text-align: right;
+}
+
+.deleteButton{/* upper right corner of div*/
+    position:absolute;
+    right: 0;
+    top: 0;
+    z-index : 10;
+    margin: 2px;
+    cursor: default;
+}
+
+.deleteRowButton{/* upper right corner of div*/
+    position:absolute;
+    right: 0;
+    top: 0;
+    z-index: 10;
+    padding: 3px;
+    display: inline-block;
+    cursor: default;
+}
+
+/* edit parameters css */
+.ui-widget table th{ /* menu red background and jquery dialog table menu */
+    background: #ed1c2e;
+    background: -moz-linear-gradient(top, #ed1c2e 0%, #a2131f 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ed1c2e), color-stop(100%,#a2131f));
+    background: -webkit-linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+    background: -o-linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+    background: -ms-linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed1c2e', endColorstr='#a2131f',GradientType=0 );
+    background: linear-gradient(top, #ed1c2e 0%,#a2131f 100%);
+    
+    text-decoration: none; 
+    color: white;
+    font-family: Georgia,Times,serif;
+    font-weight: normal;
+    font-size: 1.2em;
+    text-align: left;
+}
+
+.ui-widget {
+    text-align: left;
+}
+
+.dialogTable th, .ui-widget td {
+    border: 0px solid black;
+    text-align: left;
+    vertical-align: top;
+}
+.dialogTable>tbody>tr:nth-child(even) {
+    background-color: rgba(0,0,0,0.1);
+}
+.divInputParameter {
+    border: 2px solid;
+    border-radius: 4px;
+    border-color: rgba(0,0,0,0.4);
+    padding: 2px;
+    margin-bottom: 3px;
+    position: relative; /* for delete button to be able to have absolute path */
+}
+.deleteInputButton {
+    position:absolute;
+    right: 0;
+    top: 0;
+    z-index : 10;
+    margin: 1px;
+}
+
+.highlight { /* highlighted object, could be div, tr li or similar */
+    background-color: rgba(0,0,0,0.4);
+}
+
+.tblNoBorders, .tblNoBorders>tbody>tr>td, .tblNoBorders>thead>tr>th{
+    border: 0px solid black;
+}
+/* edit graph css */
+#editSvgWindow h3{
+    margin-bottom: 0.5em;
+}
+#editSvgWindow ul{
+    list-style: none;
+}
+/* help pages */
+#articleHelp .fieldDescription td {
+    border: 0px solid black;
+    vertical-align: top;
+}
+#articleHelp .fieldDescription td:first-child { /* first tds */
+    font-weight: bold;
+}
+#articleHelp .fieldDescription tbody>tr:nth-child(odd) {
+    background-color: rgba(0,0,0,0.05);
+}
+/* help pages divTable */
+.divTable {
+    display: table;
+}
+.divHeader {
+    display: table-header-group;
+}
+.divHeader div{
+    background-color: rgba(0,0,0,0.5);
+    border: 1px solid rgba(0,0,0,0.4);
+    padding: 4px;
+}
+.divTbody {
+    display: table-row-group;
+}
+.divTbody div{
+}
+.divRow {
+    display: table-row;
+}
+.divCell {
+    border: 1px solid rgba(0,0,0,0.4);
+    display: table-cell;
+    padding: 4px;
+}
+
+.floatleft {
+    float: left;
+}
+
+.divPreviewGraph {
+    float: right;
+    background-color: rgba(0,0,0,0.1);
+    width: 704px;
+    min-height: 200px;
+    height: auto;
+    border: 1px solid black;
+    text-align: center;
+    padding: 0;
+    position: relative;
+    padding: 2px;
+    border-radius: 8px;
+}
+.divPreviewGraph svg {
+    display: inline-block;      /* to be able to make it to center */
+    text-align: center;         /* to make it center */
+}
+.divPreviewGraphWrapperAnchor{
+    position: relative; /* used to be able to add the divs label and save to be relative the outer border of wrapper */
+    display: inline-block;
+}
+.divPreviewGraphWrapper{
+    position: relative;
+    overflow: auto; /* so the div will triggera width and height used by the other wrapper */
+}
+.divPreviewGraphLabel {
+    position: absolute;
+    right: 5px;
+    top: -16px;
+}
+
+.divSavePreviewGraph {
+   position: absolute;
+   right:    5px;
+   bottom: -26px;
+}
+
+.clear { 
+    clear: both;
+}
+
+/* project navigation */
+/* project_navigation_online_manual uses span instead of submit button so it has a own class
+   this so you later can add span to your project_navigation without have to rewrite the manual */
+.project_navigation, 
+.project_navigation_online_manual {
+    min-width: 120px;
+    position: fixed;
+    bottom: 0;
+    right: 8px;
+    padding: 0;
+    z-index: 30;
+    background: rgba(0, 0, 0, 0.2);
+    color: rgba(0, 130, 0, 1);
+    border-radius: .7em .7em 0 0;
+}
+#ulShowProjectNavigationLinks{
+    color: rgba(0, 130, 0, 1);
+}
+#ulHideProjectNavigationLinks{
+    color: rgba(130, 0, 0, 1);
+}
+
+.project_navigation               ul, 
+.project_navigation_online_manual ul { 
+    list-style: none;
+}
+.project_navigation               li, 
+.project_navigation_online_manual li {
+    font-weight: bold;
+    width: 100%;
+    border-radius: 4px;
+    /* border-color: rgba(130,0,0,0.8); */
+    border: 1px;
+    background-color: rgba(0,0,0,0);
+}
+.project_navigation_online_manual li span{ /* to cancel out .fieldDescription td:first-child font-weight: bold that does not exit in the real navigation bar */
+    font-weight: normal;
+}
+.project_navigation               li:hover, 
+.project_navigation_online_manual li:hover { 
+    background-color: rgba(0,0,0,0.1); 
+}
+.project_navigation               li:hover input[type=submit],
+.project_navigation_online_manual li:hover span{
+    color: blue; 
+}
+
+.project_navigation               input[type=submit],
+.project_navigation_online_manual span{
+    color: white;
+    background-color: transparent;
+    border: 0;
+    margin: 0;
+    padding: 0 0 0 23px;
+    line-height:normal; /* Override line-height to avoid spacing issues */
+}
+
+.project_navigation  li.section_title { font-size: large; color: blue; }
+
+.btnSubmitImage {
+    height: 20px;
+}

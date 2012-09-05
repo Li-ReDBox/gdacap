@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="help.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="385.34362"
+     inkscape:cy="734.41377"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1056"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="140"
+       y="115.21933"
+       id="text2985"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/help.png"
+       inkscape:export-xdpi="8.8000002"
+       inkscape:export-ydpi="8.8000002"><tspan
+         sodipodi:role="line"
+         id="tspan2987"
+         x="140"
+         y="115.21933" /></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2989"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       transform="matrix(6.0963826,0,0,6.3459004,-427.43114,-461.16501)"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/help.png"
+       inkscape:export-xdpi="9.6791935"
+       inkscape:export-ydpi="9.6791935"><flowRegion
+         id="flowRegion2991"><rect
+           id="rect2993"
+           width="30.304571"
+           height="62.629444"
+           x="107.07617"
+           y="98.778183"
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans Bold" /></flowRegion><flowPara
+         id="flowPara2995">?</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:12;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 273.03125,190.15625 c -54.44949,0 -98.59375,44.99981 -98.59375,100.5 0,55.50019 44.14426,100.5 98.59375,100.5 54.44949,0 98.59375,-44.99981 98.59375,-100.5 0,-55.50019 -44.14426,-100.5 -98.59375,-100.5 z"
+       id="path3007"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/help.png"
+       inkscape:export-xdpi="9.6791935"
+       inkscape:export-ydpi="9.6791935"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="423.96875"
+       y="128.92526"
+       id="text2985-6"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/help.png"
+       inkscape:export-xdpi="8.8000002"
+       inkscape:export-ydpi="8.8000002"><tspan
+         sodipodi:role="line"
+         id="tspan2987-9"
+         x="423.96875"
+         y="128.92526" /></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2989-0"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       transform="matrix(6.0963826,0,0,5.2353606,-129.46239,-314.33681)"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/info.png"
+       inkscape:export-xdpi="9.6791935"
+       inkscape:export-ydpi="9.6791935"><flowRegion
+         id="flowRegion2991-3"><rect
+           id="rect2993-9"
+           width="11.768983"
+           height="35.998077"
+           x="107.07617"
+           y="98.778183"
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans Bold" /></flowRegion><flowPara
+         id="flowPara2995-2">i</flowPara></flowRoot>    <path
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#000000;stroke-width:12;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 557,203.86218 c -54.44949,0 -98.59375,44.99981 -98.59375,100.50001 0,55.50019 44.14426,100.5 98.59375,100.5 54.44949,0 98.59375,-44.99981 98.59375,-100.5 0,-55.5002 -44.14426,-100.50001 -98.59375,-100.50001 z"
+       id="path3007-3"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/info.png"
+       inkscape:export-xdpi="9.6791935"
+       inkscape:export-ydpi="9.6791935" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#ff0000;stroke:#000000;stroke-width:4;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       d="m 263,444.86218 c -54.44949,0 -98.59375,44.99981 -98.59375,100.50001 0,55.50019 44.14426,100.5 98.59375,100.5 54.44949,0 98.59375,-44.99981 98.59375,-100.5 0,-55.5002 -44.14426,-100.50001 -98.59375,-100.50001 z"
+       id="path3007-3-1"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/del_focus.png"
+       inkscape:export-xdpi="6.2628145"
+       inkscape:export-ydpi="6.2628145" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2989-0-6-7"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;display:inline;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       transform="matrix(6.0963826,0,0,5.2353606,-460.12181,-134.01729)"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/del_focus.png"
+       inkscape:export-xdpi="6.2628145"
+       inkscape:export-ydpi="6.2628145"><flowRegion
+         id="flowRegion2991-3-2-0"><rect
+           id="rect2993-9-4-8"
+           width="29.320374"
+           height="36.762115"
+           x="107.07617"
+           y="106.80055"
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans Bold;fill:#ffffff"
+           ry="2.6741233" /></flowRegion><flowPara
+         id="flowPara2995-2-4-0">x</flowPara></flowRoot>    <path
+       inkscape:connector-curvature="0"
+       style="fill:#ff5555;stroke:#501616;stroke-width:4;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       d="m 557,453.86218 c -54.44949,0 -98.59375,44.99981 -98.59375,100.50001 0,55.50019 44.14426,100.5 98.59375,100.5 54.44949,0 98.59375,-44.99981 98.59375,-100.5 0,-55.5002 -44.14426,-100.50001 -98.59375,-100.50001 z"
+       id="path3007-3-1-4"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/del_no_focus.png"
+       inkscape:export-xdpi="6.338028"
+       inkscape:export-ydpi="6.338028" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2989-0-6-7-7"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#cccccc;fill-opacity:1;stroke:none;display:inline;font-family:Sans;-inkscape-font-specification:Sans Bold;opacity:1"
+       transform="matrix(6.0963826,0,0,5.2353606,-166.12181,-125.01729)"
+       inkscape:export-filename="/home/andor/documents/code/perl/ANDS/root/static/images/del_no_focus.png"
+       inkscape:export-xdpi="6.338028"
+       inkscape:export-ydpi="6.338028"><flowRegion
+         id="flowRegion2991-3-2-0-8"><rect
+           id="rect2993-9-4-8-1"
+           width="29.320374"
+           height="36.762115"
+           x="107.07617"
+           y="106.80055"
+           style="font-size:32px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Sans;-inkscape-font-specification:Sans Bold;fill:#cccccc"
+           ry="2.6741233" /></flowRegion><flowPara
+         id="flowPara2995-2-4-0-6">x</flowPara></flowRoot>  </g>
+</svg>

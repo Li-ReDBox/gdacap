@@ -1,0 +1,43 @@
+<h3>[% message %]</h3>
+<table>
+  <tr>
+    <td><strong>Name</strong></td>
+    <td>[% experiment.iname %]</td>
+  </tr>
+</table>
+
+[% BLOCK file_select %] 
+[% IF files.defined && files.size > 0 %]
+  [% FOREACH f IN files %]        
+		<option value="[% f.0 %]" > [% f.1 %]</option>
+  [% END %]
+  </select>
+[% END %]
+[% END %]
+
+<form method="POST" action="[% action %]">
+<input type="hidden" name="experiment_id" value="[% experiment.id %]" />
+<input type="hidden" name="run_id" value="[% run.id %]" />
+<table>
+  <thead>
+	<tr> <th>Item</th> <th> Value</th> </tr>
+  </thead>
+  <tbody>
+	<tr><td>Run date</td><td><input type="date" name = "run_date" value=[% run.run_date %] required/></td></tr>
+		  [% FOREACH rf IN run.FILES %]
+	<tr><td>File name</td>
+		<td> <select name="file_copy_id" required="required"> 
+			<option value="[% rf.file_copy_id %]" > [% rf.raw_file_name %]</option>
+			[% PROCESS file_select %]
+		</td>	
+	</tr>
+		  [% END %]
+	<tr><td>Score offset</td>
+		<td><select name="score_offset" required="required">
+		  <option value="@" [% IF run.exists('phred_offset') && run.phred_offset == '@' %] selected [% END %]>@</option>
+		  <option value="!" [% IF run.exists('phred_offset') && run.phred_offset == '!' %] selected [% END %]>!</option>
+		  </select></td></tr>
+  </tbody>   
+</table>
+<input type="submit" value="Save" />
+</form> 

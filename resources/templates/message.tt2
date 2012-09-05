@@ -1,0 +1,4 @@
+[%# This template is used to display a simple message when something went wrong.
+	It might have type: message or claim.
+ %]
+<h3 class="msg">[% message %]</h3>

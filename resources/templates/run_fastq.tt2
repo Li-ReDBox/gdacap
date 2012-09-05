@@ -1,0 +1,30 @@
+<!-- Used for displaying runs Experiment, FASTQ only -->
+  <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>File name</th>
+	[% IF experiment.nominal_size %]	
+          <th>File name</th>
+	[% END %]
+          <th>Score offset</th>
+		  <th />
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH run IN runs %]
+            <tr>
+              <td>[% run.id %]</td>
+              <td>[% run.run_date %]</td>
+			[% IF run.exists('FILES') %]  
+			  [% FOREACH f IN run.FILES %]
+              <td>[% f.raw_file_name %]</td>
+			  [% END %]
+			[% END %]  
+              <td>[% run.exists('phred_offset') ? run.phred_offset : '' %]</td>
+			  <td>[% PROCESS run_edit %]</td>
+            </tr>
+        [% END %]
+      </tbody>   
+  </table>  

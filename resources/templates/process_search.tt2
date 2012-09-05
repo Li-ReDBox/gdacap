@@ -1,0 +1,17 @@
+<form>
+  <ul>
+    <li>Name</li>
+    <li><input type="text" name="iname"    value="[% project_id %]" required="required" /></li>
+    <li>Category</li>
+    <li><input type="text" name="iname"    value="[% project_id %]" required="required" /></li>
+    <li>Tool</li>
+    <li><input type="text" name="iname"    value="[% project_id %]" required="required" /></li>
+    <li>File name</li>
+    <li><input type="text" name="iname"    value="[% project_id %]" required="required" /></li>
+    <li>Submision date </li>
+    <li><input type="text" name="iname"    value="[% project_id %]" required="required" /></li>
+    <li>
+      <input type="submit" value="Search" />
+    </li>
+  </ul>	
+</form>

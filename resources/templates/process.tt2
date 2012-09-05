@@ -1,0 +1,71 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+	  <th>Category</th>
+	  <th>Tool</th>
+	  <th>Configuration</th>
+	  <th>Comment</th>
+	  <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+   <tr>
+      <td>[% process.name %]</td>
+      <td>[% process.category %]</td>
+      <td>[% process.tool %]</td>
+      <td>[% process.configuration %]</td>
+      <td>[% process.comment %]</td>
+      <td>[% process.creation_time %]</td>
+    </tr>
+  </tbody>
+</table>
+[% IF in_files.size > 0 %]
+<h3>Source files</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+	  <th>Date</th>
+	  <th>Both</th>
+	  <th>From</th>
+	  <th>To</th>
+    </tr>
+  </thead>
+  <tbody>
+  [% FOREACH f IN in_files %]
+   <tr>
+      <td><a href='[% extend_link %]?file_copy_id=[% f.file_copy_id %]'>[% f.original_name %]</a></td>
+      <td>[% f.added_time %]</td>
+      <td><a href='[% viz_link %]?file_copy_id=[% f.file_copy_id %]&direction=both'>Visualise</a></td>
+      <td><a href='[% viz_link %]?file_copy_id=[% f.file_copy_id %]&direction=down'>Visualise</a></td>
+      <td><a href='[% viz_link %]?file_copy_id=[% f.file_copy_id %]&direction=up'>Visualise</a></td>
+    </tr>
+   [% END %]
+  </tbody>
+</table>
+[% END %]
+
+<h3>File generated</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+	  <th>Date</th>
+	  <th>Both</th>
+	  <th>From</th>
+	  <th>To</th>
+    </tr>
+  </thead>
+  <tbody>
+  [% FOREACH f IN out_files %]
+   <tr>
+      <td><a href='[% extend_link %]?file_copy_id=[% f.file_copy_id %]'>[% f.original_name %]</a></td>
+      <td>[% f.added_time %]</td>
+      <td><a href='[% viz_link %]?file_copy_id=[% f.file_copy_id %]&direction=both'>Visualise</a></td>
+      <td><a href='[% viz_link %]?file_copy_id=[% f.file_copy_id %]&direction=down'>Visualise</a></td>
+      <td><a href='[% viz_link %]?file_copy_id=[% f.file_copy_id %]&direction=up'>Visualise</a></td>
+    </tr>
+   [% END %]
+  </tbody>
+</table>

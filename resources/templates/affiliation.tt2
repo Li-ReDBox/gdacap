@@ -1,0 +1,44 @@
+<!-- A person's affiliation. used by a person or sysadmin to edit-->
+<h3>Affiliations</h3>
+  <table>
+      <thead>
+        <tr>
+          <th>Organisation Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH organisation IN affiliations %]
+              <tr>
+                <td>[% organisation.iname %]</td>  
+                <td>
+                  <form method="POST" action="[% action %]">
+                      <input type="hidden" name="section" value="affiliation" />
+                      <input type="hidden" name="command" value="remove" />
+                      <input type="hidden" name="person_id"         value="[% person.id %]" />
+                      <input type="hidden" name="organisation_id"   value="[% organisation.id %]" />
+                      [% IF affiliations.size > 1 %] <input type="submit" value="Remove" /> [% END %]
+                  </form>
+                </td>
+              </tr>
+        [% END %]
+        <tr>
+		  <form method="POST" action="[% action %]">
+			  <input type="hidden" name="section" value="affiliation" />
+          <td>
+            <select name="organisation_id" required="required">
+                <option value=""                ></option>
+              [% FOREACH organisation IN organisations %]
+                <option value="[% organisation.id %]"   >[% organisation.iname %]</option>
+              [% END %]
+            </select>
+          </td>
+          <td>
+            <input type="hidden" name="person_id" value="[% person.id %]" />
+            <input type="hidden" name="command" value="add" />
+            <input type="submit" value="Add" />
+          </td>
+        </tr>
+		</form>
+      </tbody>   
+  </table>

@@ -1,0 +1,17 @@
+<table border="1" class="tblSortable tablesorter">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Hash</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th>Added time</th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOREACH f IN fileinfo %]
+	  [% INCLUDE project_fileinfo.tt2 %]
+    [% END %]
+  </tbody>
+</table>

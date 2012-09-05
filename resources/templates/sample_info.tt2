@@ -1,0 +1,21 @@
+    <li>Title (one sentence description)*</li>
+    <li><input title="Formal name for public" type="text" name="iname"  value="[% sample.iname %]" required="required" /></li>
+    <li>Internal name (something in your lab book)*</li>
+    <li><input title="Something informal, matches your lab record" type="text" name="internal_name" value="[% sample.internal_name %]" required="required" /></li>
+    <li>Description (longer, detailed)*</li>
+    <li><textarea name="description" maxlength=256 required="required" title="Few sentences, not very long.">[% sample.description %]</textarea></li>
+    <li>Taxonomy ID*</li>
+    <li>
+        <input  type="number"   name="tax_id"           id="tax_id"         value="[% sample.tax_id IF sample.tax_id > 0 %]"     readonly="readonly" required="required" />
+        <input  type="hidden"   name="tax_info_url"     id="tax_info_url"   value="[% tax_info_url %]"                                              />
+        <button type="button"                           id="btnGetTax"                                                                              >Show more</button>
+        <button type="button"                           id="btnHideTaxInfo" class="hidden"                                                          >Hide more</button>
+    </li>
+    <li id="liTax" class="hidden"><li>
+    <li>Search by name or taxonomy ID part</li> 
+    <li>
+        <input type="hidden"    name="tax_id_url"       id="tax_id_url"     value="[% tax_id_url %]"                                                />
+        <input type="text"      name="tax_id_search"    id="tax_id_search"                                                                          />
+    </li>
+	<li>Be warned, searching can be slow. And if you cannot find locally but found at <a href="http://www.ncbi.nlm.nih.gov/taxonomy">NCBI Taxonomy</a>, please let us know.</li>
+    <li><input type="checkbox"  name="accessible"       [% IF sample.accessible %]checked="checked"[% END %]         /> Allow sharing to other projects, e.g. to others of yours.</li>

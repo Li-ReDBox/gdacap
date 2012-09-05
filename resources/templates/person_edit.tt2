@@ -1,0 +1,87 @@
+<h3>[% message %]</h3>
+
+<h3>Personal details</h3>
+<form method="POST" action="[% action %]">
+  <input type="hidden" name="person_id" value="[% person.id %]" />
+  <ul>
+[% INCLUDE personal_info.tt2 %]
+    <li>Has validated email
+    <input type="checkbox"  name="has_validated_email"  [% IF person.has_validated_email %] checked="checked" [% END %] /></li>
+    <li>Approved
+    <input type="checkbox"  name="is_authorized"        [% IF person.is_authorized %]       checked="checked" [% END %] /></li>
+    <li>Activate
+    <input type="checkbox"  name="is_active"            [% IF person.is_active %]           checked="checked" [% END %] /></li>
+    <li>
+        <input type="hidden" name="section" value="person_info" />
+        <input type="submit" value="Save" />
+    </li>
+  </ul>
+</form>
+
+[% IF person.is_active %]
+[% INCLUDE affiliation.tt2 %]
+
+<h3>Project Roles</h3>
+  <table>
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Role</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+ [% IF personroles.size > 0 %]
+ [% FOREACH project_role IN personroles %]        
+              <tr>
+                <td>
+                      <form method="POST" name="project[% project_role.project_id %]" action="[% goto_project_link %]">
+                        <input type="hidden" name="project_id" value="[% project_role.project_id %]" />
+                          <a href="javascript:document.project[% project_role.project_id %].submit();">[% project_role.project_name %]</a>
+                      </form>
+                </td>  
+                <td>[% project_role.role %]</td>
+                <td>
+                  <form method="POST" action="[% action %]">
+                      <input type="hidden" name="section"       value="project_role" />
+                      <input type="hidden" name="command"       value="remove" />
+                      <input type="hidden" name="project_id"    value="[% project_role.project_id %]" />
+                      <input type="hidden" name="person_id"     value="[% person.id %]" />
+                      <input type="hidden" name="role_type_id"  value="[% project_role.role_type_id %]" />
+                      <input type="submit" value="Remove" />
+                  </form>
+                </td>
+              </tr>
+        [% END %]
+	[% END %]	
+		[% IF projects.size > 0 %]
+        <tr>
+		<form method="POST" action="[% action %]">
+          <td>
+            <select name="project_id" required="required">
+                <option value=""                ></option>
+              [% FOREACH project IN projects %]
+                <option value="[% project.id %]"   >[% project.iname %]</option>
+              [% END %]
+            </select>
+          </td>
+          <td>
+            <select name="role_type_id" required="required">
+                <option value=""                ></option>
+              [% FOREACH role IN roletypes %]
+                <option value="[% role.id %]"   >[% role.iname %]</option>
+              [% END %]
+            </select>
+          </td>
+          <td>
+            <input type="hidden" name="section"         value="project_role" />
+            <input type="hidden" name="command"         value="add" />
+            <input type="hidden" name="person_id" value="[% person.id %]" />
+            <input type="submit"                        value="Assign" />
+          </td>
+		</form>
+        </tr>
+		[% END %]
+      </tbody>   
+  </table>
+[% END %] <!-- end of person.is_active -->  

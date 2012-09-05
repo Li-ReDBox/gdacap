@@ -1,0 +1,3896 @@
+[%# 
+    images could be loaded in this manner: 
+    <img src="[| path |]test.jpg" alt="test" />
+    (replace [| and  |] with procent
+%]
+
+[% BLOCK navigation_bar %]
+    <h3>Navigation bar</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td style="min-width: 140px; height: 100px;">
+                    <div style="height: 100px"></div>
+                    <div style="position:relative;">
+                        <aside class="project_navigation_online_manual" style="bottom: 0; position: absolute;">
+                            <ul id="ulHideProjectNavigationLinks" style="height: 8px" class="hidden">
+	                	        <li style="margin: 0; text-indent: 23px; height: 20px">Hide links</li>
+	                	    </ul>
+	                	    <ul id="ulProjectNavigationLinks" class="hidden">
+            	            	<li class="left" style="margin: 0;">
+            	                    <span>Samples</span>
+            	                </li>
+            	            	<li class="left" style="margin: 0;">
+            	                    <span>Studies</span>
+            	                </li>
+                            </ul>
+	                	    <ul id="ulShowProjectNavigationLinks" style="height: 10px;">
+	                	        <li style="margin: 0; padding:0; text-indent: 23px; height: 22px;">Show links</li>
+	                	    </ul>
+	            	    </aside>
+	                </div>
+                </td>
+                <td>
+                    The navigation bar will let you go to a page where you can access samples and studies of the currently loaded project
+                </td>
+            </tr>
+        </table>
+    </div>   
+[% END %]
+
+[% IF helpId == "index" %]
+    <h2>Index</h2>
+    <p>Below you see all help sections created sofar.</p>
+    
+    <!--
+        Sections:
+        
+        Account
+                Apply for account
+                    Register
+                    Login
+                    Logout
+                Edit your account settings
+                    Forgott password
+                    Change password
+                    Edit personal account    
+                Remove account?
+                    Ask for deactivation - send email
+
+        Objects
+                Project
+                        Study
+                                Experiment
+                                Sample
+        
+        Other
+            FAQ
+                How do I add a new..
+                    Command
+                    File
+                    Organisation 
+    -->
+    
+    <div class="helpBook">
+        <div>         </div>
+        <div>         </div>
+        <div>         </div>
+    </div>
+    [%  index =  {   
+                    'sections' =>
+                                [
+                                    { 'section' =>  'Experiment',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=experiment_create', 'name' => 'Create experiment' },
+                                                        { 'url' => '/help/?id=experiment_edit',   'name' => 'Edit experiment' },
+                                                        { 'url' => '/help/?id=experiment',        'name' => 'Experiment' },
+                                                    ] },
+                                    { 'section' =>  'Login',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=login',                            'name' => 'Login' },
+                                                        { 'url' => '/help/?id=logout',                           'name' => 'Logout' },
+                                                        { 'url' => '/help/?id=self_register',                    'name' => 'Register' },
+                                                        { 'url' => '/help/?id=forgot_password',                  'name' => 'Forgot password' },
+                                                        { 'url' => '/help/?id=change_password_change',           'name' => 'Change password' },
+                                                        { 'url' => '/help/?id=change_password_password_changed', 'name' => 'Password changed' },
+                                                    ] },
+                                    { 'section' =>  'Organisation',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=organisation',        'name' => 'Organisation' },
+                                                        { 'url' => '/help/?id=organisation_create', 'name' => 'Create organisation' },
+                                                        { 'url' => '/help/?id=organisation_edit',   'name' => 'Edit organisation' },
+                                                        { 'url' => '/help/?id=organisations',       'name' => 'Organisations' },                                                        
+                                                    ] },
+                                    { 'section' =>  'Person management',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=person_management', 'name' => 'Person management' },
+                                                        { 'url' => '/help/?id=person_edit',       'name' => 'Edit personal account' },
+                                                        { 'url' => '/help/?id=person_edit_admin', 'name' => 'Admins edit user' },
+                                                        { 'url' => '/help/?id=admins_edit',       'name' => 'Edit admins' },
+                                                    ] },
+                                    { 'section' =>  'Platform',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=platform',        'name' => 'Platform' },
+                                                        { 'url' => '/help/?id=platform_create', 'name' => 'Create platform' },
+                                                        { 'url' => '/help/?id=platform_edit',   'name' => 'Edit platform' },
+                                                        { 'url' => '/help/?id=platforms',       'name' => 'Platforms' },                                                        
+                                                    ] },
+                                    { 'section' =>  'Project',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=project',        'name' => 'Project' },
+                                                        { 'url' => '/help/?id=project_create', 'name' => 'Create project' },
+                                                        { 'url' => '/help/?id=project_edit',   'name' => 'Edit project' },
+                                                        { 'url' => '/help/?id=projects',       'name' => 'Projects' },                                                        
+                                                    ] },
+                                    { 'section' =>  'Process',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=process',      'name' => 'Process' },
+                                                        { 'url' => '/help/?id=process_edit', 'name' => 'Edit process' },
+                                                        { 'url' => '/help/?id=processes',    'name' => 'Processes' },
+                                                    ] },
+                                                    
+                                    { 'section' =>  'Sample',
+                                      'items'   =>  [ 
+                                                        { 'url' => '/help/?id=sample',        'name' => 'Sample' },
+                                                        { 'url' => '/help/?id=sample_create', 'name' => 'Create sample' },
+                                                        { 'url' => '/help/?id=sample_edit',   'name' => 'Edit sample' },
+                                                    ] },
+
+                                    { 'section' =>  'Study',
+                                      'items'   =>  [
+                                                        { 'url' => '/help/?id=study_show',   'name' => 'Study' },
+                                                        { 'url' => '/help/?id=study_create', 'name' => 'Create Study' },
+                                                        { 'url' => '/help/?id=study_edit',   'name' => 'Edit Study' },
+                                                    ] }
+                                ]
+                } %]
+                
+    <div class="divTable">
+        <div class="divHeader">
+            <div class="divCell">Section</div>
+            <div class="divCell">Link</div>
+        </div>
+        <div class="divTbody">
+            [% FOREACH s IN index.sections %]
+                <div class="divRow">
+                    <div class="divCell">[% s.section %]</div>
+                    <div class="divCell">
+                        [% FOREACH item IN s.items %]
+                            [% url  = item.url %]
+                            [% name = item.name %]
+                            [% link = '<a href="' _ path _ url _ '">' _ name _ '</a>' %]
+                            <div>
+                                [% link %]
+                            </div>
+                        [% END %]
+                    </div>
+                </div>
+            [% END%]
+        </div>
+    </div>        
+[% END %]
+
+[% IF helpId == "admins_edit" %]
+    <h3>Edit admins</h3>
+    <p>
+        On this page you as a super admin may change the persons admin role in the system.<br />
+    </p>
+    <h3>Super Admins fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Person
+                </td>
+                <td>
+                    The name of the super admin
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>Resign</button>
+                </td>
+                <td>
+                    The <button>Resign</button> will only be seen if you are a super admin and on your row. You can not be forced to resign and you can not resign if there is at least one more super admin in the system.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Add super admin</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <select required="required">
+                                <option>Mr Jon Doe</option>
+                                <option selected="selected">Mrs Jane Doe</option>
+                                <option>Professor Jane Roe</option>
+                                <option>Mrs Zachary Zoe</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Where you choose who should get the magically super admin status
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>add</button></li>
+                    </ul>
+                </td>
+                <td>
+                    Where you click if you want to add the person a super admin status. Beware that if you add the status you can not remove it, that person has to resign him self.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Normal Admins fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Person
+                </td>
+                <td>
+                    The name of the admin
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>Remove</button>
+                </td>
+                <td>
+                    If the <button>Remove</button> button is pressed you will remove the admin rights to that person.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Add admin</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <select required="required">
+                                <option>Mr Jon Doe</option>
+                                <option selected="selected">Mrs Jane Doe</option>
+                                <option>Professor Jane Roe</option>
+                                <option>Professor Joe Bloggs</option>
+                                <option>Mr John Q. Public</option>
+                                <option>Mrs Zachary Zoe</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Where you choose who should get the magically admin status
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>add</button></li>
+                    </ul>
+                </td>
+                <td>
+                    Where you click if you want to add the person a admin status
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "experiment" %]
+    <h3>Experiment</h3>
+    <p>
+        On this page you see information about a experiment.<br />
+        The <button>edit</button> button if clicked will send you to the edit page of the experiment, you must have right privilages to be able to edit a experiment.
+    </p>
+    <h3>Experiment fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td> Name </td>
+                <td> The name of the experiment. </td>
+            </tr>
+            <tr>
+                <td>Internal name</td>
+                <td>
+                    Internal name is the same as a nickname. It will be sent to ANDS if filled in but it will not be a name that will be published.
+                </td>
+            </tr>
+            <tr>
+                <td>Design</td>
+                <td>A description of the expermiment design.</td>
+            </tr>
+            <tr>
+                <td>Sample</td>
+                <td>The sample used for the experiment</td>
+            </tr>
+            <tr>
+                <td>
+                    Platform
+                </td>
+                <td>
+                    The platform name and model used in the experiment.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Runs</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the runfile.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Run file
+                </td>
+                <td>
+                    Link to the runfile or hash name?
+                </td>
+            </tr>
+        </table>
+    </div>
+	
+	[% PROCESS navigation_bar %]
+[% END %]
+
+[% IF helpId == "experiment_create" %]
+    <h3>Create experiment</h3>
+    <div>
+        On this page you create a experiment which will be added to your project.<br />
+        <br />
+    </div>
+    <h3>Fields</h3>
+    <div>
+        All fields that is not correctly filled in and is required have a red border around the input field.<br />
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li>
+                            <input type="text" value="" required="required">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the experiment name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Internal name*</li>
+                        <li>
+                            <input type="text" value="" required="required">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the internal name.
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <ul>
+                        <li>Design*</li>
+                        <li>
+                            <textarea required="required"></textarea>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the design of the experiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Sample*</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>some sample</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you choose the sample you are going to use in the experiment. If this is empty no sample exist. And because it is a mandatory field you have to create a sample before you can create a expermiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <li>Platform*</li>
+                            <li>
+                                <select name="platform_id" required="required">
+                                    <option></option>
+                                    <option>454 Life Sciences - 454</option>
+                                    <option>illumina HiSeq 2000 - HiSeq 2000</option>
+                                    <option>illumina MySeq - MySeq</option>
+                                    <option>Ion Torrent - Ion Torrent</option>
+                                    <option>SOLiD - SOLiD</option>
+                                </select>
+                            </li>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you choose what plattform you want to use for this experiment. In the dropdown all existing platforms are shown. In this manual the data may not be updated but if something is missing on the create page you could contact the support and ask for it to be inserted.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Library Layout*</li>
+                        <li>
+                            <select onchange="this.value == 'paired' ? document.getElementById('liNominalSize' ).setAttribute('class',''): document.getElementById('liNominalSize' ).setAttribute('class','hidden');
+                                              this.value == 'paired' ? document.getElementById('liNominalSize2').setAttribute('class',''): document.getElementById('liNominalSize2').setAttribute('class','hidden');
+                                              this.value == 'paired' ? document.getElementById('nominal_size'  ).required = true         : document.getElementById('nominal_size'  ).required = false;"
+                                              required="required">
+                                <option value=""></option>
+                                <option value="single">Single</option>
+                                <option value="paired">Paired</option>
+                            </select>
+                        </li>
+                        <li id="liNominalSize" class="hidden">
+                            Nominal Size*
+                        </li>
+                        <li id="liNominalSize2" class="hidden">
+                            <input type="text" id="nominal_size" name="nominal_size">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you select the Library Layout, if it was a paired read you have to write the nominal size.
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>add</button></li>
+                    </ul>
+                </td>
+                <td>
+                    Clicking on the <button>add</button> button will add the experiment to the project if all fields are ok.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "experiment_edit" %]
+    <h3>Edit experiment</h3>
+    <div>
+        On this page you edit your experiment.<br />
+        <br />
+    </div>
+    <h3>Fields</h3>
+    <div>
+        All fields that is not correctly filled in and is required have a red border around the input field.<br />
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li>
+                            <input type="text" value="" required="required">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you edit the experiment name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Internal name*</li>
+                        <li>
+                            <input type="text" value="" required="required">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you edit the internal name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Design*</li>
+                        <li>
+                            <textarea required="required"></textarea>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you edit the design of the experiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Sample*</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>some sample</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you change the sample used in the experiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Platform*</li>
+                        <li>
+                            <select name="platform_id" required="required">
+                                <option></option>
+                                <option>454 Life Sciences - 454</option>
+                                <option>illumina HiSeq 2000 - HiSeq 2000</option>
+                                <option>illumina MySeq - MySeq</option>
+                                <option>Ion Torrent - Ion Torrent</option>
+                                <option>SOLiD - SOLiD</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you edit the plattform that was used in the experiment. In the dropdown all existing platforms are shown. In this manual the data may not be updated but if something is missing on the create page you could contact the support and ask for it to be inserted.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Library Layout*</li>
+                        <li>
+                            <select onchange="this.value == 'paired' ? document.getElementById('liNominalSize' ).setAttribute('class',''): document.getElementById('liNominalSize' ).setAttribute('class','hidden');
+                                              this.value == 'paired' ? document.getElementById('liNominalSize2').setAttribute('class',''): document.getElementById('liNominalSize2').setAttribute('class','hidden');
+                                              this.value == 'paired' ? document.getElementById('nominal_size'  ).required = true         : document.getElementById('nominal_size'  ).required = false;"
+                                              required="required">
+                                <option value=""></option>
+                                <option value="single">Single</option>
+                                <option value="paired">Paired</option>
+                            </select>
+                        </li>
+                        <li id="liNominalSize" class="hidden">
+                            Nominal Size*
+                        </li>
+                        <li id="liNominalSize2" class="hidden">
+                            <input type="text" id="nominal_size">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you set if the Library Layout is a single or paired read. If it is a paired read you have to insert the normal size.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>save</button></li>
+                    </ul>
+                </td>
+                <td>
+                    Clicking on <button>save</button> button will update the experiment if all fields are ok.
+                </td>
+            </tr>
+        </table>
+    </div>
+	
+	[% PROCESS navigation_bar %]
+[% END %]
+
+[% IF helpId == "forgot_password" %]
+    <h3>Forgott password</h3>
+    <div>
+        If you have forgotten your password you can reset it.<br />
+        <br />
+        To change your password you have to:<br />
+        <ol>
+            <li>Fill in the email address you registered with your account and then click the <button>Send email</button>.</li>
+            <li>Check your email (Can take a couple of minutes).</li>
+            <li>In the mail recieved from this system, there is a link in which you can change your password.</li>
+            <li>Type in the new password in the new password field and click the button</li>
+        </ol>
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Email</li>
+                        <li><input type="email" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert your email.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>Send email</button></li>
+                    </ul>
+                </td>
+                <td>
+                    If you click <button>Send email</button> button after you inserted your email that you registred the accout with a email will be sent
+                    to you that will contain the link.<br />
+
+                    The system stores the password in crypted form which means that the administrators can not retrieve the password.<br />
+                    That is the reason why you have to create a new password if you forgett the password.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "login" %]
+    <h3>Login</h3>
+    <div>
+        On this page you login to your existing account.<br />
+        If you do not yet have applied for one you do so by clicking the link register for a new account link.<br />
+        If you happen to have forgotten you password you can in similar fashion click the forgot your password link.<br />
+    </div>
+    <br />
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Username</li>
+                        <li><input size="15"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert your username, not your email.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Password</li>
+                        <li><input type="password" name="password" size="15"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert your password.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>Login</button></li>
+                    </ul>
+                </td>
+                <td>
+                    After you have inserted your username and password you should click this button to proceed with the login.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#">register for a new account</a>
+                </td>
+                <td>
+                    Click this link if you want to get to register for a new account (you need an account to get access to the service). The link to the left is just a example link that will not send you to the register for a new account page.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#">forgot your password?</a>
+                </td>
+                <td>
+                    Click this link if you have an account and forgot the password. You will then on that page get more instructions what to do to create a new password. The link to the left is just a example link that will not send you to the forgot your password page.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "logout" %]
+    <h3>Logout</h3>
+    <h3>Cookies</h3>
+    <div>
+        If you got to this logout page, your login cookie (session cookie) have been removed.<br />
+        After the cookie has been removed there is no more information stored about you in the browser.<br />
+        The login system uses a session cookie and the default behavior of session cookies in browsers are<br />
+        that the cookies are removed when the browser(all its tabs and windows) is closed so if you have not changed how your session<br />
+        cookies are treated in the browser the cookie will automatically be removed when you close the browser.<br />
+        For further information look at the <a href="http://en.wikipedia.org/wiki/HTTP_cookie">wiki page on Http cookies</a>.<br />
+        <br />
+        <h3>Link</h3>
+        If you by chanse or misstake logged out and want to log in again, you may click the login link to get to the login page.
+        <br />
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <a href="#">go to login page</a>
+                </td>
+                <td>
+                    The login link has the same function as the login menu item. If you click on the login link or the login in menu item on the logout<br />
+                    page you will get to the login page. (This link is a dummy link so if you click this link it will not get you to the login page.)
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "organisation" %]
+    <h3>Organisation</h3>
+    <div>
+        On this page you see information about a organisation.<br />
+        The <button>Edit</button> button if clicked will send you to the edit page of the organisation, you must have right privilages to be able to edit a organisation.
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ABN
+                </td>
+                <td>
+                    The <strong>A</strong>ustralian <strong>B</strong>usiness <strong>N</strong>umber of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Street
+                </td>
+                <td>
+                    The street address to the organisation has
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Suburb
+                </td>
+                <td>
+                    The suburb organisation exist in
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    State
+                </td>
+                <td>
+                    Which state the organisation exist in
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Postcode
+                </td>
+                <td>
+                    The organisations postcode
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Country
+                </td>
+                <td>
+                    The country the organisation exist in
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone
+                </td>
+                <td>
+                    The phone number the organisation has associated to it self (with national and region prefix)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fax
+                </td>
+                <td>
+                    The fax number to the organisation (Fax (short for facsimile), sometimes called telecopying, is the telephonic transmission of scanned printed material (both text and images), normally to a telephone number connected to a printer or other output device.)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Webpage
+                </td>
+                <td>
+                    The organisations webpage
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>edit</button>
+                </td>
+                <td>
+                    The <button>edit</button> button will send you to the edit page of the organisation when clicked
+                </td>
+            </tr>
+
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "organisation_create" %]
+    <h3>Organisation create</h3>
+    <div>
+        On this page you create a new organisation
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the name of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Abbreviation*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the abbreviation of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>ABN*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the <strong>A</strong>ustralian <strong>B</strong>usiness <strong>N</strong>umber of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Street*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the street part of the address the organisation has you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Suburb*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the suburb of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>State*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the state of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Postcode*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the postcode of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Country*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the country of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Phone*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the phone number of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Fax*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the fax number of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Webpage*</li>
+                        <li><input type="url" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the webpage of the organisation you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button>add</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Will add the organisation to the system when the <button>add</button> button is clicked
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "organisation_edit" %]
+    <h3>Organisation edit</h3>
+    <div>
+        On this page you edit the organisation
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's name
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Abbreviation*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's abbreviation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>ABN*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's ABN (<strong>A</strong>ustralian <strong>B</strong>usiness <strong>N</strong>umber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Street*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's street
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Suburb*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's suburb
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>State*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's state
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Postcode*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's postcode
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Country*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's country
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Phone*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's phone number
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Fax*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's fax number
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Webpage*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your organisation's webpage
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button>save</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Will update the changes you have done to the organisation's fields
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "organisations" %]
+    <h3>Organisations</h3>
+    <div>On this page you can see all the systems organisations.</div>
+    <div>To edit a organisation you have to be an administrator, this is to ensure that the organisation will not be changed by misstake.</div>
+    <h3>Fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    If <button>goto</button> button is clicked it will send you to the organisation overview
+                </td>
+            </tr>            
+            <tr>
+                <td>
+                    <button>edit</button>
+                </td>
+                <td>
+                    The <button>edit</button> button will send you to the edit page of the organisation when clicked
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ABN
+                </td>
+                <td>
+                    The <strong>A</strong>ustralian <strong>B</strong>usiness <strong>N</strong>umber of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Street
+                </td>
+                <td>
+                    The street address to the organisation has
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Suburb
+                </td>
+                <td>
+                    The suburb organisation exist in
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    State
+                </td>
+                <td>
+                    Which state the organisation exist in
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Postcode
+                </td>
+                <td>
+                    The organisations postcode
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Country
+                </td>
+                <td>
+                    The country the organisation exist in
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone
+                </td>
+                <td>
+                    The phone number the organisation has associated to it self (with national and region prefix)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Fax
+                </td>
+                <td>
+                    The fax number to the organisation (Fax (short for facsimile), sometimes called telecopying, is the telephonic transmission of scanned printed material (both text and images), normally to a telephone number connected to a printer or other output device.)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Webpage
+                </td>
+                <td>
+                    The organisations webpage
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "person_edit" %]
+    <h3>Edit person</h3>
+    <div>
+        On this page you change the personal details about you and your account.
+    </div>
+    <br />
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Title*</li>
+                        <li>
+                            <select name="title" required="required">
+                                <option></option>
+                                <option>Miss</option>
+                                <option>Mr</option>
+                                <option>Mrs.</option>
+                                <option>Ms</option>
+                                <option>Professor</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    In this dropbox you select your title. If there is some title you want to be inserted, please informs the developers.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Given Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Edit this field to change your given name. In some countries it is called first name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Family Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Edit this field to change your family name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Username*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your username. Observer that you can not change it to something that is already used by some other account.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Email*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your email.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Phone*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your Phone number.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>ANZSRC</li>
+                        <li class="liSearchAnzsrc">Search <button type="button" id="btnShowChoosenAnzsrc">hide search</button></li>
+                        <li class="liSearchAnzsrc">
+                            <div class="ui-widget">
+                                <input type="hidden" id="anzsrc_url" value="[% path %]/get_anzsrc/">
+                                <input type="text" name="anzsrc" id="anzsrc" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                            </div>
+                        </li>
+                        <li class="liChoosenAnzsrc">Please select* <button type="button" id="btnShowSearchAnzsrc">or search</button></li>
+                        <li>
+                            <select name="anzsrc_for_code" id="anzsrc_for_code" required="required">
+                                <option value="" selected="selected"></option>
+                                <option value="210101">Aboriginal and Torres Strait Islander Archaeology (210101)</option>
+                                <option value="200201">Aboriginal and Torres Strait Islander Cultural Studies (200201)</option>
+                                <option value="130301">Aboriginal and Torres Strait Islander Education (130301)</option>
+                                <option value="050201">Aboriginal and Torres Strait Islander Environmental Knowledge (050201)</option>
+                                <option value="111701">Aboriginal and Torres Strait Islander Health (111701)</option>
+                                <option value="210301">Aboriginal and Torres Strait Islander History (210301)</option>
+                                <option value="080601">Aboriginal and Torres Strait Islander Information and Knowledge Systems (080601)</option>
+                                <option value="080701">Aboriginal and Torres Strait Islander Knowledge Management (080701)</option>
+                                <option value="200319">Aboriginal and Torres Strait Islander Languages (200319)</option>
+                                <option value="180101">Aboriginal and Torres Strait Islander Law (180101)</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    ANZSRC stands for The <strong>A</strong>ustralian and <strong>N</strong>ew <strong>Z</strong>ealand <strong>S</strong>tandard <strong>R</strong>esearch <strong>C</strong>lassification and is something that is mandatory to be filled in because <a href="http://www.ands.org.au/">ANDS</a>(<strong>A</strong>ustralian <strong>N</strong>ational <strong>D</strong>ata <strong>S</strong>ervice) demands it.<br />
+                    You can either select one from the dropdown (in this example only first 10 is shown) or use the <button type="button">or search</button> button for searching a classification that best describes the area you do your most work in.<br />
+                    If you press the <button type="button">or search</button> a input is shown where you can search for a classification or its id (number).<br />
+                    After you selected your classification that choice will be selected in the dropdown (not in the example though, if you have not selected one in the first 10 existing in the dropdown).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Webpage</li>
+                        <li><input type="url"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert your webpage, you must have it in a valid format to be able to save.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>save changes</button></li>
+                    </ul>
+                </td>
+                <td>
+                    If you click this button the changes you have made on the personal information is going to be saved.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Upload identification</h3>
+    <div>
+        When you have uploaded data with transmeta you have to create a identification. This area is for you to upload that identification.<br />
+        After you have uploaded the identification you will have the possibility to distribute the file you have uploaded.
+    </div>
+    <br />
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Serial</li>
+                        <li><textarea></textarea></li>
+                    </ul>
+                </td>
+                <td>
+                    In this textarea you insert your identification that you used when you transfered your data with transmeta. The system will only store one identification so if you change your identification you will not be able to see files you uploaded with previously used identification.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>Save changes</button></li>
+                    </ul>
+                </td>
+                <td>
+                    When you click the <button>Save changes</button> button the identification you have inserted will be updated.
+                </td>
+            </tr>
+            </tr>
+        </table>
+    </div>
+    <h3>Organisations</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Abbreviation
+                </td>
+                <td>
+                    The Abbreviation of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Abn
+                </td>
+                <td>
+                    The <strong>A</strong>ustralian <strong>B</strong>usiness <strong>N</strong>umber of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Street
+                </td>
+                <td>
+                    The street address of the organisation
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Suburb
+                </td>
+                <td>
+                    The suburb of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    State
+                </td>
+                <td>
+                    The state of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Postcode
+                </td>
+                <td>
+                    The postcode of the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Country
+                </td>
+                <td>
+                    The contry of the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Phone
+                </td>
+                <td>
+                    Contact phone number for the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Fax
+                </td>
+                <td>
+                    The fax number for the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Webpage
+                </td>
+                <td>
+                    The webpage for the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>remove</button>
+                </td>
+                <td>
+                    If clicked will remove the organisation from your profile.
+                </td>
+            </tr>
+        </table>
+    </div>        
+    <h4>Add new organisation</h4>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Organisation</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>Oragnisation name1</option>
+                                <option>Organisation name2</option>
+                                <option>Organisation name3</option>
+                                <option>Organisation name4</option>
+                             </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you select the organisation you want to add.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>add</button>
+                </td>
+                <td>
+                    When clicked will add the organisation to your profile.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "person_edit_admin" %]
+    <h3>Edit person</h3>
+    <div>
+        On this page you as a admin can change the personal details about a user.
+    </div>
+    <br />
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Title*</li>
+                        <li>
+                            <select name="title" required="required">
+                                <option></option>
+                                <option>Miss</option>
+                                <option>Mr</option>
+                                <option>Mrs.</option>
+                                <option>Ms</option>
+                                <option>Professor</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    In this dropbox you select the users title. If there is some title you want to be inserted, please informs the developers.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Given Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Edit this field to change the users given name. In some countries it is called first name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Family Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Edit this field to change the users family name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Username*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit the users username. Observer that you can not change it to something that is already used by some other account.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Email*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit the users email.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Phone*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit the users phone number.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>ANZSRC</li>
+                        <li class="liSearchAnzsrc">Search <button type="button" id="btnShowChoosenAnzsrc">hide search</button></li>
+                        <li class="liSearchAnzsrc">
+                            <div class="ui-widget">
+                                <input type="hidden" id="anzsrc_url" value="[% path %]/get_anzsrc/">
+                                <input type="text" name="anzsrc" id="anzsrc" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                            </div>
+                        </li>
+                        <li class="liChoosenAnzsrc">Please select* <button type="button" id="btnShowSearchAnzsrc">or search</button></li>
+                        <li>
+                            <select name="anzsrc_for_code" id="anzsrc_for_code" required="required">
+                                <option value="" selected="selected"></option>
+                                <option value="210101">Aboriginal and Torres Strait Islander Archaeology (210101)</option>
+                                <option value="200201">Aboriginal and Torres Strait Islander Cultural Studies (200201)</option>
+                                <option value="130301">Aboriginal and Torres Strait Islander Education (130301)</option>
+                                <option value="050201">Aboriginal and Torres Strait Islander Environmental Knowledge (050201)</option>
+                                <option value="111701">Aboriginal and Torres Strait Islander Health (111701)</option>
+                                <option value="210301">Aboriginal and Torres Strait Islander History (210301)</option>
+                                <option value="080601">Aboriginal and Torres Strait Islander Information and Knowledge Systems (080601)</option>
+                                <option value="080701">Aboriginal and Torres Strait Islander Knowledge Management (080701)</option>
+                                <option value="200319">Aboriginal and Torres Strait Islander Languages (200319)</option>
+                                <option value="180101">Aboriginal and Torres Strait Islander Law (180101)</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    ANZSRC stands for The <strong>A</strong>ustralian and <strong>N</strong>ew <strong>Z</strong>ealand <strong>S</strong>tandard <strong>R</strong>esearch <strong>C</strong>lassification and is something that is mandatory to be filled in because <a href="http://www.ands.org.au/">ANDS</a>(<strong>A</strong>ustralian <strong>N</strong>ational <strong>D</strong>ata <strong>S</strong>ervice) demands it.<br />
+                    You can either select one from the dropdown (in this example only first 10 is shown) or use the <button type="button">or search</button> button for searching a classification that best describes the area you do your most work in.<br />
+                    If you press the <button type="button">or search</button> a input is shown where you can search for a classification or its id (number).<br />
+                    After you selected your classification that choice will be selected in the dropdown (not in the example though, if you have not selected one in the first 10 existing in the dropdown).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Webpage</li>
+                        <li><input type="url"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the users webpage, it must confirm to a valid url format to be able to save.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>save changes</button></li>
+                    </ul>
+                </td>
+                <td>
+                    If you click the <button>save changes</button> button the changes you have made will be saved to the users account.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Upload identification</h3>
+    <div>
+        When you have uploaded data with transmeta you have to create a identification. This area is for you to upload that identification.<br />
+        After you have uploaded the identification you will have the possibility to distribute the file you have uploaded.
+    </div>
+    <br />
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Serial</li>
+                        <li><textarea></textarea></li>
+                    </ul>
+                </td>
+                <td>
+                    In this textarea you insert the users identification that she/he will use when she/he transfered data with transmeta. The system will only store one identification so if you change her/his identification she/he will not be able to see files she/he uploaded with previously used identification.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li><button>Save changes</button></li>
+                    </ul>
+                </td>
+                <td>
+                    When you click the <button>Save changes</button> button the identification you have inserted will be updated.
+                </td>
+            </tr>
+            </tr>
+        </table>
+    </div>
+    <h3>Organisations</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Abbreviation
+                </td>
+                <td>
+                    The Abbreviation of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ABN
+                </td>
+                <td>
+                    The <strong>A</strong>ustralian <strong>B</strong>usiness <strong>N</strong>umber of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Street
+                </td>
+                <td>
+                    The street address of the organisation
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Suburb
+                </td>
+                <td>
+                    The suburb of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    State
+                </td>
+                <td>
+                    The state of the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Postcode
+                </td>
+                <td>
+                    The postcode of the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Country
+                </td>
+                <td>
+                    The contry of the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Phone
+                </td>
+                <td>
+                    Contact phone number for the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Fax
+                </td>
+                <td>
+                    The fax number for the organisation
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    Webpage
+                </td>
+                <td>
+                    The webpage for the organisation
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>remove</button>
+                </td>
+                <td>
+                    If clicked will remove the organisation from your profile.
+                </td>
+            </tr>
+        </table>
+    </div>        
+    <h4>Add new organisation</h4>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Organisation</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>Oragnisation name1</option>
+                                <option>Organisation name2</option>
+                                <option>Organisation name3</option>
+                                <option>Organisation name4</option>
+                             </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you select the organisation you want to add to the users account.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>add</button>
+                </td>
+                <td>
+                    When clicked will add the organisation to her/his account profile.
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <h3>Roles</h3>
+    <h4>Add new role</h4>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Project</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>Project1</option>
+                                <option>Project2</option>
+                                <option>Project3</option>
+                                <option>Project4</option>
+                             </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you select the to which project the users should be added the role
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Role</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>Administrator</option>
+                                <option>Bioinformatician</option>
+                                <option>Operator</option>
+                                <option>Observer</option>
+                             </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you select the role the user should have in that project
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>add</button>
+                </td>
+                <td>
+                    When clicked will add the role to that project for this person.
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <h4>Project roles</h4>
+    <div>Here is described what roles the user has in what projects</div>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Projectname
+                </td>
+                <td>
+                    The project the user has a role in
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Rolename
+                </td>
+                <td>
+                    The rolename the user has
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>remove</button>
+                </td>
+                <td>
+                    When the <button>remove</button> button is clicked it will remove that role in that project for this person.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "person_management" %]
+    <h3>Person management</h3>
+    <div>
+        On this page you see all users in the system.<br />
+        They are divided into 3 different tables.<br />
+        <ol>
+            <li>Accepted users   - users that have been accepted and not deleted</li>
+            <li>Pending  users   - users that have applied for an acccount but not yet been accepted</li>
+            <li>Deleted  users   - users that have been deleted</li>
+        </ol>
+
+        If you have the right access to change a person you will se a <button>edit</button> button on that persons row. If you press that <button>edit</button> button you will get to a page where you change that person settings in the system (ie accepted, is_active and personal details and his/hers association to projects).<br />
+    
+        <h4>Accepting a user that applied for an account</h4>
+        If you want to accept a user that has applied for an account you press the edit button on the person and on the page change his Is authorized status (checked means accepted).<br />
+        <br />
+        <h4>Deactivating a user</h4>
+        A user is never deleted from the system but you can change his status to inactive which will remove his privilages to the system in the same manner as a not accepted user (the user will not be able to log in).<br />
+
+        <h4>Access</h4>
+        You do not have access to a user that has the same level or higher security than yourself.<br />
+        If you can not see a <button>edit</button> button on the row of the user that person has the same level as you or higher.<br />
+    </div>
+    <h3>Users/Pending/Deleted fields</h3>
+    <div>Because the fields are so similar they are only shown as a group below.</div>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>edit</button>
+                </td>
+                <td>
+                    When the <button>edit</button> button is shown on a user you have access to go to that user and change her/his account details. If you see no <button>edit</button> button she/he have higher security level or the same level as you and you will therefore not have access to her/his account.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Title
+                </td>
+                <td>
+                    The title of the user
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Family name
+                </td>
+                <td>
+                    The family name of the user
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Given name
+                </td>
+                <td>
+                    The given name of the user
+                </td>
+            </tr>
+                        <tr>
+                <td>
+                    Email
+                </td>
+                <td>
+                    The email of the user
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone
+                </td>
+                <td>
+                    The phone of the user
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Anzsrc
+                </td>
+                <td>
+                    The <strong>A</strong>ustralian and <strong>N</strong>ew <strong>Z</strong>ealand <strong>S</strong>tandard <strong>R</strong>esearch <strong>C</strong>lassification associated to the user
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Username
+                </td>
+                <td>
+                    The username the user has choosen
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Webpage
+                </td>
+                <td>
+                    The webpage the user has
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "platform" %]
+    <h3>Platform</h3>
+    <div>
+        On this page you see choosen platform.<br />
+        The <button>Edit</button> button if clicked will send you to the edit page of the platform, you must have right privilages to be able to edit a platform.
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the platform
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Model
+                </td>
+                <td>
+                    The model of the platform
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    The description of the platform
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "platform_create" %]
+    <h3>Platform create</h3>
+    <div>
+        On this page you create a platform
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you insert the name of the platform you want to create
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Model*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the model of the platform
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <ul>
+                        <li>Description*</li>
+                        <li><textarea name="description" required="required"></textarea></li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the description of the platform
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button>add</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The <button>add</button> button will add the platform to the system when clicked
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "platforms" %]
+    <h3>Platforms</h3>
+    <div>On this page you have access to all existing platforms.</div>
+    <div>To edit a platform you have to be an administrator, this is to ensure that the platform will not be changed by misstake.</div>
+    <h3>Fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    The button will send you to the platform if clicked
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>edit</button>
+                </td>
+                <td>
+                    The button will send you to the edit page of the platform
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the platform
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Model
+                </td>
+                <td>
+                    The model of the platform
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    The description of the platform
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "project" %]
+    <h3>Project</h3>
+    <div>
+        On this page you see information about a project, its personroles files and have the possibility to to go its studies and samples.<br />
+        You may also go to the analyse page where you create a new analyse of your projects data.
+        If you click the <button>edit</button> you will go to the edit page of the project, but you must have the right privilages to have access to that page.
+    </div>
+    <h3>Project fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the project
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    Description of the project
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Start date
+                </td>
+                <td>
+                    The start date of this project.                                             
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    End date
+                </td>
+                <td>
+                    The end date of this project (may be empty).
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    ANZSRC
+                </td>
+                <td>
+                    The Australian and New Zealand Standard Research Classification associated to the project
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Status
+                </td>
+                <td>
+                    The status of the project which can have values:
+                    <ul>
+                        <li>Assessing</li>
+                        <li>Finished</li>
+                        <li>Publishable</li>
+                        <li>Published</li>
+                        <li>Unfinished</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Memo
+                </td>
+                <td>
+                    If you have any thing to remind yourself and team member about the project, this is the field for it. Can be empty.
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>Personroles</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Role
+                </td>
+                <td>
+                    All persons roles existing for this project.<br />
+                    Possible roles:<br />
+                    <ul>
+                        <li>Administrator</li>
+                        <li>Bioinformatician</li>
+                        <li>Operator</li>
+                        <li>Observer</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Title
+                </td>
+                <td>
+                    Title of the person with that role.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Given name
+                </td>
+                <td>
+                    Given name is sometimes refered to as first name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Family name
+                </td>
+                <td>
+                    Family name is sometimes refred to as last name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone
+                </td>
+                <td>
+                    The phone number to that person with that role.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email
+                </td>
+                <td>
+                    The email to that person with that role.
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>Study/Studies</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    If you click the <button>goto</button> button you will get to that study
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the study
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The internal name of the study
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    The description of the study
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>Samples</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    If you click this button you will get to that sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The internal name of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tax id
+                </td>
+                <td>
+                    The NCBI taxnomy id of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Accessible
+                </td>
+                <td>
+                    If checked means that the sample is accessible for all persons using the system
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <h3>Files</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the file
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Hash
+                </td>
+                <td>
+                    What the file is called in the system. Each file is hashed to avoid unnecceasary file transfer
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Type
+                </td>
+                <td>
+                    The file type the file has
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Extension
+                </td>
+                <td>
+                    What that filetype has for extension. In the system it does not have the extension but when downloaded it may have that file type.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Added
+                </td>
+                <td>
+                    When that file was added to this project. (The file may have been uploaded before but this time tells you when a local copy was avaible to this project.)
+                </td>
+            </tr>
+        </table>
+    </div>
+
+	[% PROCESS navigation_bar %]
+[% END %]
+
+[% IF helpId == "project_create" %]
+    <h3>Create project</h3>
+    <div>
+        On this page you are supposed to create a project.<br />
+        If you create a project you will given the Adminstrator rights to it and be able to have full access to that project.<br />
+        <br />
+        <h4>So what is a project?</h4>
+        Well a project is describing something that you can group as a project that in it self could contain several scientific papers.
+        <table class="tblNoBorders">
+            <tr><td>Project</td><td></td>       <td></td>           <td></td>       <td>A project can have several papers</td></tr>
+            <tr><td></td>       <td>Study</td>  <td></td>           <td></td>       <td>Something that describes a scientific paper</td></tr>
+            <tr><td></td>       <td></td>       <td>Experiment</td> <td></td>       <td>Describes a sequencing experiment, i.e. analyse your biological sample</td></tr>
+            <tr><td></td>       <td></td>       <td></td>           <td>Sample</td> <td>A biological sample</td></tr>
+        </table>
+    </div>
+    <h3>Fields</h3>
+    <div>
+        All fields that is not correctly filled in and is required have a red border around the input field.<br />
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li>
+                            <input type="text" value="" required="required">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the project name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Description*</li>
+                        <li>
+                            <textarea required="required"></textarea>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert a description of the project.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <li>Start Date*</li>
+                            <li><input type="date" required="required"></li>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the start date of the project.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <li>End Date*</li>
+                            <li><input type="date"></li>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you insert the end date of the project (may be left empty).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>ANZSRC</li>
+                        <li class="liSearchAnzsrc">Search <button type="button" id="btnShowChoosenAnzsrc">hide search</button></li>
+                        <li class="liSearchAnzsrc">
+                            <div class="ui-widget">
+                                <input type="hidden" id="anzsrc_url" value="[% path %]/get_anzsrc/">
+                                <input type="text" name="anzsrc" id="anzsrc" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                            </div>
+                        </li>
+                        <li class="liChoosenAnzsrc">Please select* <button type="button" id="btnShowSearchAnzsrc">or search</button></li>
+                        <li>
+                            <select name="anzsrc_for_code" id="anzsrc_for_code" required="required">
+                                <option value="" selected="selected"></option>
+                                <option value="210101">Aboriginal and Torres Strait Islander Archaeology (210101)</option>
+                                <option value="200201">Aboriginal and Torres Strait Islander Cultural Studies (200201)</option>
+                                <option value="130301">Aboriginal and Torres Strait Islander Education (130301)</option>
+                                <option value="050201">Aboriginal and Torres Strait Islander Environmental Knowledge (050201)</option>
+                                <option value="111701">Aboriginal and Torres Strait Islander Health (111701)</option>
+                                <option value="210301">Aboriginal and Torres Strait Islander History (210301)</option>
+                                <option value="080601">Aboriginal and Torres Strait Islander Information and Knowledge Systems (080601)</option>
+                                <option value="080701">Aboriginal and Torres Strait Islander Knowledge Management (080701)</option>
+                                <option value="200319">Aboriginal and Torres Strait Islander Languages (200319)</option>
+                                <option value="180101">Aboriginal and Torres Strait Islander Law (180101)</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    ANZSRC stands for The <strong>A</strong>ustralian and <strong>N</strong>ew <strong>Z</strong>ealand <strong>S</strong>tandard <strong>R</strong>esearch <strong>C</strong>lassification and 
+                    is something that is mandatory to be filled in because <a href="http://www.ands.org.au/">ANDS</a>(<strong>A</strong>ustralian <strong>N</strong>ational <strong>D</strong>ata <strong>S</strong>ervice) demands it.<br />
+                    You can either select one from the dropdown (in this example only first 10 is shown) or use the <button type="button">or search</button> button for searching a classification that best describes the area you do your most work in.<br />
+                    If you press the <button type="button">or search</button> a input is shown where you search for a classification or its id (number).<br />
+                    After you selected your classification that choice will be selected in the dropdown (not in the example though, if you have not selected one in the first 10 existing in the dropdown).
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <li>Memo</li>
+                            <li><textarea name="memo"></textarea></li>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    If you have any thing to remind yourself and team member about the project, this is the field for it. Can be empty.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button type="button">Save</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    After you press the <button>Save</button> button you access your project from the projects link in the menu.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "project_edit" %]
+    <h3>Edit project</h3>
+    <div>
+        On this page you edit the project.<br />
+    </div>
+    <h3>Fields</h3>
+    <div>
+        All fields that is not correctly filled in and is required have a red border around the input field.<br />
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li>
+                            <input type="text" value="" required="required">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The project name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Description*</li>
+                        <li>
+                            <textarea required="required"></textarea>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Your project description.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <li>Start Date*</li>
+                            <li><input type="date" required="required"></li>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The start date of the project.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <li>End Date*</li>
+                            <li><input type="date"></li>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The end date of the project (may be left empty).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>ANZSRC</li>
+                        <li class="liSearchAnzsrc">Search <button type="button" id="btnShowChoosenAnzsrc">hide search</button></li>
+                        <li class="liSearchAnzsrc">
+                            <div class="ui-widget">
+                                <input type="hidden" id="anzsrc_url" value="[% path %]/get_anzsrc/">
+                                <input type="text" name="anzsrc" id="anzsrc" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                            </div>
+                        </li>
+                        <li class="liChoosenAnzsrc">Please select* <button type="button" id="btnShowSearchAnzsrc">or search</button></li>
+                        <li>
+                            <select name="anzsrc_for_code" id="anzsrc_for_code" required="required">
+                                <option value="" selected="selected"></option>
+                                <option value="210101">Aboriginal and Torres Strait Islander Archaeology (210101)</option>
+                                <option value="200201">Aboriginal and Torres Strait Islander Cultural Studies (200201)</option>
+                                <option value="130301">Aboriginal and Torres Strait Islander Education (130301)</option>
+                                <option value="050201">Aboriginal and Torres Strait Islander Environmental Knowledge (050201)</option>
+                                <option value="111701">Aboriginal and Torres Strait Islander Health (111701)</option>
+                                <option value="210301">Aboriginal and Torres Strait Islander History (210301)</option>
+                                <option value="080601">Aboriginal and Torres Strait Islander Information and Knowledge Systems (080601)</option>
+                                <option value="080701">Aboriginal and Torres Strait Islander Knowledge Management (080701)</option>
+                                <option value="200319">Aboriginal and Torres Strait Islander Languages (200319)</option>
+                                <option value="180101">Aboriginal and Torres Strait Islander Law (180101)</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    ANZSRC stands for The <strong>A</strong>ustralian and <strong>N</strong>ew <strong>Z</strong>ealand <strong>S</strong>tandard <strong>R</strong>esearch <strong>C</strong>lassification and 
+                    is something that is mandatory to be filled in because <a href="http://www.ands.org.au/">ANDS</a>(<strong>A</strong>ustralian <strong>N</strong>ational <strong>D</strong>ata <strong>S</strong>ervice) demands it.<br />
+                    You can either select one from the dropdown (in this example only first 10 is shown) or use the <button type="button">or search</button> button for searching a classification that best describes the area you do your most work in.<br />
+                    If you press the <button type="button">or search</button> a input is shown where you can search for a classification or its id (number).<br />
+                    After you selected your classification that choice will be selected in the dropdown (not in the example though, if you have not selected one in the first 10 existing in the dropdown).
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Status*</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>Assessing</option>
+                                <option>Finished</option>
+                                <option>Publishable</option>
+                                <option>Published</option>
+                                <option>Unfinished</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you change the project status. If it is set as published information about the project will be searchable by the system.<br />
+                    You are not supposed to be able to change the status from published back to some other state, so be careful that you are sure that it is published before you set it as published.<br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <li>Memo</li>
+                            <li><textarea name="memo"></textarea></li>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    If you have any thing to remind yourself and team member about the project, this is the field for it. Can be empty.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button type="button">save changes</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    After you press the button of <button>save changes</button> button the project information will be updated.
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <h3>Personroles</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Role
+                </td>
+                <td>
+                    All persons roles existing for this project.<br />
+                    Possible roles:<br />
+                    <ul>
+                        <li>Administrator</li>
+                        <li>Bioinformatician</li>
+                        <li>Operator</li>
+                        <li>Observer</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Title
+                </td>
+                <td>
+                    Title of the person with that role.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Given name
+                </td>
+                <td>
+                    Given name is sometimes refered to as first name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Family name
+                </td>
+                <td>
+                    Family name is sometimes refred to as last name.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Phone
+                </td>
+                <td>
+                    The phone number to that person with that role.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email
+                </td>
+                <td>
+                    The email to that person with that role.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>remove</button>
+                </td>
+                <td>
+                    When clicked will remove that role from the project.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h4>Add new role</h4>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Role</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>Administrator</option>
+                                <option>Bioinformatician</option>
+                                <option>Operator</option>
+                                <option>Observer</option>
+                             </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you select the role you want to add.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Person</li>
+                        <li>
+                            <select required="required">
+                                <option></option>
+                                <option>Person1s name</option>
+                                <option>Person2s name</option>
+                                <option>Person3s name</option>
+                                <option>Person4s name</option>
+                             </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Her you select the person you want to associate the role to. If the person does not exist she/he is not a valid user in the system.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>add</button>
+                </td>
+                <td>
+                    When clicked will add the role for that person to that project.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Study/studies</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    When clicked will send you to that study.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the study.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    Internal name is the same as a nickname. It will be sent to ANDS if filled in but it will not be a name that will be published.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    Description of the sample.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h4>Add new study</h4>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>Add study</button>
+                </td>
+                <td>
+                    When clicked will send you to a page where you add a new study to the project.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Sample/samples</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    When clicked will send you to that sample.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the sample.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    Internal name is the same as a nickname. It will be sent to ANDS if filled in but it will not be a name that will be published.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tax id
+                </td>
+                <td>
+                    The NCBI taxnomy id of the sample.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h4>Add new sample</h4>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>Add sample</button>
+                </td>
+                <td>
+                    When clicked will send you to a page where you add a new sample to the project.
+                </td>
+            </tr>
+        </table>
+    </div>
+
+	[% PROCESS navigation_bar %]	
+[% END %]
+
+[% IF helpId == "project_navigation" %]
+    <h3>Project navigate</h3>
+    <div>
+        On this page have quick access to the projects experiments, runs, samples and studies.
+    </div>
+
+    <h3>Experiments</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    If you click the <button>goto</button> button you will get to that experiment
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the experiment
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The internal name of the experiment
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Design
+                </td>
+                <td>
+                    The design of the experiment
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>Runs</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    If you click this button you will get to that run
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the run
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <h3>Samples</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    If you click this button you will get to that sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The internal name of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tax id
+                </td>
+                <td>
+                    The NCBI taxnomy id of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Accessible
+                </td>
+                <td>
+                    If checked means that the sample is accessible for all persons using the system
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <h3>Studies</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    If you click the <button>goto</button> button you will get to that study
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the study
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The internal name of the study
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    The description of the study
+                </td>
+            </tr>
+        </table>
+    </div>
+	
+	[% PROCESS navigation_bar %]
+[% END %]
+
+[% IF helpId == "projects" %]
+    <h1>On this page you have access to all your projects.</h1>
+    <div>The projects are shown in two different tables:</div>
+    <ol>
+	    <li>projects that you have a administrator role [%# link:roles %]</li>
+	    <li>all projects you have are involved in</li>
+    </ol>
+    <div>When you create a project you get the role of administrator which will give you the privilage to edit the project information.</div>
+    <div>&nbsp;</div>
+    <div><strong>Table columns</strong></div>
+    <div>
+	    <table border="1" cellpadding="1" cellspacing="1" style="width: 500px; ">
+		    <tbody>
+			    <tr>
+				    <td><strong>Column Name</strong></td>
+				    <td><strong>Description</strong></td>
+			    </tr>
+			    <tr>
+				    <td>Name</td>
+				    <td>Project name</td>
+			    </tr>
+			    <tr>
+				    <td>Description</td>
+				    <td>Project Description</td>
+			    </tr>
+			    <tr>
+				    <td>Start date</td>
+				    <td>Project Start date</td>
+			    </tr>
+			    <tr>
+				    <td>End date</td>
+				    <td>Project End date</td>
+			    </tr>
+			    <tr>
+				    <td>Anzsrc</td>
+				    <td>The Australian and New Zealand Standard Research Classification associated to the project</td>
+			    </tr>
+			    <tr>
+				    <td>Status</td>
+				    <td>Project Status</td>
+			    </tr>
+		    </tbody>
+	    </table>
+    </div>
+    <div>&nbsp;</div>
+    <div><strong>Anzsrc</strong></div>
+    <div>Each project are associated to a anzsrc which is a demand from ANDS.</div>
+    <div>&nbsp;</div>
+    <div><strong>Status</strong></div>
+    <div>The status can have these values</div>
+    <ul>
+	    <li>Assessing</li>
+	    <li>Finished</li>
+	    <li>Publishable</li>
+	    <li>Published</li>
+	    <li>Unfinished</li>
+    </ul>
+[% END %]
+
+[% IF helpId == "sample" %]
+    <h3>Sample</h3>
+    <div>
+        On this page you see choosen sample.<br />
+        The <button>Edit</button> button if clicked will send you to the edit page of the sample.
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The nickname of the sample used in the lab
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Tax id
+                </td>
+                <td>
+                    The NCBI tax id of the sample
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Accessible
+                </td>
+                <td>
+                    When checked makes the sample accessible for all persons using the system.
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+	[% PROCESS navigation_bar %]
+[% END %]
+
+[% IF helpId == "sample_create" %]
+    <h3>Create sample</h3>
+    <div>
+        On this page you create a sample.<br />
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    The name of the sample.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Internal name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Internal Name is the same as a nickname.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Tax id*</li>
+                        <li>
+                            <input type="number" name="tax_id" id="tax_id" value="" readonly="readonly" required="required">
+                            <input type="hidden" name="tax_info_url" id="tax_info_url" value="[% path %]/get_tax_info/">
+                            <button type="button" id="btnGetTax">show more info</button>
+                            <button type="button" id="btnHideTaxInfo" class="hidden">hide more info</button>
+                        </li>
+                        <li id="liTax" class="hidden"></li>
+                        <li>Select/Search tax id</li>
+                        <li>
+                            <input type="hidden" name="tax_id_url" id="tax_id_url" value="[% path %]/get_tax_id/">
+                            <input type="text" name="tax_id_search" id="tax_id_search" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Here you get the tax id of the sample. All samples must have a NCBI tax id when submitted to NCBI so it is mandatory to insert (even though it does not have a red border around the input). To insert a value in the tax id field you have to use the search function below. Basically you search on either number or name and select the tax that is correct.<br />
+                    There is a limit on how many result will be displayed in the search result field so if the number search is not working (only show other results) you may have to search on the name. You also have to insert at least 3 letters/numbers for the search to be initiated. If this makes you crazy or just think it bad, tell us and we will fix it to your demands. If you want to double check if you got the correct tax you can press the <button>show more info</button> to see all information about the tax after you have selected one.<br />
+                    The result format is: UNIQUENAME(TAXID)(SYNONYME1,SYNONYME2,..)<br />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Accessible*</li>
+                        <li><input type="checkbox"></li>
+                    </ul>
+                </td>
+                <td>
+                    If checked makes the sample accessible for all persons using the system.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "sample_edit" %]
+    <h3>Sample edit</h3>
+    <div>
+        On this page you edit the sample
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your sample name
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Internal name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your samples internal name
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    <ul>
+                        <li>Tax id*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your samples tax id (NCBI tax id)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Accessible*</li>
+                        <li><input type="checkbox"></li>
+                    </ul>
+                </td>
+                <td>
+                    In this field you edit your samples accessible status
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button>save</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    When <button>save</button> button is clicked the changes you have done to the sample fields will be saved
+                </td>
+            </tr>
+        </table>
+    </div>
+	
+	[% PROCESS navigation_bar %]
+[% END %]
+
+[% IF helpId == "self_register" %]
+    <h3>Self registration</h3>
+    <div>
+        On this page you apply for an account.<br />
+        The registration process is made in three steps.<br />
+        <br />
+        <ol>
+            <li>Fill in the form</li>
+            <li>Confirm email address by going to the link sent to your email</li>
+            <li>A admin authorize you as a user</li>
+        </ol>
+        <br />
+        This process is to confirm that you have correctly have inserted a email link that you yourself own.
+    </div>
+
+    <h3>Fields</h3>
+    <div>
+        All fields that is not correctly filled in and is required have a red border around the input field.<br />
+        All fields should be self explanatory, with a few exceptions.<br />
+
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Username*</li>
+                        <li><input type="text" value="" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    You do have to create a username, and it has to be unique (not in use in the system before). It is what you login with.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>ANZSRC</li>
+                        <li class="liSearchAnzsrc">Search <button type="button" id="btnShowChoosenAnzsrc">hide search</button></li>
+                        <li class="liSearchAnzsrc">
+                            <div class="ui-widget">
+                                <input type="hidden" id="anzsrc_url" value="[% path %]/get_anzsrc/">
+                                <input type="text" name="anzsrc" id="anzsrc" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                            </div>
+                        </li>
+                        <li class="liChoosenAnzsrc">Please select* <button type="button" id="btnShowSearchAnzsrc">or search</button></li>
+                        <li>
+                        <select name="anzsrc_for_code" id="anzsrc_for_code" required="required">
+                            <option value="" selected="selected"></option>
+                            <option value="210101">Aboriginal and Torres Strait Islander Archaeology (210101)</option>
+                            <option value="200201">Aboriginal and Torres Strait Islander Cultural Studies (200201)</option>
+                            <option value="130301">Aboriginal and Torres Strait Islander Education (130301)</option>
+                            <option value="050201">Aboriginal and Torres Strait Islander Environmental Knowledge (050201)</option>
+                            <option value="111701">Aboriginal and Torres Strait Islander Health (111701)</option>
+                            <option value="210301">Aboriginal and Torres Strait Islander History (210301)</option>
+                            <option value="080601">Aboriginal and Torres Strait Islander Information and Knowledge Systems (080601)</option>
+                            <option value="080701">Aboriginal and Torres Strait Islander Knowledge Management (080701)</option>
+                            <option value="200319">Aboriginal and Torres Strait Islander Languages (200319)</option>
+                            <option value="180101">Aboriginal and Torres Strait Islander Law (180101)</option>
+                        </select>
+                    </ul>
+                </td>
+                <td>
+                    ANZSRC stands for The <strong>A</strong>ustralian and <strong>N</strong>ew <strong>Z</strong>ealand <strong>S</strong>tandard <strong>R</strong>esearch <strong>C</strong>lassification and 
+                    is something that is mandatory to be filled in because <a href="http://www.ands.org.au/">ANDS</a>(<strong>A</strong>ustralian <strong>N</strong>ational <strong>D</strong>ata <strong>S</strong>ervice) demands it.<br />
+                    You can either select one from the dropdown (in this example only first 10 is shown) or use the <button type="button">or search</button> button for searching a classification that best describes the area you do your most work in.<br />
+                    If you press the <button type="button">or search</button> a input is shown where you can search for a classification or its id (number).<br />
+                    After you selected your classification that choice will be selected in the dropdown (not in the example though, if you have not selected one in the first 10 existing in the dropdown).
+
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "study_create" %]
+    <h3>Create study</h3>
+    <div>
+        On this page you create a study.<br />
+    </div>
+    <h3>Fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    The name of the study.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Internal name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Internal Name is the same as a nickname. It will be sent to ANDS if filled in but it will not be a name that will be published.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Type*</li>
+                        <li>
+                            <select name="study_type_id" required="required">
+                                <option></option>
+                                <option>Cancer Genomics</option>
+                                <option>Epigenetics</option>
+                                <option>Exome Sequencing</option>
+                                <option>Forensic or Paleo-genomics</option>
+                                <option>Gene Regulation Study</option>
+                                <option>Metagenomics</option>
+                                <option>Other</option>
+                                <option>Pooled Clone Sequencing</option>
+                                <option>Population Genomics</option>
+                                <option>Resequencing</option>
+                                <option>RNASeq</option>
+                                <option>Synthetic Genomics</option>
+                                <option>Transcriptome Analysis</option>
+                                <option>Whole Genome Sequencing</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The study type is sent to NCBI.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Abstract*</li>
+                        <li><textarea required="required"></textarea></li>
+                    </ul>
+                </td>
+                <td>
+                    The abstract will be shared to other users and will searchable and sent to NCBI. The abstract is a brief summary of a research article, and is often used to help the reader quickly ascertain the paper's purpose. When used, an abstract always appears at the beginning of a manuscript or typescript, acting as the point-of-entry for any given academic paper or patent application. Abstracting and indexing services for various academic disciplines are aimed at compiling a body of literature for that particular subject.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Description*</li>
+                        <li><textarea required="required"></textarea></li>
+                    </ul>
+                </td>
+                <td>
+                    The description of the study.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Status*</li>
+                        <li>
+                            <select name="phase_status_id" required="required">
+                                <option></option>
+                                <option>Assessing</option>
+                                <option>Finished</option>
+                                <option>Publishable</option>
+                                <option>Published</option>
+                                <option>Unfinished</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The status of the study. After it has been published it will be accessible from other users in the system.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button>add</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Will update the changes you have done to the study fields.
+                </td>
+            </tr>
+        </table>
+    </div>
+[% END %]
+
+[% IF helpId == "study_edit" %]
+    <h3>Study edit</h3>
+    <div>
+        On this page you edit the study and you also add an experiment.<br />
+    </div>
+    <h3>Edit study fields</h3>
+    <div>
+        <table class="tblNoBorders">
+            <tr>
+                <td>
+                    <ul>
+                        <li>Name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    The name of the study.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Internal name*</li>
+                        <li><input type="text" required="required"></li>
+                    </ul>
+                </td>
+                <td>
+                    Internal Name is the same as a nickname. It will be sent to ANDS if filled in but it will not be a name that will be published.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Type*</li>
+                        <li>
+                            <select name="study_type_id" required="required">
+                                <option></option>
+                                <option>Cancer Genomics</option>
+                                <option>Epigenetics</option>
+                                <option>Exome Sequencing</option>
+                                <option>Forensic or Paleo-genomics</option>
+                                <option>Gene Regulation Study</option>
+                                <option>Metagenomics</option>
+                                <option>Other</option>
+                                <option>Pooled Clone Sequencing</option>
+                                <option>Population Genomics</option>
+                                <option>Resequencing</option>
+                                <option>RNASeq</option>
+                                <option>Synthetic Genomics</option>
+                                <option>Transcriptome Analysis</option>
+                                <option>Whole Genome Sequencing</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The study type is sent to NCBI.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Abstract*</li>
+                        <li><textarea required="required"></textarea></li>
+                    </ul>
+                </td>
+                <td>
+                    The abstract will be shared to other users and will searchable and sent to NCBI. The abstract is a brief summary of a research article, and is often used to help the reader quickly ascertain the paper's purpose. When used, an abstract always appears at the beginning of a manuscript or typescript, acting as the point-of-entry for any given academic paper or patent application. Abstracting and indexing services for various academic disciplines are aimed at compiling a body of literature for that particular subject.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Description*</li>
+                        <li><textarea required="required"></textarea></li>
+                    </ul>
+                </td>
+                <td>
+                    The description of the study.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Status*</li>
+                        <li>
+                            <select name="phase_status_id" required="required">
+                                <option></option>
+                                <option>Assessing</option>
+                                <option>Finished</option>
+                                <option>Publishable</option>
+                                <option>Published</option>
+                                <option>Unfinished</option>
+                            </select>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    The status of the study. After it has been published it will be accessible from other users in the system.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <button>save</button>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    Will update the possible changes you have done to the study fields.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Experiment fields</h3>
+    <div>
+        Under the head line <strong>Experiment</strong> you will find the experiments associated to the study.<br />
+        <br />
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>edit</button>
+                </td>
+                <td>
+                    The button will send you to the edit experiment page if clicked.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the experiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The internal name on the experiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Design
+                </td>
+                <td>
+                    A description of the expermiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Platform - name
+                </td>
+                <td>
+                    The platform name for the experiment existing values are(2012-05-03):
+                    <ul>
+                        <li>454 Life Sciences</li>
+                        <li>illumina HiSeq 2000</li>
+                        <li>illumina MySeq</li>
+                        <li>Ion Torrent</li>
+                        <li>SOLiD</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Platform - model
+                </td>
+                <td>
+                    The platform model. Existing valuse are(2012-05-03):
+                    <ul>
+                        <li>HiSeq 2000</li>
+                        <li>MySeq</li>
+                        <li>SOLiD</li>
+                        <li>454</li>
+                        <li>Ion Torrent</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Sample - name
+                </td>
+                <td>
+                    The name of the sample.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Sample - internal name
+                </td>
+                <td>
+                    The internal name of the sample.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button>add new experiment</button>
+                </td>
+                <td>
+                    When clicked will send you to the create new experiment page.
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    [% PROCESS navigation_bar %]
+[% END %]
+
+[% IF helpId == "study_show" %]
+    <h3>Study</h3>
+    <div>
+        On this page you see a information about a study.<br />
+        The <button>Edit</button> button if clicked will send you to the edit page of the study, you must have right privilages to be able to edit a study.
+    </div>
+    <h3>Study fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the study.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    Internal Name is the same as a nickname. It will be sent to ANDS if filled in but it will not be a name that will be published.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Study type
+                </td>
+                <td>
+                    The valid study types are (2012-05-03):
+                    <ul>
+                        <li>Cancer Genomics</li>
+                        <li>Epigenetics</li>
+                        <li>Exome Sequencing</li>
+                        <li>Forensic or Paleo-genomics</li>
+                        <li>Gene Regulation Study</li>
+                        <li>Metagenomics</li>
+                        <li>Pooled Clone Sequencing</li>
+                        <li>Population Genomics</li>
+                        <li>Resequencing</li>
+                        <li>RNASeq</li>
+                        <li>Synthetic Genomics</li>
+                        <li>Transcriptome Analysis</li>
+                        <li>Whole Genome Sequencing</li>
+                        <li>Other</li>
+                    </ul>                                                
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Abstract
+                </td>
+                <td>
+                    The abstract is a brief summary of a research article, and is often used to help the reader quickly ascertain the paper's purpose. When used, an abstract always appears at the beginning of a manuscript or typescript, acting as the point-of-entry for any given academic paper or patent application. Abstracting and indexing services for various academic disciplines are aimed at compiling a body of literature for that particular subject.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description
+                </td>
+                <td>
+                    Description of the sample.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Status
+                </td>
+                <td>
+                    The status of a study can can have the same values as project status which is(2012-05-30):
+                    <ul>
+                        <li>Assessing</li>
+                        <li>Finished</li>
+                        <li>Publishable</li>
+                        <li>Published</li>
+                        <li>Unfinished</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Experiment fields</h3>
+    <div>
+        <table class="fieldDescription">
+            <tr>
+                <td>
+                    <button>goto</button>
+                </td>
+                <td>
+                    The button will send you to the experiment if clicked.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    The name of the experiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Internal name
+                </td>
+                <td>
+                    The internal name on the experiment.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Design
+                </td>
+                <td>
+                    A description of the expermiment.
+                </td>
+            </tr>
+        </table>
+    </div>
+	
+	[% PROCESS navigation_bar %]
+[% END %]

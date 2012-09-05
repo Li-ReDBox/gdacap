@@ -1,0 +1,16 @@
+<table>
+	<caption>Tools used by users</caption>
+	<thread>	
+  <tr>
+    <th>Name</th>
+    <th>Version</th>
+    <th>Description</th>
+  </tr>
+	<tbody>  
+    [% FOREACH tool IN tools %]
+      <tr>
+        <td>[% tool.iname %]</td>  
+        <td>[% tool.version %]</td>
+        <td>[% tool.description %]</td>
+    [% END %]
+</table>
