@@ -54,7 +54,7 @@ sub logout {
 sub read_settings {
 	my $section = GDACAP::Resource::get_section('session');
 	$session_dir = $$section{session};
-	$secure = $$section{has_http_only};
+	$secure = $$section{has_https};
 }
 
 # Get or set a session cookie with session_id as the value
