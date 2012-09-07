@@ -118,7 +118,7 @@ sub edit {
 		GDACAP::Web::Page::show_msg($r, 'Accesse is denied','No information is available to you.');
 		return;
 	}
-	my $validated_form = GDACAP::Web::validate_form(\@GDACAP::DB::Experiment::edit, \@GDACAP::DB::Experiment::creation_optional, $req);
+	my $validated_form = GDACAP::Web::validate_form(\@GDACAP::DB::Experiment::edit, \@GDACAP::DB::Experiment::creation_optional, $req,['in_rda']);
 	my $msg = $$validated_form{msg}; 
 	if ($msg eq '1') {	
 		# All filled in
@@ -142,6 +142,7 @@ sub edit {
 		help_url   => $GDACAP::Web::location.'/help/?id=experiment_edit',
 		message    => $msg,
 		experiment => $exp->values(),
+		rda_ready  => $project->has_Manager(),
 		samples         => $project->samples(),
 		platforms       => $exp->platforms(),
 		layout_changble => $exp->layout_changeable(),		
@@ -151,26 +152,27 @@ sub edit {
 
 # Internal functions
 sub display_experiment {
-	my ($r, $exp, $right) = @_;
-	my $write_permission = $right eq 'w' ? 1 : 0;			
-	if ($write_permission) {
-		$write_permission = 0 if ($$exp{accession});
-	}
+    my ($r, $exp, $right) = @_;
+    my $write_permission = $right eq 'w' ? 1 : 0;
+    my $project_id = $exp->project_id();
+    if ($write_permission) {
+	$write_permission = 0 if ($$exp{accession});
+    }
     my $tpl_setting = {
-        template_name            => 'experiment',
-        project_navigation       => $exp->project_id(), # must pass the project_id for project_navigation to work
+        template_name      => 'experiment',
+        project_navigation => $project_id, # must pass the project_id for project_navigation to work
     };
     my $content = {
         header               => 'Experiment',
         section_article_id   => 'Experiment',
-        write_permission     => $write_permission,				
+        write_permission     => $write_permission,
         experiment           => $exp->values(),
         runs                 => $exp->runs(),
-		layout_changble      => $exp->layout_changeable(),
+	layout_changble      => $exp->layout_changeable(),
         edit_experiment_link => $GDACAP::Web::location."/experiment/edit",
-		run_edit_action      => $GDACAP::Web::location."/run/edit",
-		add_experiment_run   => $GDACAP::Web::location."/run/create",
-		submit2ebi           => $GDACAP::Web::location."/experiment/submit",
+	run_edit_action      => $GDACAP::Web::location."/run/edit",
+	add_experiment_run   => $GDACAP::Web::location."/run/create",
+	submit2ebi           => $GDACAP::Web::location."/experiment/submit",
         help_url             => $GDACAP::Web::location.'/command/help/?id=experiment',		
     };
     GDACAP::Web::Page::display($r, $tpl_setting, $content, $person_id);
@@ -182,14 +184,14 @@ __END__
 
 =head1 NAME
 
-GDACAP::Web::Command - Commands for none login use 
+GDACAP::Web::Experiment - Create, Display or Edit an Experiment 
 
 =head1 SYNOPSIS
 
 
 =head1 DESCRIPTION
 
-Most out layer functions
+Once an Experiment has been published to EBI, nothing can be edited.
 
 =head1 AUTHORS
 

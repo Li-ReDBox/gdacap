@@ -74,6 +74,12 @@ sub alias2id {
 	return $self->row_value("SELECT id FROM project WHERE alias = ?",$name);
 }
 
+sub has_Manager {
+	my ($self, $project_id) = @_;
+	$project_id = $$self{id} unless $project_id;
+	return  $self->row_value("SELECT count(*) FROM personrole pr, role_type rt WHERE pr.project_id = ? AND pr.role_type_id = rt.id AND rt.iname = 'Manager'", $project_id);	
+}
+
 sub members {
 	my ($self) = @_;
 	require GDACAP::DB::Personrole;

@@ -32,6 +32,7 @@ sub by_id {
 	my $rcd = $self->row_hashref("SELECT $query_fields FROM experiment_info WHERE id = ?",$id);
 	@{$self}{keys %$rcd} = values %$rcd; # if id has not been found, this line will not be executed, old value holds.
 	$self->nominal_size();
+	$self->in_rda();
 	return $self->values();
 }
 
@@ -73,6 +74,49 @@ sub nominal_size {
 	return $nominal_size;
 }
 
+# attribute if an Experiment record has been ready for RDA to harvest - in oai_headers
+sub in_rda {
+	my ($self) = @_;
+	$$self{in_rda} = 0;
+	my $in_rda = $self->row_value('SELECT ori_id FROM oai_headers WHERE ori_table_name= ? and ori_id = ?','experiment', $$self{id});
+ 	$$self{in_rda} = $in_rda if ($in_rda);
+	return $in_rda;
+}
+
+# Insert a record about current Experiment in oai_headers to allow RDA to harvest
+# All dependencies are checked
+sub rda_allow {
+	my ($self) = @_;
+	$dbh->begin_work;
+	try {
+		rda_insert('experiment',$$self{id});
+		my $person_id = $self->row_value("SELECT pr.person_id FROM experiment ex, study st, role_type rt, personrole pr WHERE ex.id = ? AND st.id = ex.study_id AND pr.project_id = st.project_id AND pr.role_type_id = rt.id AND rt.iname = 'Manager'", $$self{id});
+		die "No Manager role exists" unless $person_id;
+		my $created = $self->row_value('SELECT count(ori_id) FROM oai_headers WHERE ori_table_name = ? AND ori_id = ?', 'person', $person_id);
+		rda_insert('person',$person_id) unless $created;
+		$created = $self->row_value('SELECT count(ori_id) FROM oai_headers WHERE ori_table_name = ? AND ori_id = ?', 'study', $$self{study_id});
+		rda_insert('study',$$self{study_id}) unless $created;
+		$dbh->commit;
+	} catch {
+		print STDERR "$_\n";
+		$dbh->rollback;
+	};
+}
+
+# Insert a record about current Experiment in oai_headers to allow RDA to harvest
+#     oai_set      | set_type | ori_table_name 
+#------------------+----------+----------------
+# class:party      | person   | person
+# class:activity   | project  | study
+# class:collection | dataset  | experiment
+sub rda_insert {
+	my ($type, $id) = @_;
+	my %parts = (experiment => ['class:collection','dataset','experiment'],
+				 person     => ['class:party', 'person', 'person'], 
+				 study      => ['class:activity','project','study']);
+	$dbh->do('INSERT INTO oai_headers (oai_set, set_type, ori_table_name,ori_id) values(?,?,?,?)',undef,@{$parts{$type}},$id) or die $dbh->errstr;
+}
+
 sub layout_changeable {
 	my ($self) = @_;
 	my $run_ids = $self->row_value('SELECT count(id) FROM run_core WHERE experiment_id = ?',$$self{id});
@@ -106,14 +150,12 @@ sub run_candidates {
 	return $self->array_hashref($statement, $project_id);
 }
 
-# 	my ($rows_affected) = ANDS::Model::ExperimentDAL->update_experiment( $self->id, $self->iname, $self->internal_name, $self->design, $self->study_id, $self->sample_id, $self->platform_id );
-# $exp->update_nominal_size($self->nominal_size,$self->id) || $log->info('New nominal size has not been updated in attribute table for experiment ('.$self->id.').');
 sub update {
 	my ($self, $info) = @_;
-	my $nominal_size = $$info{nominal_size};
-	delete $$info{nominal_size};
+	my ($nominal_size, $in_rda) = delete @$info{qw(nominal_size in_rda)};
 	$self->SUPER::update('experiment',$$self{id},$info);
 	$self->update_nominal_size($nominal_size);
+	$self->rda_allow() if $in_rda && !$$self{in_rda};
 	$self->by_id($$self{id});
 }
 
@@ -145,14 +187,6 @@ sub sample_ids {
 	$exp_id = $$self{id} unless $exp_id;
 	return $self->row_value('SELECT study_id, sample_id FROM experiment WHERE id = ?', $exp_id);
 }
-
-# sub can_submit {
-	# my ($self, $exp_id) = @_;
-	# $exp_id = $self->id unless $exp_id;
-	# Carp::croak('Experiment id has not been set in either constructor or here.') unless $exp_id;
-	# my $sth = $self->dbh->prepare_cached('SELECT count(*) FROM run WHERE experiment_id = ?');
-	# return $self->dbh->selectrow_array($sth,{},$exp_id);
-# }
 
 # sub register_submission {
 	# my ($self, $release_date, $exp_id) = @_;
@@ -218,6 +252,10 @@ GDACAP::DB::Experiment - Experiment object
 
 C<GDACAP::DB::Experiment> returns a single record from experiment_info. As there are other ojbects assoicate to it, it is also the query interface to them. These interfaces only return fields summarise associated objects. The returned field lists are defined in associated fields.
 
+Most of attributes describe an experiment are defined in Table experiment expcept two: nominal_size and in_rda.
+nominal_size is defined in Table attribute and only be used when Run is in FASTQ and paired read.
+in_rda is a boolean and defined by if there is a corresponding record in oai_headers. It can only be set once - once published it cannot be deleted.
+ 
 =head1 METHODS
 
 =head2 run_candidates
@@ -225,6 +263,10 @@ C<GDACAP::DB::Experiment> returns a single record from experiment_info. As there
   @candidates = @{ $exp->run_candidates($file_type) };
  
 C<run_candidates> - returns the files filtered by $file_type in category 'run upload' of a C<Process> which have not registered yet.
+
+=head2 rda_allow
+
+C<rda_allow> - inserts current Experiment into Table oai_headers in current format. It also checks if the depended Party and Activity records have been created in oai_headers. If they have not been inserted, insert them. The Person can be inserted has to have Manager role eithwise it dies.
   
 =head1 AUTHOR
 

@@ -1,4 +1,9 @@
 [% IF write_permission %]
+[% UNLESS experiment.in_rda %]
+<p>Grant perimssion to Research Ddata Australia to harvest by clicking Edit button below.<br />
+Note, this is only possible if there is Manger has been appointed in the project, 
+</p> 
+[% END %]
 <form action="[% edit_experiment_link %]" method="post">
   <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
   <input type="submit" value="Edit" />
@@ -27,7 +32,9 @@
     <td>[% experiment.accession %]</td>
   </tr>
 </table>
-
+[% IF experiment.in_rda %]
+<p>Perimssion to Research Ddata Australia to harvest has been granted.</p> 
+[% END %]
 <h3>Library </h3>
 	<strong> Source: </strong> [% experiment.lib_source %].
 	<strong> Layout: </strong> 

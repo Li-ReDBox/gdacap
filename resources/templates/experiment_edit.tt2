@@ -2,7 +2,12 @@
 <form method="POST" action="[% action %]">
   <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
   <ul>
-[% INCLUDE experiment_info.tt2 %]  
+[% INCLUDE experiment_info.tt2 %]
+[% IF experiment.in_rda %]
+  <li><label>Allow RDA to harvest<input type="checkbox" name="in_rda" disabled="disabled" checked="checked"/></label></li>
+[% ELSIF rda_ready %]  
+  <li><label>Allow RDA to harvest<input type="checkbox" name="in_rda" /></label></li>
+[% END %]
     <li><input type="submit" value="Save" /></li>
   </ul>
 </form>

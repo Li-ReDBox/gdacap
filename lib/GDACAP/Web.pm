@@ -104,11 +104,11 @@ sub act {
 		$logger->debug("Cannot load $mod. $@");
 	} else {
 		no strict 'refs';
-		# try {
+		 try {
 			&{$func}($r, $action, $person_id);
-		# } catch {
-			# $logger->debug("Cannot call function $func: $_");
-		# };
+		 } catch {
+			 $logger->debug("Cannot call function $func: $_");
+		 };
 	}
 }
 
