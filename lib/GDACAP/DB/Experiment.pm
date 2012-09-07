@@ -92,8 +92,11 @@ sub rda_allow {
 		rda_insert('experiment',$$self{id});
 		my $person_id = $self->row_value("SELECT pr.person_id FROM experiment ex, study st, role_type rt, personrole pr WHERE ex.id = ? AND st.id = ex.study_id AND pr.project_id = st.project_id AND pr.role_type_id = rt.id AND rt.iname = 'Manager'", $$self{id});
 		die "No Manager role exists" unless $person_id;
-		my $created = $self->row_value('SELECT count(ori_id) FROM oai_headers WHERE ori_table_name = ? AND ori_id = ?', 'person', $person_id);
-		rda_insert('person',$person_id) unless $created;
+		my $created = $self->row_value('SELECT count(oai_identifier) FROM rda_person WHERE person_id = ?', $person_id); # First check if it has been pre-created
+		unless ($created) { # Have to use our local data to create a Party record
+			$created = $self->row_value('SELECT count(ori_id) FROM oai_headers WHERE ori_table_name = ? AND ori_id = ?', 'person', $person_id);
+			rda_insert('person',$person_id) unless $created;
+		}
 		$created = $self->row_value('SELECT count(ori_id) FROM oai_headers WHERE ori_table_name = ? AND ori_id = ?', 'study', $$self{study_id});
 		rda_insert('study',$$self{study_id}) unless $created;
 		$dbh->commit;
