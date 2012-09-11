@@ -103,9 +103,17 @@ sub username2id {
 	return $self->row_value('SELECT id FROM person WHERE username = ?', $username);
 }
 
+# two argument form is used for verifying if it has been used
+# three argument form is used for resetting password of an active user when email has been given
 sub email2id {
-	my ($self, $email) = @_;
-	return $self->row_value('SELECT id FROM person WHERE email = ?', $email);
+	my ($self, $email, $contact) = @_;
+	if ($contact) {
+		my $info = $self->row_hashref('SELECT id, title, family_name, given_name, username FROM person WHERE is_active = TRUE AND email = ?',$email);
+		$$info{title} = $full_title{$$info{title}} if exists($$info{title});		
+		return $info;
+	} else {
+		return $self->row_value('SELECT id FROM person WHERE email = ?', $email);
+	}
 }
 
 # password is hashed by sha256_hex( $password . $self->salt ) and saved in $self->hash();
@@ -144,10 +152,42 @@ sub yet_confirmed {
     return $self->row_value("SELECT id FROM person WHERE email = ? AND has_validated_email = 'false'", $email);
 }
 
-sub confirm_email{
+sub confirm_email {
     my ( $self, $id ) = @_;
 	$dbh->do("UPDATE person SET has_validated_email = 'true' WHERE id = ?",{}, $id) or die $dbh->errstr;
 	return $self->row_hashref('SELECT username, family_name, given_name FROM person WHERE id = ?',$id);
+}
+
+# Creates a 32 character long random string as an unique token to facilitate indentification of a password reset request.
+# This is sent back to user by email and will be used to validate when the new password is set.
+sub ini_reset_password {
+    my ($self, $id) = @_;
+    my $token = salt(); # Collision could happens as this salt method is too simple.
+	$dbh->do('INSERT INTO resetpwd_token (token, person_id) VALUES (?,?)', {}, $token, $id) or die $dbh->errstr;
+	return $token;
+}
+
+# retrieves token if it is less then 48hours old, uses postgres interval
+sub resetpwdtoken2id {
+    my ( $self, $token ) = @_;
+    my $statement = "SELECT person_id FROM resetpwd_token WHERE token = ? AND used = 'f' AND now() - date_added < interval '48h'";
+    return $self->row_value( $statement, $token );
+}
+
+sub reset_password {
+	my ($self, $id, $new_pwd, $token) = @_;
+	my $salt_pinch = salt();
+	my $hashed_pwd = hash_password($new_pwd, $salt_pinch);
+	$dbh->begin_work;
+	try {
+		$dbh->do('UPDATE person SET salt=?,hash=? WHERE id = ?',{}, $salt_pinch, $hashed_pwd, $id) or die $dbh->errstr;
+		# Update token
+		$dbh->do('UPDATE resetpwd_token SET used=true WHERE token = ?',{}, $token) or die $dbh->errstr;
+		$dbh->commit;
+	} catch {
+		print STDERR "$_\n";
+		$dbh->rollback;
+	};
 }
 
 sub is_active {
@@ -268,6 +308,7 @@ Default field set returned to caller is: id title given_name family_name usernam
 =item * validate Validates username and password. Only active account will be checked
 
 =item * email2id Returns person.id with the given email address
+When the second argument is set to be ture, title, username and names are returned too.
 
 =item * user Returns a string constructed with title first and family names
 
@@ -275,6 +316,22 @@ Default field set returned to caller is: id title given_name family_name usernam
 
 =item * salt Generates a random string 32 letters long for encrypting password
 
+=back
+
+=head2 Methods for Resetting password
+
+Table resetpwd_token holds tokens to link a reset password request with a user. The token is simply a 32 character long
+random string used as a identifier for this password resetting action. A token is valid for 48 hours since
+the issue. These functions are used in C<GDACAP::Web::Command>.
+
+=over 4
+
+=item * ini_reset_password Generates a toke valid for the next 48 hours, returns the token.
+
+=item * resetpwdtoken2id Validates token. If the token exists and has not expired, returns person_id.
+
+=item * reset_password Generates a salt and hash the password, then save them. Sets C<used> field of the token to true in the table.
+ 
 =back
   
 =head1 AUTHOR

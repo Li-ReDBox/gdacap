@@ -107,7 +107,8 @@ sub act {
 		 try {
 			&{$func}($r, $action, $person_id);
 		 } catch {
-			 $logger->debug("Cannot call function $func: $_");
+			$logger->debug("Cannot call function $func: $_");
+			GDACAP::Web::Page::show_msg($r, 'Error: Please inform Adminstrator', $_);
 		 };
 	}
 }

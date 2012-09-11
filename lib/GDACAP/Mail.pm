@@ -47,7 +47,7 @@ sub reset_password {
 	my $message;
     $tt->process( 'reset_password.tt2', \%tmpl_parameters, \$message ) or Carp::croak $tt->error;
 
-	$msg->add("Subject", 'Genomics Data Capturer: Rest password');
+	$msg->add("Subject", 'Genomics Data Capturer: Reset password');
 	$msg->add("To", $$person{email});
 	$msg->data($message);
     $msg->send( 'smtp', $server);
@@ -151,13 +151,13 @@ $person is a hash reference. See the description of C<change_email>.
  
 $confirmation_handler is a scalar variable contains a handler link.
 					   
-=head2 reset_password($person, $rest_handler)
+=head2 reset_password($person, $reset_handler)
 
 Sends a link to a user to reset the password. Requested by a user. Used in L<GDACAP::Web::Command>
 
 $person is a hash reference. See the description of C<change_email>.
  
-$rest_handler is a scalar variable contains a handler link.
+$reset_handler is a scalar variable contains a handler link.
 
 =head2 change_authorisation($person, $right)
 
