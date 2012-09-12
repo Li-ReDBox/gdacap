@@ -167,7 +167,7 @@ sub edit {
         roletypes          => $account_role->types(),
 		titles             => \%GDACAP::DB::Person::full_title,
         edit_user_link     => $GDACAP::Web::location.'/person/edit',
-        goto_project_link  => $GDACAP::Web::location.'/project',
+        goto_project_link  => $GDACAP::Web::location.'/project/show',
 		help_url           => $GDACAP::Web::location.'/commad/help/?id=person_edit_admin',            
         person             => $person_rcd->values(),
         affiliations       => $person_rcd->organisations(),
