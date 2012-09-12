@@ -98,7 +98,7 @@ sub register_file {
 sub register_file_copy {
 	my ($self, $project_id, $person_id, $hash, $file_type_id, $original_name, $size) = @_;
 	my $file_id = $self->hash2file_id($hash);
-	print "File id = $file_id\n";
+	# print "File id = $file_id\n";
 	unless ($file_id) {
 		$file_id = $self->register_file($hash, $file_type_id, $size) ;
 		return $dbh->selectrow_array('INSERT INTO file_copy (file_id, original_name, person_id, project_id) VALUES (?, ?, ?, ?) RETURNING id',{},($file_id,$original_name,$person_id,$project_id));

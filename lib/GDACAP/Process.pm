@@ -69,7 +69,18 @@ sub Tool {
 # array of string
 sub Input {
 	my ($self, $in_hash) = @_;
-	if ($in_hash) { $self->{Input} = $in_hash; }
+	if (@$in_hash) {
+		if (ref(@$in_hash[0]) eq 'HASH') {
+			my @in_hashes = ();
+			foreach (@$in_hash) {
+				push(@in_hashes, $$_{Hash});
+			} 
+			$self->{Input} = \@in_hashes; 
+		} else {
+			$self->{Input} = $in_hash; 
+		}
+
+	}
 	return $self->{Input};
 }
 
