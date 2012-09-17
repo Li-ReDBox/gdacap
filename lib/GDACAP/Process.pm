@@ -31,9 +31,9 @@ sub property {
 	use feature ":5.10";
 	given($pname) {
 		when (@PROPERTY_LIST) {
-			if (scalar(@_) == 3) { 
-				croak("Process: ", $pname," was given undefined value.\n") unless $pvalue; 
-				$self->{$pname} = $pvalue; 
+			if (scalar(@_) == 3) {
+				croak("Process: ", $pname," was given undefined value.\n") unless $pvalue;
+				$self->{$pname} = $pvalue;
 			}
 			return $self->{$pname} if $self->{$pname};
 		}
@@ -56,9 +56,9 @@ sub property {
 
 sub Tool {
 	my ($self, $t) = @_;
-	if ($t) { 
+	if ($t) {
 		if (exists($$t{Name}) && exists($$t{Version})) {
-			$self->{Tool} = $t; 
+			$self->{Tool} = $t;
 		} else {
 			croak "The keys name and version are both needed\n";
 		}
@@ -74,10 +74,10 @@ sub Input {
 			my @in_hashes = ();
 			foreach (@$in_hash) {
 				push(@in_hashes, $$_{Hash});
-			} 
-			$self->{Input} = \@in_hashes; 
+			}
+			$self->{Input} = \@in_hashes;
 		} else {
-			$self->{Input} = $in_hash; 
+			$self->{Input} = $in_hash;
 		}
 
 	}
@@ -87,24 +87,24 @@ sub Input {
 # array of hash
 sub Output {
 	my ($self, $out_files) = @_;
-	if ($out_files) { 
-		$self->{Output} = $out_files; 
+	if ($out_files) {
+		$self->{Output} = $out_files;
 		croak "No output file is provided\n" unless $self->{Output};
 		croak "No output file is provided\n" unless @{$self->{Output}}>0;
 		foreach (@{$self->{Output}}) {
 			# print $$_{OriginalName},' ',$$_{Hash},' ',$$_{Type},"\n";
 			# Cannot check if they are string type.
-			if (not (length($$_{OriginalName})>0 && length($$_{Hash})>0 && length($$_{Type})>0)) 
+			if (not (length($$_{OriginalName})>0 && length($$_{Hash})>0 && length($$_{Type})>0))
 			{
 				print Data::Dumper->Dump([$_],[qw(output_file)]);
 				croak "One of item is missing or in wrong format for output file. Expecting OrginalName, Hash and Type.\n";
 			}
-			if ( ref($$_{OriginalName}) || ref($$_{Hash})  || ref($$_{Type})) 
+			if ( ref($$_{OriginalName}) || ref($$_{Hash})  || ref($$_{Type}))
 			{
 				print Data::Dumper->Dump([$_],[qw(output_file)]);
 				croak "One of item is not a STRING for output file\n";
 			}
-		}	
+		}
 	}
 	return $self->{Output};
 }
@@ -148,7 +148,7 @@ sub load_from_json {
 			$self->property($_,$$json_hash_ref{$_}) if exists($$json_hash_ref{$_});
 		}
 		$self->Tool($$json_hash_ref{'Tool'});
-		
+
 		$self->Input($$json_hash_ref{'Input'}) if exists $$json_hash_ref{'Input'};
 		$self->Output($$json_hash_ref{'Output'});
 	} catch {
@@ -159,13 +159,13 @@ sub load_from_json {
 }
 
 # Register or verify thecontent of Process
-my $POOLPATHS = undef; # hash, file_copy information: the path of file pool, source and target 
+my $POOLPATHS = undef; # hash, file_copy information: the path of file pool, source and target
 
 # string, the paths to file pool, source and target
 sub pool_paths {
 	my ($self, $value) = @_;
-	if ($value) { 
-		$POOLPATHS = $value; 
+	if ($value) {
+		$POOLPATHS = $value;
 		die "Invalid pool path ".$$POOLPATHS{'source'} if not -e $$POOLPATHS{'source'};
 		die "Invalid pool path ".$$POOLPATHS{'target'} if not -e $$POOLPATHS{'target'};
 	}
@@ -176,7 +176,7 @@ sub pool_path_source {
 	my ($self, $value) = @_;
 	if ($value) {
 		die "Invalid source pool path ".$value if not -e $value;
-		$$POOLPATHS{'source'} = $value; 
+		$$POOLPATHS{'source'} = $value;
 	}
 	croak 'Source path does not exist.' unless (defined($POOLPATHS) && -e $$POOLPATHS{'source'});
 	return $$POOLPATHS{'source'};
@@ -186,7 +186,7 @@ sub pool_path_target {
 	my ($self, $value) = @_;
 	if ($value) {
 		die "Invalid target pool path ".$value if not -e $value;
-		$$POOLPATHS{'target'} = $value; 
+		$$POOLPATHS{'target'} = $value;
 	}
 	croak 'Target path does not exist.' unless (defined($POOLPATHS) && $$POOLPATHS{'target'});
 	return $$POOLPATHS{'target'};
@@ -195,7 +195,7 @@ sub pool_path_target {
 sub person_id {
 	my ($self, $value) = @_;
 	if ($value) {
-		$self->{PERSON_ID} = $value; 
+		$self->{PERSON_ID} = $value;
 	}
 	return $self->{PERSON_ID};
 }
@@ -203,7 +203,7 @@ sub person_id {
 sub project_id {
 	my ($self, $value) = @_;
 	if ($value) {
-		$self->{PROJECT_ID} = $value; 
+		$self->{PROJECT_ID} = $value;
 	}
 	return $self->{PROJECT_ID};
 }
@@ -225,7 +225,7 @@ sub permission {
 	my $person = GDACAP::DB::Person->new();
 	my $person_id = $person->username2id($$self{Username});
 	return $status unless $person_id;
-	
+
 	require GDACAP::DB::Personrole;
 	my $perm = GDACAP::DB::Personrole->new($person_id);
 	if ($perm->has_right($project_id,'process') eq 'w') {
@@ -236,7 +236,7 @@ sub permission {
 	return $status;
 }
 
-# For display and check. Called by provider. 
+# For display and check. Called by provider.
 # Return value is a hash_ref with {error} to indicate if it has passed.
 # As in files have been in system, they are provided by hash key (sha-1)'s which need some treats
 # Check the existence, convert hashes to ids
@@ -252,7 +252,7 @@ sub check {
 		$$process_hash{'error'} = 1; $$process_hash{'msg'} = 'Permission denied';
 		return $process_hash;
 	}
-	
+
 	my @out_files = @{$$self{Output}};
 	my $exist = 'No';
 	foreach (@out_files) {
@@ -265,11 +265,11 @@ sub check {
 		$$_{'flag'} = $exist;
 	}
 	return $process_hash if $$process_hash{'error'};
-	
+
 	if (exists($$self{Input})) {
 		require GDACAP::DB::File;
 		my @infiles = @{$$self{Input}};
-		# INPUT can be omitted	
+		# INPUT can be omitted
 		if (@infiles) {
 			my $finfo = GDACAP::DB::File->new();
 			my $inf_hash_ref = {};
@@ -281,11 +281,11 @@ sub check {
 							"Hash" => $infiles[$_],
 							"Type" => $$file_rcd{'type'}
 							};
-				} else { 
+				} else {
 					$$process_hash{'error'} = 1;
 					$inf_hash_ref = {"OriginalName"=> "Not found",
 							"Hash" => $infiles[$_],
-							}; 
+							};
 				}
 				$infiles[$_] = $inf_hash_ref;
 			}
@@ -324,20 +324,24 @@ sub register {
 
 # Move files from source into target
 sub copy_outfiles {
-	my $self = shift;
+	my ($self) = @_;
 	my $source_path = $self->pool_path_source;
 	my $target_path = $self->pool_path_target;
 	my ($cur_fn, $success);
-	my @outfiles = @{$self->{PROCESS}->out_files()};
+	my @outfiles = @{$self->{Output}};
 	foreach(@outfiles) {
 		$success = try {
-			$cur_fn = File::Spec->catfile($source_path,$$_{'hash'});
-			GDACAP::FileOp::copy_file($cur_fn,$$_{'hash'},$target_path) or 
+			$cur_fn = File::Spec->catfile($source_path,$$_{Hash});
+			GDACAP::FileOp::copy_file($cur_fn,$$_{Hash},$target_path) or
 				die("Cannot copy file into secure place. Reason is: $!\n",$cur_fn,"\t",$$_{'hash'},"\t",$target_path);
 			1;
 		} catch {
 			0;
 		};
+		if ($success) {
+			if (system('rm',$cur_fn)==0) { $success = 1; }
+			else { $success = 0; }
+		}
 		return 0 unless $success;
 	}
 	return 1;
@@ -353,39 +357,64 @@ GDACAP::Process - Data strucute of Process data type
 
 =head1 SYNOPSIS
 
-  # Generally, it is used as following:
-  my $jp = GDACAP::Process->new();
+	# Generally, it is used as following:
+	my $jp = GDACAP::Process->new();
 
-  $jp->property('Name',"name string");
-  $jp->property('Category',"category string");
-  $jp->property('Comment',"comment string, can be long");
-  $jp->property('Tool',$tool_hash);
-  $jp->property('Input',$array);
-  $jp->property('Output',$array_of_hash);
-  
-  # Check a Process instance using function get_hash:
-  my %hv = %{$jp->get_hash()};
-  print Dumper(\%hv);
+	$jp->property('Name',"name string");
+	$jp->property('Category',"category string");
+	$jp->property('Comment',"comment string, can be long");
+	$jp->property('Tool',$tool_hash);
+	$jp->property('Input',$array);
+	$jp->property('Output',$array_of_hash);
 
-  # Convert a Process to JSON
-  $jp->get_json());
+	# Check a Process instance using function get_hash:
+	my %hv = %{$jp->get_hash()};
+	print Dumper(\%hv);
 
-  # Load a JSON into a Process
-  $jp->load_from_json($json);
+	# Convert a Process to JSON
+	$json = $jp->get_json();
+
+	# Load a JSON into a Process
+	$jp->load_from_json($json);
+
+	use GDACAP::Resource ();
+	GDACAP::Resource->prepare('config.conf');
+	my $repository = GDACAP::Resource::get_repository();
+	$jp->pool_paths($repository);
+
+	my $rt = $jp->check();
+	if ($$rt{error}) {
+		print("Verificatin failed. More reason:\n", to_json($rt));
+		return;
+	}
+
+
+	if ($jp->register()) {
+		print "Registration was successful\n";
+	} else {
+		print "Failed to register your process. More reason: $_\n";
+	}
+	if ($jp->copy_outfiles()) {
+		print "Outcoming files were copied successfully\n";
+	} else {
+		print "Failed to register your process. More reason: $_\n";
+	}
+	undef $jp;
 
 =head1 DESCRIPTION
 
-C<GDACAP::Process> is a way to create a Process in the system with metadata describes what it is about, and its inputs and outputs. 
-It needs the identifiers of project and user to check permission and to save it in correct way. The description can be set by setting 
-each property or load from a JSON string. The integrity is checked when the who set of data is retrieved by C<get_hash()>.
+C<GDACAP::Process> is a module to create a Process in the system with metadata describes what it is about, and its inputs and outputs.
+It needs the identifiers of project and user to check permission and to save it in correct way. The description can be set by setting
+each property and the integrity is checked when the whole set of data is retrieved by C<get_hash()>. It also to load from a JSON string
+with all mandatory properties.
 
 Process is an instance of usage of a tool to accomplish a task.
 It has C<ProjectAlias>, C<Serial> (optional), C<Username>, C<Name>, C<Category>, C<Configuration>, C<Comment>, C<Tool>, C<Input> and C<Output>. A typical Process defined in Perl looks like this:
 
   my $p_hash_ref = {
-  "ProjectAlias" => "the name of project with which files associate",	  
+  "ProjectAlias" => "the name of project with which files associate",
   "Username" => "user login name",
-  "Serial": "12312267365637543180547980626",  
+  "Serial": "12312267365637543180547980626",
   "Name" => "The name is meaningful to you",
   "Category" => "Agreed process category or type",
   "Configuration" => "Command line arguments",
@@ -458,17 +487,43 @@ It returns a hash reference contains properties which have been set. It checks i
 
 It converts a Process in JSON format. It checks if mandatory perperties have been set. If not, it croaks.
 
+=item * check
+
+Checks if permission, Inputs have been in the database, Outputs are in Repository{Source}. It returns a Hash. If there is
+an error, Hash{error} = 1. It also returns simple error message in Hash{msg}.
+
+=item * register
+
+Uses the checked information to register new files submitted in Output and metadata. If successful, returns true otherwise false.
+
+=item * copy_outfiles
+
+First copy files included in Output to Reopsiotry{Target} if successful, remove them. File permission has be be correct.
+If successful, returns true otherwise false.
+
 =back
 
-=head1 COPYRIGHT
-
-Ands package and its modules are copyrighted under the GPL, Version 3.0.
-
-
-=head1 AUTHORS
+=head1 AUTHOR
 
 Jianfeng Li
 
+=head1 COPYRIGHT
+
+Copyright (C) 2012 The University of Adelaide
+
+This file is part of GDACAP.
+
+GDACAP is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GDACAP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GDACAP.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-

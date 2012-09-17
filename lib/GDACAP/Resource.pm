@@ -11,7 +11,7 @@ require DBI;
 require GDACAP::DBA;
 
 my $INITIALISED = 0;
-my $CONF_PATH = undef; 
+my $CONF_PATH = undef;
 my $dbh;
 my %repository = ();
 
@@ -31,14 +31,14 @@ sub prepare {
 	my ($class, $conf, $init_logger, $skip) = @_;
 	return if $INITIALISED;
 	if ($conf) { $CONF_PATH = $conf; } else { $CONF_PATH = 'config.conf'; }
-	
+
 	# print "I will read $conf\n";
 	# # Open the config
 	# # When called by ModPerl, use absolute path
-	return if ($skip && not $init_logger); 
+	return if ($skip && not $init_logger);
 	my $config = Config::Tiny->read($conf);
 	carp $Config::Tiny::errstr unless $config;
-	
+
 	if (! $skip) {
 		# Read properties
 		my $dbname = $config->{database}->{dbname} or carp "Cannot read dbname from $conf";
@@ -49,7 +49,7 @@ sub prepare {
 		my @db = ($dbname, $host, $user, $passwd);
 		$dbh = GDACAP::DBA->connect(@db)->{DBH};
 	}
-	
+
 	init_logger($config) if $init_logger;
 	$INITIALISED = 1;
 	delete @$config{qw(database log)};
@@ -97,10 +97,10 @@ sub init_logger {
 	my $log;
 	if (@_) {	# called from prepare with configuration file has been read
 		my $config = ref($_[0]) eq 'GDACAP::Resource' ? $_[1] : $_[0]; # to support OO or none-OO
-		$log = $config->{log}; 
+		$log = $config->{log};
 	} else {
 		carp "Cannot initialise logger because do not know the setting" unless $CONF_PATH;
-		$log = get_section('log'); 
+		$log = get_section('log');
 	}
 	return unless $log;
 
@@ -128,22 +128,22 @@ sub import {
     }
 
     if(exists $tags{get_dbh}) {
-        # Export get_dbh into the calling module's 
+        # Export get_dbh into the calling module's
         *{"$caller_pkg\::get_dbh"} = *get_dbh;
         delete $tags{get_dbh};
     }
     if(exists $tags{get_repository}) {
-        # Export get_repository into the calling module's 
+        # Export get_repository into the calling module's
         *{"$caller_pkg\::get_repository"} = *get_repository;
         delete $tags{get_repository};
     }
     if(exists $tags{init_logger}) {
-        # Export init_logger into the calling module's 
+        # Export init_logger into the calling module's
         *{"$caller_pkg\::init_logger"} = *init_logger;
         delete $tags{init_logger};
     }
     if(exists $tags{get_section}) {
-        # Export get_section into the calling module's 
+        # Export get_section into the calling module's
         *{"$caller_pkg\::get_section"} = *get_section;
         delete $tags{get_section};
     }
@@ -155,38 +155,38 @@ __END__
 
 =head1 NAME
 
-GDACAP::Resource - The resource handler for GDACAP applications  
+GDACAP::Resource - The resource handler for GDACAP applications
 
 =head1 SYNOPSIS
 
- use GDACAP::Reources ();  
- # Read the actual variable values from a configuration file  
+ use GDACAP::Reources ();
+ # Read the actual variable values from a configuration file
  # By default, a configuration file is saved in current working directory and the name is 'config.conf'
- GDACAP::Resource->prepare();  
+ GDACAP::Resource->prepare();
  # But more likely, you need to give the full path of your configruation file
  GDACAP::Resource->prepare('../config.conf');
  # If a logger is needed, call C<prepare()> with the second argumenet as anything means true
  GDACAP::Resource->prepare('../config.conf',1);
- # If more then just initialisations, 
- my $confg = GDACAP::Resource->prepare('../config.conf');
+ # If more then just initialisations,
+ my $config = GDACAP::Resource->prepare('../config.conf');
  my $section = $$config{section_name};
- # If just need to read a section of a configuration file through C<get_section>, skip the preparation of database by setting the third argument to true. 
+ # If just need to read a section of a configuration file through C<get_section>, skip the preparation of database by setting the third argument to true.
  GDACAP::Resource->prepare('../config.conf',0,1);
- 
+
  # After preparation, to get the database handler DBI::db of PostgreSQL
- use GDACAP::Resource qw(get_dbh);  
+ use GDACAP::Resource qw(get_dbh);
  $dbh = get_dbh;
- print "Database handler type:",ref($dbh),"\n";  
+ print "Database handler type:",ref($dbh),"\n";
 
  # Another resource, to get the pathes of repository
- use GDACAP::Resource qw(get_repository);  
+ use GDACAP::Resource qw(get_repository);
  $repository = get_repository
- print "repository\n";  
- print "source path = $$repository{source}, target path = $$repository{target}\n";  
- 
+ print "repository\n";
+ print "source path = $$repository{source}, target path = $$repository{target}\n";
+
  # If you have not initialised logger
- GDACAP::Resource->init_logger(); 
-# Import logger in 
+ GDACAP::Resource->init_logger();
+# Import logger in
  use Log::Log4perl qw(get_logger);
  $logger = get_logger();
  $logger->info("Welecome");
@@ -228,7 +228,7 @@ It is possible to create a section, e.g. B<mics> and define other settings then 
 =item prepare($path_of_conf_file,$init_logger,$skip_db)
 
 Read from a configuration file and by default connect to a PostgreSQL database using the settings defined in the file. It takes three optional arguments:
-I<path_of_conf_file>, I<init_logger> and I<skip_db>. If I<path_of_conf_file> is undef, config.conf in the current directory will be tried. It does not 
+I<path_of_conf_file>, I<init_logger> and I<skip_db>. If I<path_of_conf_file> is undef, config.conf in the current directory will be tried. It does not
 work with ModPerl which needs absoultue path to files. If the second aregument is anything means true, loggers defined in [log] section are initialised at the same time.
 By default, database is connected. If want to skip connecting, set the third argument to 0.
 
@@ -245,7 +245,7 @@ by :all tag to import all. Note, the hash retrieved by C<get_section> is not cac
 
 =item init_logger
 
-Initialise the loggers defined in the loaded configuration file. It is useful when loggers are not needed when the first time resources are prepared. 
+Initialise the loggers defined in the loaded configuration file. It is useful when loggers are not needed when the first time resources are prepared.
 It can be imported individually or by :all tag.
 
 =back

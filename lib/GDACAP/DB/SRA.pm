@@ -27,7 +27,7 @@ sub new {
 	($class, $center_name, $working_dir ) = @_;
 	Carp::croak "Working folder does not accessible $working_dir" unless (-d $working_dir);
 	$prefix = join('',$center_name =~ m/\b\w/g);
-	if (length($prefix)<2) { $prefix =  $center_name; }	
+	if (length($prefix)<2) { $prefix =  $center_name; }
 	$class->SUPER::new();
 	return bless ({}, $class);
 }
@@ -64,7 +64,7 @@ sub submission {
 		action($xw, 'HOLD', {});
 	} else {
 		action($xw, 'HOLD', {HoldUntilDate=>$release_date});
-	}	
+	}
 	$xw->endTag('ACTIONS');
 	$xw->endTag('SUBMISSION');
 	$xw->endTag('SUBMISSION_SET');
@@ -75,7 +75,7 @@ sub submission {
 sub get_SRA_samples {
 	my ($self, $ids) = @_;
 	my $id_list = join(",", ("?")x@$ids);
-	my $statement = "SELECT a.accession, a.id, a.iname, a.description, a.tax_id, b.name_txt AS sci_name FROM sample a,tax_name b 
+	my $statement = "SELECT a.accession, a.id, a.iname, a.description, a.tax_id, b.name_txt AS sci_name FROM sample a,tax_name b
 			WHERE a.id IN ($id_list) AND a.tax_id = b.tax_id AND name_class='scientific name'";
 	return $self->array_hashref($statement, @$ids);
 }
@@ -120,7 +120,7 @@ sub study {
 	my $rc = $self->get_SRA_study($id);
 	$$rc{accession} =~ s/$tail_space// if $$rc{accession};
 	return if $$rc{accession};
-	
+
 	my $fn = 'study.xml';
 	my ($xw, $output) = prepare($fn);
 	$xw->startTag('STUDY_SET',%xmls);
@@ -146,7 +146,7 @@ sub platform_map {
 sub get_SRA_experiments {
 	my ($self, $ids) = @_;
 	my $id_list = join(",", ("?")x@$ids);
-	my $statement = "SELECT a.id, a.iname, a.design, a.lib_source, a.study_id, a.sample_id, d.iname AS platform, d.model 
+	my $statement = "SELECT a.id, a.iname, a.design, a.lib_source, a.study_id, a.sample_id, d.iname AS platform, d.model
 		FROM experiment a, platform d WHERE a.id IN ($id_list) AND a.platform_id = d.id";
 	return $self->array_hashref($statement, @$ids);
 }
@@ -241,7 +241,7 @@ sub read_header {
 	if ($line =~ /\w+#[ACTG]+\/([12]){1}/) { return $1; } else { Carp::croak "Pair-reading direction cannot be detected: $fn"; }
 }
 
-# run_id, and GDACAP::DB::Repository object for retriving file
+# run_id, and GDACAP::Repository object for retriving file
 # md5's of gzipped files info are read from the files (name pattern: $hash.gz.md5) under $sub_dir
 sub run {
 	my ($self, $exp_ids, $repo) = @_;
@@ -260,7 +260,7 @@ sub run {
 # each run of an experiment
 sub run_element {
 	my ($self, $exp_id, $xw, $repo) = @_;
-	
+
 	my @run_file_rcs = @ { $self->get_SRA_run($exp_id) }; # can be two or one
 	my ($n, $run);
 
@@ -277,7 +277,7 @@ sub run_element {
 			$$_{hash} =~ s/$tail_space//;	# remove tailing spaces
 			# print $$_{hash},"\n";
 			$xw->startTag('FILE', quality_scoring_system=>"phred", quality_encoding=>"ascii", ascii_offset=>$score_offset,
-			 checksum=>read_md5($working_dir.'/'.$$_{hash}.'.gz.md5',$$_{raw_file_name}.'.gz'), checksum_method=>"MD5", 
+			 checksum=>read_md5($working_dir.'/'.$$_{hash}.'.gz.md5',$$_{raw_file_name}.'.gz'), checksum_method=>"MD5",
 			 filename=>$$_{raw_file_name}.'.gz', filetype=>lc($$_{type}));
 			if (scalar(@run_file_rcs)>1) {
 				$run = $repo->fpath($$_{hash}); # raw, ungzipped read file
@@ -287,7 +287,7 @@ sub run_element {
 			$xw->endTag('FILE');
 		}
 	} catch {
-		print STDERR "Run submission XML file cannot be created. $_";		
+		print STDERR "Run submission XML file cannot be created. $_";
 	} finally {
 		$xw->endTag('FILES');
 		$xw->endTag('DATA_BLOCK');
@@ -312,37 +312,71 @@ GDACAP::DB::SRA - Create XML files and submission for Short Read Archive (SRA)
 =head1 Synopsis
 
   # Generally, it is used as following:
-  my @add_list = qw(experiment run);
-  my $sra = GDACAP::DB::SRA->new('UNIVERSITY OF ADELAIDE',$working_folder);
-  
-  # XML of a Run
-  my $sample_xml = $sra->sample($sample_id);
-  $add_list{sample} = 1;
-  my $run_xml = $sra->run($run_id);
-  # submission xml:
-  for @add_list {
-  }
+	require GDACAP::DB::SRA;
+
+	use GDACAP::Resource qw(get_repository);
+	my $config = GDACAP::Resource->prepare('../lib/GDACAP/config.conf');
+
+	# This direcotry has to be crated before
+	my $folders = $$config{folders};
+	my $submission_dir = $$folders{submission};
+
+	my $sra = GDACAP::DB::SRA->new('UNIVERSITY OF ADELAIDE',$submission_dir);
+	my $sources = {}; # place holder for ACTIONS/ADD in submission
+
+	my $add = $sra->sample([7]);
+	$$sources{sample} = $add if $add;
+	$add = $sra->study(6);
+	$$sources{study} = $add if $add;
+	$$sources{experiment} = $sra->experiment([7]);
+
+	# run files - need to retrieve from repository
+	print "Repository\n";
+	my $repository = get_repository;
+	print "source path = $$repository{source}, target path = $$repository{target}\n";
+	use GDACAP::Repository;
+	my $repo = GDACAP::Repository->new($$repository{target});
+	croak('Cannot access repository at '.$$repository{target}) unless $repo;
+
+	my $hash = '90543c99fb044bde396f0246174c904d';
+	use GDACAP::FileOp;
+	print "MD5 of ",$repo->fpath($hash)," create by GDACAP::FileOp::md5_file = ",GDACAP::FileOp::md5_file($repo->fpath($hash)),".\n";
+	print "Score offset of experiment 3 = ", $sra->score_offset(3),".\n";
+	$$sources{run} = $sra->run([24],$repo);
+	$sra->submission('uofa'.time,'2014-04-30', $sources);
 
 =head1 Description
 
-C<GDACAP::DB::SRA> generates XML files of SRA models of B<Submission>, B<Study>, B<Sample>, B<Experiment> and B<Run> for a submission. 
+C<GDACAP::DB::SRA> generates XML files of SRA models of B<Submission>, B<Study>, B<Sample>, B<Experiment> and B<Run> for a submission.
 A B<Submission> genereally B<ADD> B<Study>, B<Sample>, B<Experiment> and B<Run>. But B<Study> or B<Sample> can be submitted before.
 In such cases, B<Submission> only has to B<ADD> has yet subitted SRA objects. But they have to be referenced either by B<refname> or B<accession>.
 In short, a B<Submission> at least has to have three XML files: submission.xml, experiment.xml and run.xml.
 
-The caller deceides where the files are to save but C<GDACAP::DB::SRA> decide what naming convention to use. Currenty, it is schema plus .xml.
+The caller deceides where the submission XML files are to save but C<GDACAP::DB::SRA> decide what naming convention to use. Currenty, it is schema plus .xml.
 
 Currently, SRA XML schemas version 1.3 is supported. Detail can be found at http://www.ebi.ac.uk/ena/about/sra_format. Note, only B<Submission> has schema information and the rests do not need.
 
-=head1 Copyright
-
-Ands package and its modules are copyrighted under the GPL, Version 3.0.
-
-
-=head1 Authors
+=head1 AUTHOR
 
 Jianfeng Li
 
+=head1 COPYRIGHT
+
+Copyright (C) 2012 The University of Adelaide
+
+This file is part of GDACAP.
+
+GDACAP is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GDACAP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GDACAP.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
