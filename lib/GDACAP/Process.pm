@@ -192,22 +192,6 @@ sub pool_path_target {
 	return $$POOLPATHS{'target'};
 }
 
-sub person_id {
-	my ($self, $value) = @_;
-	if ($value) {
-		$self->{PERSON_ID} = $value;
-	}
-	return $self->{PERSON_ID};
-}
-
-sub project_id {
-	my ($self, $value) = @_;
-	if ($value) {
-		$self->{PROJECT_ID} = $value;
-	}
-	return $self->{PROJECT_ID};
-}
-
 # -----------------------------------------------------------------------
 # verify block
 
@@ -246,13 +230,14 @@ sub check {
 
 	my $process_hash = $self->get_hash();
 	$$process_hash{'error'} = 0;
+	$$process_hash{'msg'} = '';
 
 	my $permit = $self->permission();
 	if ($$permit{allowed}==0) {
 		$$process_hash{'error'} = 1; $$process_hash{'msg'} = 'Permission denied';
 		return $process_hash;
 	}
-
+	
 	my @out_files = @{$$self{Output}};
 	my $exist = 'No';
 	foreach (@out_files) {
@@ -260,13 +245,14 @@ sub check {
 			$exist = 'Yes';
 		} else {
 			$exist = 'No';
+			$$process_hash{'msg'} .= "\n" if $$process_hash{'msg'};
+			$$process_hash{'msg'} .= sprintf("%s (%s...) cannot be found.",$$_{OriginalName}, substr($$_{Hash},0,7));
 			$$process_hash{'error'} = 1;
 		}
 		$$_{'flag'} = $exist;
 	}
-	return $process_hash if $$process_hash{'error'};
 
-	if (exists($$self{Input})) {
+	if (exists($$self{Input}) && ! $$process_hash{'error'}) {
 		require GDACAP::DB::File;
 		my @infiles = @{$$self{Input}};
 		# INPUT can be omitted
@@ -283,6 +269,8 @@ sub check {
 							};
 				} else {
 					$$process_hash{'error'} = 1;
+					$$process_hash{'msg'} .= "\n" if $$process_hash{'msg'};
+					$$process_hash{'msg'} .= $infiles[$_]. ": unknown file provided as Input.";
 					$inf_hash_ref = {"OriginalName"=> "Not found",
 							"Hash" => $infiles[$_],
 							};
@@ -292,10 +280,14 @@ sub check {
 			$$process_hash{'Input'} = \@infiles;
 		}
 	}
-	unless ($$process_hash{'error'}) {
+	if ($$process_hash{'error'}) {
+		my $person = GDACAP::DB::Person->new();
+		$$process_hash{contact} = $person->contact($$permit{person_id});
+	} else {
 		$$self{project_id} = $$permit{project_id};
 		$$self{person_id} = $$permit{person_id};
 	}
+	delete $$process_hash{'msg'} unless $$process_hash{'msg'};
 	return $process_hash;
 }
 
@@ -487,19 +479,120 @@ It returns a hash reference contains properties which have been set. It checks i
 
 It converts a Process in JSON format. It checks if mandatory perperties have been set. If not, it croaks.
 
-=item * check
+=item * check()
 
-Checks if permission, Inputs have been in the database, Outputs are in Repository{Source}. It returns a Hash. If there is
-an error, Hash{error} = 1. It also returns simple error message in Hash{msg}.
+Checks if permission, Inputs have been in the database, Outputs are in Repository{Source}. It returns a Hash reference which contains
+all orginal keys and values. If there is an error, Hash{error} = 1 otherwise Hash{error} = 0. It also returns error message in 
+Hash{msg} to notify user.
 
-=item * register
+Three typical errors:
+
+=over 2
+
+=item * Permission denied: either wrong username but most likey wrong ProjectAlias in any sense
+{
+  'msg' => 'Permission denied',
+  'Tool' => {
+			  'Version' => 'version',
+			  'Name' => 'my tool'
+			},
+  'Username' => 'non-exist',
+  'ProjectAlias' => 'testp',
+  'Output' => [
+				{
+				  'Type' => 'text',
+				  'Size' => 928,
+				  'Hash' => '2db93aa5ee6a9b90b30aebc60d167c55905178dd',
+				  'OriginalName' => 'batch.txt'
+				}
+			  ],
+  'error' => 1,
+  'Name' => 'test',
+  'Category' => 'test',
+};
+
+=item * Output file does not exist
+{
+  'msg' => 'batch.txt (2db93aa...) cannot be found.',
+  'contact' => {
+				 'email' => 'user@domain',
+				 'title' => 'Mr',
+				 'family_name' => 'Smith',
+				 'given_name' => 'John'
+			   },
+  'Tool' => {
+			  'Version' => 'version',
+			  'Name' => 'my tool'
+			},
+  'Username' => 'user',
+  'ProjectAlias' => 'testp',
+  'Output' => [
+				{
+				  'Type' => 'text',
+				  'Size' => 928,
+				  'Hash' => '2db93aa5ee6a9b90b30aebc60d167c55905178dd',
+				  'flag' => 'No',
+				  'OriginalName' => 'batch.txt'
+				},
+				{
+				  'Type' => 'text',
+				  'Size' => 928,
+				  'Hash' => '92a0c2525d3aeda72c5c08d13a49c43d6b980652',
+				  'flag' => 'Yes',
+				  'OriginalName' => 'batch2.txt'
+				}
+			  ],
+  'error' => 1,
+  'Name' => 'test',
+  'Category' => 'test',
+};
+
+=item * Input checksum cannot be varified
+
+{
+  'msg' => '92a0c2525d3aeda72c5c08d13a49c43d6b980652a: unknown file provided as Input.',
+  'ProjectAlias' => 'tp1',
+  'contact' => {
+				 'email' => 'jianfeng.li@adelaide.edu.au',
+				 'title' => 'Dr',
+				 'family_name' => 'Li',
+				 'given_name' => 'Jianfeng'
+			   },
+  'Tool' => {
+			  'Version' => 'version',
+			  'Name' => 'my tool'
+			},
+  'Username' => 'jianfeng',
+  'Output' => [
+				{
+				  'Type' => 'text',
+				  'Size' => 928,
+				  'Hash' => '933a53be3bfebe748f27d907c930e29e851ab9e2',
+				  'flag' => 'Yes',
+				  'OriginalName' => 'out.txt'
+				}
+			  ],
+  'error' => 1,
+  'Input' => [
+			   {
+				 'Hash' => '92a0c2525d3aeda72c5c08d13a49c43d6b980652a',
+				 'OriginalName' => 'Not found'
+			   }
+			 ],
+  'Name' => 'test',
+  'Category' => 'test'
+};
+
+=back
+
+=item * register()
 
 Uses the checked information to register new files submitted in Output and metadata. If successful, returns true otherwise false.
 
-=item * copy_outfiles
+=item * copy_outfiles()
 
-First copy files included in Output to Reopsiotry{Target} if successful, remove them. File permission has be be correct.
-If successful, returns true otherwise false.
+First copy files listed as Output to Reopsiotry{Target} and then if successful, remove them. File permission has be be correct
+to allow removal. If successful, returns true otherwise false.
 
 =back
 

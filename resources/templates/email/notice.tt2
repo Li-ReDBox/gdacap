@@ -1,0 +1,7 @@
+Dear [% person.title %] [% person.given_name %] [% person.family_name %], 
+
+[% event_msg %]
+
+Kind regards,
+
+Genomics Data Capturer 

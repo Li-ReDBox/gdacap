@@ -97,6 +97,20 @@ sub change_authorisation {
     $msg->send( 'smtp', $server);
 }
 
+sub notice {
+	prepare();
+    my ( $person, $event_msg ) = @_;
+	my %tmpl_parameters = (person => $person, event_msg => $event_msg);
+
+	my $message;
+    $tt->process( 'notice.tt2', \%tmpl_parameters, \$message ) or Carp::croak $tt->error;
+
+	$msg->add("Subject", 'Genomics Data Capturer notification');
+	$msg->add("To", $$person{email});
+	$msg->data($message);
+    $msg->send( 'smtp', $server);
+}
+
 1;
 
 __END__
@@ -150,7 +164,7 @@ Sends a link to an applicant's nominated email address for confirming the addres
 $person is a hash reference. See the description of C<change_email>.
  
 $confirmation_handler is a scalar variable contains a handler link.
-					   
+
 =head2 reset_password($person, $reset_handler)
 
 Sends a link to a user to reset the password. Requested by a user. Used in L<GDACAP::Web::Command>
@@ -174,6 +188,14 @@ Notifies all administrators after an applicant has confirmed email address to as
 $administrators is an array reference contains email addresses of administrators.
 
 $applicant is a hash reference with keys and values of famil_name and given_name.
+
+=head2 notice($person, $event_message)
+
+Notifies a user when an event needs attention. 
+
+$person is a hash reference. See the description of C<change_email>.
+ 
+$event_message is a scalar variable of the message to the user.
 
 =head1 AUTHORS
 

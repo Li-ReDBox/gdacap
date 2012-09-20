@@ -116,6 +116,16 @@ sub email2id {
 	}
 }
 
+# Quickly access contact information of an ID
+sub contact {
+	my ($self, $id) = @_;
+	$id = $$self{id} unless $id;
+	return unless $id;
+	my $info = $self->row_hashref('SELECT title, family_name, given_name, email FROM person WHERE is_active = TRUE AND id = ?',$id);
+	$$info{title} = $full_title{$$info{title}} if exists($$info{title});		
+	return $info;
+}
+
 # password is hashed by sha256_hex( $password . $self->salt ) and saved in $self->hash();
 # only active account will be checked
 sub validate {
