@@ -17,4 +17,4 @@ function save_svg(formObj) {
 </form>
 <p>Save function has passed the test with Opera and Chrome. No test has been done with Safari.</p>
 <p>If the browser is IE, right click the drawing and choose "Save picture as.." to save a SVG file.</p>
-<p>If the browser is Firefox, after you saved the file, open it in a text editor. Find <u>xlink="http://www.w3.org/1999/xlink"</u> and add <u>xmlns:</u> in front of <u>xlink</u>. The final result should look like: <u>xmlns:xlink="http://www.w3.org/1999/xlink"</u>.</p>
+<p>If the browser is Firefox, you might have problem to view it. If it happens, open it in a text editor. Find <u>xlink="http://www.w3.org/1999/xlink"</u>. If in front of <u>xlink</u> there is no <u>xmlns:</u>, please add <u>xmlns:</u> before <u>xlink</u>. The final result should look like: <u>xmlns:xlink="http://www.w3.org/1999/xlink"</u>.</p>

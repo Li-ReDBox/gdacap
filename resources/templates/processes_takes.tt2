@@ -10,12 +10,14 @@
     </tr>
   </thead>
   <tbody>
+  [% FOREACH process_from IN from_processes %]	  
    <tr>
       <td><a href='[% process_link %]/show?id=[% process_from.id %]'>[% process_from.name %]</a></td>
       <td>[% process_from.tool %]</td>
       <td>[% process_from.configuration %]</td>
       <td>[% process_from.creation_time %]</td>
     </tr>
+   [% END %]    
   </tbody>
 </table>
 

@@ -9,17 +9,17 @@ require GDACAP::DB::Process;
 require GDACAP::DB::File;
 
 my ($action, $person_id, $logger);
-my %known_action = map {$_ => 1} qw(list show extend create search visualise save); 
+my %known_action = map {$_ => 1} qw(list show extend create search visualise save);
 
 sub handler {
 	my $r;
 	($r, $action, $person_id) = @_;
-	$logger = $GDACAP::Web::logger;	
+	$logger = $GDACAP::Web::logger;
 	$action = 'list' unless $action;
 	if (exists($known_action{$action})) {
 		no strict 'refs';
         &{$action}($r, $person_id);
-    } else { 
+    } else {
 		GDACAP::Web::Page::show_msg($r, 'Bad request', 'Please do not play.');
 	}
 }
@@ -44,7 +44,7 @@ sub list {
 	my $template_vars = {
 		section_article_id => 'Process',
 		header           => 'Processes only generated files - roots',
-		help_url         => $GDACAP::Web::location.'/command/help/?id=processes',            
+		help_url         => $GDACAP::Web::location.'/command/help/?id=processes',
 		processes => $project->root_processes($project_id),
 		link => $GDACAP::Web::location.'/process/show_outfile',
 	};
@@ -56,11 +56,11 @@ sub show {
 
 	my $req = Apache2::Request->new($r);
 	my $project_id = $req->param('project_id');
-	if ($project_id) { show_processes($r, $person_id, $project_id); 
+	if ($project_id) { show_processes($r, $person_id, $project_id);
 	} else {
 		my $process_id = $req->param('id');
-		show_process($r, $person_id, $process_id); 
-	}	
+		show_process($r, $person_id, $process_id);
+	}
 }
 
 sub show_processes {
@@ -105,10 +105,10 @@ sub show_process {
 	my $template_vars = {
 		section_article_id => 'Process',
 		header      => 'Processes',
-		help_url    => $GDACAP::Web::location.'/command/help/?id=process_show',            
+		help_url    => $GDACAP::Web::location.'/command/help/?id=process_show',
 		process     => $process->values(),
 		in_files    => $process->files('in'),
-		out_files   => $process->files('out'),		
+		out_files   => $process->files('out'),
 		extend_link => $GDACAP::Web::location.'/process/extend',
 		viz_link    => $GDACAP::Web::location.'/process/visualise',
 	};
@@ -142,7 +142,7 @@ sub create {
 		section_article_id => 'Process',
 		header           => 'Crate a process - an step of an analysis pipeline',
 		message          => $msg,
-		help_url         => $GDACAP::Web::location.'/command/help/?id=analyse',            
+		help_url         => $GDACAP::Web::location.'/command/help/?id=analyse',
 		project          => $project->values(),
 		person_id        => $person_id,
 		commands                          => $commands,
@@ -198,9 +198,9 @@ sub extend {
 		GDACAP::Web::Page::show_msg($r, 'Accesse is denied','No information is available to you.');
 		return;
 	}
-	
+
 	my $process = GDACAP::DB::Process->new();
-	my $processes = $process->downstream($file_copy_id);
+	my $processes = $process->took($file_copy_id);
 	$processes = [] unless $processes;
 	my $tpl_setting = {
 		template_name => 'processes_takes',
@@ -209,9 +209,9 @@ sub extend {
 	my $template_vars = {
 		section_article_id => 'Process',
 		header             => 'Process',
-		help_url           => $GDACAP::Web::location.'/command/help/?id=processes',            
+		help_url           => $GDACAP::Web::location.'/command/help/?id=processes',
 		file_copy          => $$file{original_name},
-		process_from       => $process->processed($file_copy_id),
+		from_processes     => $process->processed($file_copy_id),
 		processes 		   => $processes,
 		process_link       => $GDACAP::Web::location.'/process',
 	};
@@ -242,7 +242,7 @@ sub visualise {
 			$trace = $process->full_tree($file_copy_id);
 		} else {
 			$trace = $process->all_descendants($file_copy_id);
-		}	
+		}
 	} catch {
 		$logger->debug("Error msg is: $_");
 	};
@@ -285,7 +285,7 @@ __END__
 
 =head1 NAME
 
-GDACAP::Web::Command - Commands for none login use 
+GDACAP::Web::Command - Commands for none login use
 
 =head1 SYNOPSIS
 

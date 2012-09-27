@@ -315,8 +315,9 @@ sub register {
 }
 
 # Move files from source into target
+# Only argument: $index is set, remove original and leave an empty file
 sub copy_outfiles {
-	my ($self) = @_;
+	my ($self, $index) = @_;
 	my $source_path = $self->pool_path_source;
 	my $target_path = $self->pool_path_target;
 	my ($cur_fn, $success);
@@ -324,14 +325,21 @@ sub copy_outfiles {
 	foreach(@outfiles) {
 		$success = try {
 			$cur_fn = File::Spec->catfile($source_path,$$_{Hash});
-			GDACAP::FileOp::copy_file($cur_fn,$$_{Hash},$target_path) or
-				die("Cannot copy file into secure place. Reason is: $!\n",$cur_fn,"\t",$$_{'hash'},"\t",$target_path);
-			1;
+			if (GDACAP::FileOp::copy_file($cur_fn,$$_{Hash},$target_path)) {
+				return 1;
+			} else {
+				print STDERR "Cannot copy file into secure place. Reason is: $!\nSource=",$cur_fn,"\tTarget=",$target_path;
+				return 0;
+			}
 		} catch {
 			0;
 		};
 		if ($success) {
 			if (system('rm',$cur_fn)==0) { $success = 1; }
+			else { $success = 0; }
+		}
+		if ($success && $index) {
+			if (system('cp','/dev/null',$cur_fn)==0) { $success = 1; }
 			else { $success = 0; }
 		}
 		return 0 unless $success;
