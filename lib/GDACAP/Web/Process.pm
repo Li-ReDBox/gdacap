@@ -155,12 +155,12 @@ sub create {
 		get_graphviz_with_process_id_url  => $GDACAP::Web::location."/get_graph_with_process_id/",
 		get_process_with_dependencies_url => $GDACAP::Web::location."/get_process_with_dependencies/",
 		goto_create_pipeline_link         => $GDACAP::Web::location."/pipeline_create",
-		info_url                          => { analyse_files => $GDACAP::Web::location."/get_help/?id=analyse_files", } ,
+		info_url                          => { analyse_files => $GDACAP::Web::location."/command/help/?id=analyse_files", } ,
 	};
 	GDACAP::Web::Page::display($r, $tpl_setting, $template_vars, $person_id);
 }
 
-# FIXME: not functional and has not UI
+# FIXME: not functional and has no UI
 sub search {
 	my ($r, $person_id) = @_;
 

@@ -105,7 +105,9 @@ sub register_file_copy {
 		$file_id = $self->register_file($hash, $file_type_id, $size) ;
 		return $dbh->selectrow_array('INSERT INTO file_copy (file_id, original_name, person_id, project_id) VALUES (?, ?, ?, ?) RETURNING id',{},($file_id,$original_name,$person_id,$project_id));
 	} else {
-		return $self->hash2id($project_id, $hash);
+		my $copy_id = $self->hash2id($project_id, $hash);
+		return $copy_id if ($copy_id);
+		return $dbh->selectrow_array('INSERT INTO file_copy (file_id, original_name, person_id, project_id) VALUES (?, ?, ?, ?) RETURNING id',{},($file_id,$original_name,$person_id,$project_id));
 	}
 }
 

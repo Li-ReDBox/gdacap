@@ -19,7 +19,7 @@ use GDACAP::Process;
 
 use Log::Log4perl;
 
-our ($logger, $repository, $secure, $sourcep, $targetp);
+our ($logger, $repository, $secure, $sourcep, $targetp, $logp);
 {
 	use Apache2::ServerUtil ();
 	my $s = Apache2::ServerUtil->server();
@@ -34,7 +34,10 @@ our ($logger, $repository, $secure, $sourcep, $targetp);
 
 	my $section = $$config{'session'};
 	$secure = $$section{has_https}; # whether to enforce HTTPS
-#	$logger->debug("REST Process starts - HTTPS required = $secure");
+	my $folders = $$config{'folders'};
+	$logp = $$folders{'upload'};
+	$logger->debug("Log path for JSON = $logp");
+	#	$logger->debug("REST Process starts - HTTPS required = $secure");
 }
 
 sub handler {
@@ -70,7 +73,7 @@ sub handler {
 sub save_json {
 	my ($json, $tpath) = @_;
 	my $fn = APR::UUID->new->format() . '.json';
-	$fn = File::Spec->catfile($tpath,$fn);
+	$fn = File::Spec->catfile($logp,$fn);
 	$logger->info("Saving JSON file: $fn");
 	open(my $fh, '>', $fn) or $logger->logdie("Cannot log Process JSON: $! ");
 	print $fh $json;
@@ -104,7 +107,7 @@ sub create_process {
 		# save json and request ip to a file, if anything wrong, allow manual process
 		# It also registers where the request came from
 		my $c = $r->connection;
-		save_json("client_ip:".$c->remote_ip()."\n".$body,$targetp);
+		save_json("client_ip:".$c->remote_ip()."\n".$body,$logp);
 		$pr->load_from_json($body);
 		return 1;
 	} catch {
@@ -124,7 +127,8 @@ sub create_process {
 			response($r, $rt);
 		} else {
 			# print $fh_err response($$rt{msg}="Failed to register your process. More reason: $_");
-			$logger->info(response($$rt{msg}="Failed to register your process. More reason: $_"));
+			$$rt{msg}="Failed to register your process. More reason: $_";
+			$logger->info($$rt{msg});
 			response_error($r,"406","Failed to register your process. More reason: $_\n");
 		}
 	}

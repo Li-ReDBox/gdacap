@@ -48,11 +48,16 @@ sub create {
 	my ($self, $info) = @_;
 	
 	my $id = undef;
+# TODO: how to avoid multiple content creation ?	
 	$id = $self->search($info);
-	return $$id[0] if ($id && @$id == 1); # created before
-	if (@$id > 1) {
-		Carp::croak("Error: more than one Porcess with same contente created before.");
-	} 
+	if ($id && @$id >= 1) { # created before, the return could have undef, skip them
+		for (@$id) {
+			return $_ if $_;
+		}
+	}
+#	if ($id && @$id > 1) {
+#		Carp::croak("Error: more than one Porcess with same content created before.");
+#	} 
 
 	my %meta = (iname => $$info{Name}, category => $$info{Category});
 	$meta{configuration} = $$info{Configuration} if $$info{Configuration};
@@ -182,6 +187,7 @@ sub full_tree {
 # Find a Process by its metadata
 # Process Name, Category and etc
 # Tool Name and Version have to appear at the same time.
+# TODO: run_upload is the same for some users: only Outcome changes which is not part of Metadata.
 sub search {
 	my ($self, $info) = @_;
 
@@ -218,8 +224,7 @@ sub search {
 
 	my $ids = $self->rows_in_one($self->arrayref("SELECT id FROM process $qualifier", @values));
 #	print "$dbh->{Statement}\n";
-	
-	if (@$ids == 1 ) {
+	if (@$ids >= 1 ) {
 		unless (defined($$info{project_id})) {
 			Carp::carp('No project id is provided and file copy cannot be identified.');
 			return;
@@ -227,29 +232,76 @@ sub search {
 #		"Meta leads to one match of Process so you can verify files: all listed files have to come from the same Process.\n";
 		my $frcd = GDACAP::DB::File->new();
 		my ($fc_ids, $statement, $f2pid);
-		if (exists($$info{Input})) {
-			try { $fc_ids = $frcd->hashes2ids($$info{project_id},$$info{Input}); };
-			return unless $fc_ids; # if file is not in system return null
-			$statement = sprintf("SELECT DISTINCT process_id FROM process_in_file WHERE process_id = ? AND file_copy_id IN (%s)", join(',', ('?')x@$fc_ids));
-			$f2pid = $dbh->selectrow_array($statement,{},$$ids[0],@$fc_ids);
-			return unless $f2pid; # not associate with this process, return null
-		}	
-		if (exists($$info{Output})) {
-			my @hashes = ();
-			foreach(@{$$info{Output}}) {
-				if (ref($_) eq '') { push(@hashes, $_); }  # Less useful but simple and direct
-				elsif (defined($$_{'Hash'})) { push(@hashes, $$_{'Hash'}); }
-				else { Carp::crok("Unkonw Output type: neither an arrary of strings or hashes with key Hash."); }
+		my @hashes = ();
+		my $id_num = scalar(@$ids) -1;
+CHECK: for my $index (0 .. $id_num) {
+			if (exists($$info{Output})) {
+				@hashes = ();
+				foreach(@{$$info{Output}}) {
+					if (ref($_) eq '') { push(@hashes, $_); }  # Less useful but simple and direct
+					elsif (defined($$_{'Hash'})) { push(@hashes, $$_{'Hash'}); }
+					else { Carp::crok("Unkonw Output type: neither an arrary of strings or hashes with key Hash."); }
+				}
+				undef $fc_ids;
+				try { $fc_ids = $frcd->hashes2ids($$info{project_id},\@hashes); };
+				unless ($fc_ids) { 
+					delete $$ids[$index];
+					next CHECK; 
+				}
+				$statement = sprintf("SELECT DISTINCT process_id FROM process_out_file WHERE process_id = ? AND file_copy_id IN (%s)", join(',', ('?')x@$fc_ids));
+				$f2pid = $dbh->selectrow_array($statement,{},$$ids[$index],@$fc_ids);
+				unless ($f2pid) {
+					delete $$ids[$index];
+					next CHECK;
+				}
 			}
-
-			undef $fc_ids;
-			try { $fc_ids = $frcd->hashes2ids($$info{project_id},\@hashes); };
-			return unless $fc_ids;
-			$statement = sprintf("SELECT DISTINCT process_id FROM process_out_file WHERE process_id = ? AND file_copy_id IN (%s)", join(',', ('?')x@$fc_ids));
-			$f2pid = $dbh->selectrow_array($statement,{},$$ids[0],@$fc_ids);
-			return unless $f2pid;
+			if ($f2pid && exists($$info{Input})) {
+				try { $fc_ids = $frcd->hashes2ids($$info{project_id},$$info{Input}); };
+				unless ($fc_ids) { # if file is not in system return null
+					delete $$ids[$index];
+					next CHECK; 
+				}
+				$statement = sprintf("SELECT DISTINCT process_id FROM process_in_file WHERE process_id = ? AND file_copy_id IN (%s)", join(',', ('?')x@$fc_ids));
+				$f2pid = $dbh->selectrow_array($statement,{},$$ids[$index],@$fc_ids);
+				unless ($f2pid) { # not associate with this process, return null
+					delete $$ids[$index];
+				}
+			}	
 		}	
 	}
+	
+	
+#	if (@$ids == 1 ) {
+#		unless (defined($$info{project_id})) {
+#			Carp::carp('No project id is provided and file copy cannot be identified.');
+#			return;
+#		}
+##		"Meta leads to one match of Process so you can verify files: all listed files have to come from the same Process.\n";
+#		my $frcd = GDACAP::DB::File->new();
+#		my ($fc_ids, $statement, $f2pid);
+#		if (exists($$info{Input})) {
+#			try { $fc_ids = $frcd->hashes2ids($$info{project_id},$$info{Input}); };
+#			return unless $fc_ids; # if file is not in system return null
+#			$statement = sprintf("SELECT DISTINCT process_id FROM process_in_file WHERE process_id = ? AND file_copy_id IN (%s)", join(',', ('?')x@$fc_ids));
+#			$f2pid = $dbh->selectrow_array($statement,{},$$ids[0],@$fc_ids);
+#			return unless $f2pid; # not associate with this process, return null
+#		}	
+#		if (exists($$info{Output})) {
+#			my @hashes = ();
+#			foreach(@{$$info{Output}}) {
+#				if (ref($_) eq '') { push(@hashes, $_); }  # Less useful but simple and direct
+#				elsif (defined($$_{'Hash'})) { push(@hashes, $$_{'Hash'}); }
+#				else { Carp::crok("Unkonw Output type: neither an arrary of strings or hashes with key Hash."); }
+#			}
+#
+#			undef $fc_ids;
+#			try { $fc_ids = $frcd->hashes2ids($$info{project_id},\@hashes); };
+#			return unless $fc_ids;
+#			$statement = sprintf("SELECT DISTINCT process_id FROM process_out_file WHERE process_id = ? AND file_copy_id IN (%s)", join(',', ('?')x@$fc_ids));
+#			$f2pid = $dbh->selectrow_array($statement,{},$$ids[0],@$fc_ids);
+#			return unless $f2pid;
+#		}	
+#	}
 	return $ids;
 }
 

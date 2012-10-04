@@ -8,6 +8,7 @@ use Try::Tiny;
 
 require GDACAP::DB::Experiment;
 require GDACAP::DB::Run;
+require GDACAP::Web::Experiment;
 
 my ($action, $person_id, $logger);
 my %known_action = map {$_ => 1} qw(create edit); 
@@ -43,19 +44,24 @@ sub create {
 	my @selected_files  = $req->param('file_copy_id');
 	if (@selected_files >= 1) {
 		my $run = GDACAP::DB::Run->new();	
-		try {
+		my $status =0;
+		$status = try {
 			if ($run->create({experiment_id=>$experiment_id, run_date=>$req->param('run_date'), 
 							  file_copy_ids=>\@selected_files, phred_offset=>$req->param('score_offset')})) {
 				$logger->debug(@selected_files . " have been added with $req->param('score_offset').");
-				GDACAP::Web::Experiment::display_experiment($r, $exp, 'r');
-				return;
+				return 1;
 			} else {
 				$msg = "New run has not been added.";
 			}
 		} catch {
 			$logger->error($_);
 			$msg = "Not all files have been successfully added. They might have been added before. $_";
-		};	
+		};
+		if ($status) {
+			$r->headers_out->set( 'Location' => $GDACAP::Web::location.'/experiment/show?experiment_id='.$experiment_id );
+			$r->status(Apache2::Const::REDIRECT);
+			return;
+		}
 	}
 
     my $tpl_setting = {
@@ -66,7 +72,7 @@ sub create {
         section_article_id   => 'Editexperiment',
         header     => 'Add run files to an experiment',
         action     => $GDACAP::Web::location.'/run/create',
-		help_url   => $GDACAP::Web::location.'/help/?id=run_create',
+		help_url   => $GDACAP::Web::location.'/command/help/?id=run_create',
 		message    => $msg,
 		experiment => $exp->values(),
 		runs       => $exp->runs(),
@@ -118,7 +124,7 @@ sub edit {
         section_article_id   => 'Editexperiment',
         header     => "Edit experiment's run",
         action     => $GDACAP::Web::location.'/run/edit',
-		help_url   => $GDACAP::Web::location.'/help/?id=run_edit',
+		help_url   => $GDACAP::Web::location.'/command/help/?id=run_create',
 		message    => $msg,
 		experiment => $experiment->values(),
 		run        => $run->values(),

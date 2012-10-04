@@ -160,7 +160,7 @@ sub display_study {
         edit_study_link      => $GDACAP::Web::location."/study/edit",
         experiment_action    => $GDACAP::Web::location."/experiment/show",
 		add_experiment_link  => $GDACAP::Web::location."/experiment/create",
-        help_url             => $GDACAP::Web::location.'/command/help/?id=study_show',		
+        help_url             => $GDACAP::Web::location.'/command/help/?id=study',		
     };
     GDACAP::Web::Page::display($r, $tpl_setting, $content, $person_id);
 }

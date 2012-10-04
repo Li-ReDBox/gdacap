@@ -4,14 +4,16 @@ use strict;
 use warnings;
 
 use Apache2::Request;
+#use Apache2::Const -compile => qw(REDIRECT);
 use Try::Tiny;
 
-require GDACAP::DB::Study;
-require GDACAP::DB::Experiment;
-require GDACAP::DB::Sample;
+use GDACAP::DB::Study;
+use GDACAP::DB::Experiment;
+use GDACAP::DB::Sample;
+use GDACAP::DB::Submission;
 
 my ($action, $person_id, $logger);
-my %known_action = map {$_ => 1} qw(show create edit); 
+my %known_action = map {$_ => 1} qw(show create edit submit); 
 
 sub handler {
 	my $r;
@@ -92,7 +94,7 @@ sub create {
         section_article_id   => 'Createexperiment',
         header     => 'Creat an experiment',
         action     => $GDACAP::Web::location.'/experiment/create',
-		help_url   => $GDACAP::Web::location.'/help/?id=experiment_create',
+		help_url   => $GDACAP::Web::location.'/command/help/?id=experiment_create',
 		message    => $msg,
 		experiment => $info,
 		study_id   => $study_id,
@@ -139,7 +141,7 @@ sub edit {
         section_article_id   => 'Editexperiment',
         header     => 'Edit an experiment',
         action     => $GDACAP::Web::location.'/experiment/edit',
-		help_url   => $GDACAP::Web::location.'/help/?id=experiment_edit',
+		help_url   => $GDACAP::Web::location.'/command/help/?id=experiment_edit',
 		message    => $msg,
 		experiment => $exp->values(),
 		rda_ready  => $project->has_Manager(),
@@ -150,14 +152,50 @@ sub edit {
     GDACAP::Web::Page::display($r, $tpl_setting, $content, $person_id);
 }
 
+sub submit {
+    my ( $r, $person_id ) = @_;
+	
+	my $req = Apache2::Request->new($r);
+	my $experiment_id = $req->param("experiment_id"); 
+	my $exp = GDACAP::DB::Experiment->new();
+	$exp->by_id($experiment_id);
+	my $project_id = $exp->project_id();
+	my $project = GDACAP::DB::Project->new();
+	$project->by_id($project_id);	
+	my $role = GDACAP::DB::Personrole->new($person_id);
+	my $right = $role->has_right($exp->project_id(),'experiment');
+	unless ($right eq 'w') {
+		GDACAP::Web::Page::show_msg($r, 'Accesse is denied','No information is available to you.');
+		return;
+	}
+# Either creat a job or do it now
+	my $release_date = $req->param("release_date");
+	$exp->log_submission($release_date);
+	submit_reqest($experiment_id, $release_date);
+	$exp->by_id($experiment_id);
+	$r->headers_out->set( 'Location' => $GDACAP::Web::location.'/experiment/show?experiment_id='.$experiment_id );
+	$r->status(Apache2::Const::REDIRECT);
+#	display_experiment($r, $exp, $right);
+}
+
 # Internal functions
 sub display_experiment {
     my ($r, $exp, $right) = @_;
     my $write_permission = $right eq 'w' ? 1 : 0;
     my $project_id = $exp->project_id();
-    if ($write_permission) {
-	$write_permission = 0 if ($$exp{accession});
-    }
+    my %submission = (release_date=>'',successful=>'',action=>'Add',action_time=>'');
+	if ($$exp{submitted}) { # display the submission_state
+		my $subm = GDACAP::DB::Submission->new();
+		my $info = $subm->info('experiment',$$exp{id});
+		$submission{release_date} = $$info{release_date};
+		my $state = $subm->state($$info{id});
+		if ($state) {
+			for (keys %$state) { $submission{$_} = $$info{$_}; }
+		}
+	}
+#    if ($write_permission) {
+#		if ($$exp{accession}) { $write_permission = 0; }
+#    }
     my $tpl_setting = {
         template_name      => 'experiment',
         project_navigation => $project_id, # must pass the project_id for project_navigation to work
@@ -168,14 +206,38 @@ sub display_experiment {
         write_permission     => $write_permission,
         experiment           => $exp->values(),
         runs                 => $exp->runs(),
-	layout_changble      => $exp->layout_changeable(),
+		layout_changble      => $exp->layout_changeable(),
+		submission_state     => \%submission,
         edit_experiment_link => $GDACAP::Web::location."/experiment/edit",
-	run_edit_action      => $GDACAP::Web::location."/run/edit",
-	add_experiment_run   => $GDACAP::Web::location."/run/create",
-	submit2ebi           => $GDACAP::Web::location."/experiment/submit",
+		run_edit_action      => $GDACAP::Web::location."/run/edit",
+		add_experiment_run   => $GDACAP::Web::location."/run/create",
+		submit2ebi           => $GDACAP::Web::location."/experiment/submit", #TODO
         help_url             => $GDACAP::Web::location.'/command/help/?id=experiment',		
     };
     GDACAP::Web::Page::display($r, $tpl_setting, $content, $person_id);
+}
+
+sub submit_reqest {
+	my ($experiment_id, $release_date) = @_;
+	my $repo = GDACAP::Resource::get_section('repository');
+	if (exists($$repo{requests})) { # This is the desired way: as compression takes long time
+		my $job_path = File::Spec->catfile($$repo{requests},'pub');
+#		 Setting problem, die
+		Carp::croak("Cannot create job request in $job_path: not writable.") unless -w $job_path;
+#		 Create job to there
+		my $job_fn = File::Spec->catfile($job_path,time().'.req');
+		try {
+			open(my $fh, '>', $job_fn) or Carp::croak "Cannot open $job_fn!", "\nreason=",$!,"\n";
+			print $fh "$release_date experiment $experiment_id\n";
+			close $fh;
+		} catch {
+			print STDERR $_;
+		};
+	} else {
+		my @args = ('perl','/var/www/perl/ebi-submitter_ondev.pl','experiment='.$experiment_id);
+		exec { $args[0] } @args  or print STDERR "Couldn't prepare the submission: $!";
+	}
+
 }
 
 1;

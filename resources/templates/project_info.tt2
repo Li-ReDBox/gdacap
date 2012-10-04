@@ -3,6 +3,16 @@
     <li><input type="text"      name="iname"          value="[% project.iname %]"             required="required" /></li>
     <li>Alias* (A short, informal name to identify your projcet. Has to be unique in the system)</li>
     <li><input type="text"      name="alias"  value="[% project.alias %]"             required="required" /></li>
+    [% IF expoints.size > 0 %]
+    <li>Name of exporting point (used when repository is not readable directly by users)</li>
+    <li>
+      <select name="expoint" name="expoint">
+		[% FOREACH expoint IN expoints %]
+		  <option value="[% expoint.0 %]" [% IF project.expoint == expoint.0 %]     selected="selected" [% END %]> [% expoint.1 %] </option>
+		[% END %]
+      </select>
+    </li>
+    [% END %]
     <li>Description*</li>
     <li><textarea               name="description"                                          required="required" >[% project.description %]</textarea></li>
     <li>Start date*</li>

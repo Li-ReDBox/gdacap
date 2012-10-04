@@ -13,7 +13,7 @@ require GDACAP::Web::Session;
 require GDACAP::Web::Page;
 require GDACAP::Web::Command;
 
-our ($logger, $folders, $location, $mail_settings);
+our ($logger, $folders, $location, $mail_settings, $expoints);
 { 
 	use Apache2::ServerUtil ();
 	my $s = Apache2::ServerUtil->server();
@@ -25,6 +25,7 @@ our ($logger, $folders, $location, $mail_settings);
 	# $folders = get_section('folders');
 	$folders = $$config{'folders'};
 	$mail_settings = $$config{'mail'};
+	$expoints = $$config{'expoints'} if exists($$config{'expoints'});
 }
 
 # sub dump { use Data::Dumper; use Apache2::RequestIO (); my $r = shift; $r->content_type('text/plain'); $r->print(Dumper($r)); $logger->debug('it has been called'); }

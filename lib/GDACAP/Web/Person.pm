@@ -90,7 +90,7 @@ sub create {
 		action          => $GDACAP::Web::location.'/person/create/',
 		anzsrc_url      => $GDACAP::Web::location.'/command/anzsrc/',
 		anzsrcs         => $anzsrc->get_all(),
-		help_url        => $GDACAP::Web::location.'/commad/help/?id=self_register',            
+		help_url        => $GDACAP::Web::location.'/command/help/?id=self_register',            
 		message         => $msg,
 		organisations   => $org->name_list(),
 		person          => \%person,
@@ -168,7 +168,7 @@ sub edit {
 		titles             => \%GDACAP::DB::Person::full_title,
         edit_user_link     => $GDACAP::Web::location.'/person/edit',
         goto_project_link  => $GDACAP::Web::location.'/project/show',
-		help_url           => $GDACAP::Web::location.'/commad/help/?id=person_edit_admin',            
+		help_url           => $GDACAP::Web::location.'/command/help/?id=person_edit_admin',            
         person             => $person_rcd->values(),
         affiliations       => $person_rcd->organisations(),
         projects           => $projects,
@@ -202,7 +202,6 @@ sub update {
 		anzsrcs            => $anzsrc->get_all(),
 		organisations      => $organisations,
 		titles             => \%GDACAP::DB::Person::full_title,
-		help_url           => $GDACAP::Web::location.'/commad/help/?id=person_update',            
         person             => $person_rcd->values(),
         affiliations       => $person_rcd->organisations(),
 		message            => $msg,
@@ -221,8 +220,6 @@ sub edit_personal_info{
 	my $msg = $$validated_form{msg};
 		
 	my $person = $$validated_form{content};
-	use Data::Dumper;
-	$logger->debug("update userinfor with these informaion:\n",Dumper($person));
 	my $old_email = $$person_rcd{email};
 	my $is_authorized = $$person_rcd{is_authorized};
 	if ($msg eq '1') {	

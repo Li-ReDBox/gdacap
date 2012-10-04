@@ -78,18 +78,21 @@ sub get_repository {
 sub _read_repository {
 	my $repo = get_section('repository');
 	if ($repo) {
-		$repository{source} = $repo->{source};
-		$repository{target} = $repo->{target};
+		die 'Source and target both have to be defined.' unless exists($$repo{source}) && exists($$repo{target});
+		%repository = map { $_ => $$repo{$_} } keys %$repo; 
 	}
 }
 
 sub get_section {
-	return unless $CONF_PATH;
+	my ($section) = @_;
+	unless ($CONF_PATH) {
+		carp "Call prepare first.";
+		return ;
+	}	
 
 	my $config = Config::Tiny->read($CONF_PATH);
 	carp $Config::Tiny::errstr unless $config;
 
-	my ($section) = @_;
 	return $config->{$section} if exists($config->{$section});
 }
 

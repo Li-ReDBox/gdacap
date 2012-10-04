@@ -1,0 +1,38 @@
+[% message %]
+<!-- used by decomission and export -->
+<form method="POST" action="[% action %]">
+  <input type="hidden" name="project_id" value="[% project_navigation_project_id %]" />
+<table border="1" class="tblSortable tablesorter">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Hash</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th>Added time</th>
+      <th></th>      
+    </tr>
+  </thead>
+  <tbody>
+    [% FOREACH f IN fileinfo %]
+	    <tr>
+        <td></td>
+        <td>[% f.original_name %]</td>  
+        <td>[% f.hash %]</td>
+        <td>[% f.type %]</td>
+        <td>[% IF f.size.defined %] [% f.size %] [% END %]</td>		
+        <td>[% f.added_time %]</td>
+        <td><input type="checkbox" name="hashes" value="[% f.hash %]"/></td>
+      </tr>
+    [% END %]
+  </tbody>
+</table>
+[% IF action %]
+[% a = action.split('/') %]
+[% IF a.last == 'export' %]
+<label>Sub directory (optional, e.g. a_sub or a/b/c )<input type="text" name="sub_dir" /></label>
+[% END %]
+[% END %]
+<input type="submit" value="Do" />
+</form>

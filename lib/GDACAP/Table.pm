@@ -5,7 +5,7 @@ use warnings;
 
 use Carp ();
 use DBI ();
-use Data::Dumper;
+
 use Try::Tiny;
 
 use GDACAP::Resource qw(get_dbh);
@@ -42,8 +42,6 @@ sub AUTOLOAD {
 	my $field = $AUTOLOAD;
 	$field =~ s/.*:://;
 	my %t = %{$class.'::permitted'};
-	# print $class.'::permitted',Dumper(%t);
-	# print Dumper($GDACAP::DB::Person::permitted{$field});
 	unless (exists ${$class.'::permitted'}{$field} ) {
 	   Carp::croak "Can't access `$field' field in class ".$class;
 	}

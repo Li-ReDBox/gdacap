@@ -9,7 +9,7 @@
 [% BLOCK file_select %] 
 [% IF files.defined && files.size > 0 %]
   [% FOREACH f IN files %]        
-		<option value="[% f.0 %]" > [% f.1 %]</option>
+		<option value="[% f.id %]" > [% f.original_name %]</option>
   [% END %]
   </select>
 [% END %]

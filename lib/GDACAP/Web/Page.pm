@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Apache2::RequestRec();    # for $r->content_type
-use Data::Dumper;
 use Template;
 
 # require Exporter;

@@ -1,4 +1,4 @@
-package GDACAP::DB::Tool;
+package GDACAP::DB::Submission;
 
 use strict;
 use warnings;
@@ -18,28 +18,16 @@ sub new {
 	return bless ({}, $class);
 }
 
-# Retrieve a tool_id if match any. Otherwise, create new tool and return tool_id
-sub tool_id {
-	my ($self, $tool, $version) = @_;
-	return $self->row_value('SELECT id FROM tool WHERE iname = ? AND version = ?', $tool, $version);
+# The information of a submission: type,release date, id for state query
+sub info {
+	my ($self, $type, $id) = @_;
+	return $self->row_hashref('SELECT id, release_date FROM submission WHERE type = ? AND item_id = ?', $type, $id);
 }
 
-sub create_tool {
-	my ($self, $tool, $version) = @_;
-	return $dbh->selectrow_array('INSERT INTO tool (iname, version) VALUES (?,?) RETURNING id',{}, $tool,$version);
-}
-
-sub get_create_tool {
-	my ($self, $tool, $version) = @_;
-	my $tool_id = $self->tool_id($tool, $version);
-	return $tool_id if $tool_id;
-	return $self->create_tool($tool, $version);
-}
-
-
-sub all {
-	my $self = shift;
-	return $self->array_hashref("SELECT $query_fields FROM tool order by id");
+# Returns the last action state to normal user
+sub state {
+	my ($self, $sub_id) = @_;
+	return $self->row_hashref('SELECT successful, action, action_time FROM submission_state WHERE submission_id = ? ORDER BY action_time DESC LIMIT 1', $sub_id);
 }
 
 1;
@@ -48,7 +36,7 @@ __END__
 
 =head1 NAME
 
-GDACAP::DB::Tool - Queries about Tools in the system 
+GDACAP::DB::Submission - Queries about a submission to EBI of either a Study or an Experiment
 
 =head1 SYNOPSIS
 
@@ -56,16 +44,17 @@ GDACAP::DB::Tool - Queries about Tools in the system
   use GDACAP::Resource ();
   GDACAP::Resource->prepare('../lib/GDACAP/config.conf');
 
-  use GDACAP::DB::Tool;
-  my $tools = GDACAP::DB::Tool->new();
+  use GDACAP::DB::Submission;
+  my $subm = GDACAP::DB::Submission->new();
 
-  my @tool_list = @{ $tools->all() }; 
-	
+  my $info = $subm->info('experiment',7);
+  print $info;
+  my $state = $subm->state($$info{id});
+  print $state;
+
 =head1 DESCRIPTION
 
-A tool can be any piece of software or hardware used to generate outcomes which are significant to an analysis.
-They can be a software package or a script developed locally. A Tool is identified by Name, Version. It can have
-description.
+It mainly works on Table submission_state.
 
 =head1 AUTHOR
 

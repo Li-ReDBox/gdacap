@@ -221,7 +221,8 @@ sub get_SRA_run {
 }
 
 # Sequence reads have significant size, no gzip or md5 is done in our script.
-# read the md5 of a file: the file has only one line with two parts: md5 and file name split by space
+# read the md5 of a gzipped fastq file: the file has only one line with two parts: md5 and file name split by space
+# file name is xxx.fastq.gz
 sub read_md5 {
 	my ($fn, $needle) = @_;
 	my $md5;
@@ -257,14 +258,14 @@ sub run {
 	return $fn;
 }
 
-# each run of an experiment
+# each run of an experiment - FASTQ type
 sub run_element {
 	my ($self, $exp_id, $xw, $repo) = @_;
 
 	my @run_file_rcs = @ { $self->get_SRA_run($exp_id) }; # can be two or one
 	my ($n, $run);
 
-	Carp::croak('Only FASTQ files are allowed') unless $run_file_rcs[0]->{type} eq 'FASTQ';
+	Carp::croak('Only FASTQ and ZIPPEDFATQ files are allowed') unless index($run_file_rcs[0]->{type}, 'FASTQ') >= 0;
 	my $score_offset = $self->score_offset($exp_id);
 
 	$xw->startTag('RUN', alias=>$prefix.'_run_'.$run_file_rcs[0]->{id}, run_date=>$run_file_rcs[0]->{run_date}.'T00:00:00', center_name=>$center_name);
@@ -272,12 +273,21 @@ sub run_element {
     $xw->startTag('DATA_BLOCK');
     $xw->startTag('FILES');
 	my %labels =('1'=>,'F1','2'=>'R2');
+	my $needle;
 	try {
 		foreach (@run_file_rcs) {
 			$$_{hash} =~ s/$tail_space//;	# remove tailing spaces
 			# print $$_{hash},"\n";
+			if ($$_{type} eq 'FASTQ') {
+				$needle = $$_{raw_file_name}.'.gz';
+			} elsif ($$_{type} eq 'ZIPPEDFASTQ') {
+				$needle = $$_{raw_file_name};
+				$$_{type} = 'FASTQ';
+			} else {
+				die "Unsuppored run file type: $$_{type}.";
+			}
 			$xw->startTag('FILE', quality_scoring_system=>"phred", quality_encoding=>"ascii", ascii_offset=>$score_offset,
-			 checksum=>read_md5($working_dir.'/'.$$_{hash}.'.gz.md5',$$_{raw_file_name}.'.gz'), checksum_method=>"MD5",
+			 checksum=>read_md5($working_dir.'/'.$$_{hash}.'.gz.md5',$needle), checksum_method=>"MD5",
 			 filename=>$$_{raw_file_name}.'.gz', filetype=>lc($$_{type}));
 			if (scalar(@run_file_rcs)>1) {
 				$run = $repo->fpath($$_{hash}); # raw, ungzipped read file

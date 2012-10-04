@@ -15,6 +15,10 @@
     <td>[% project.alias %]</td>
   </tr>
   <tr>
+    <td><strong>Name of exporting point</strong></td>
+    <td>[% project.expoint %]</td>
+  </tr>
+  <tr>
     <td><strong>Description</strong></td>
     <td>[% project.description %]</td>
   </tr>
@@ -64,6 +68,9 @@
       </tbody>   
   </table>
 [% IF write_permission %]
+[% IF admin_msg %]
+<em>Remember, appoint a Manager before publishing to RDA.</em>
+[% END %]
 <form action="[% project_manage_url %]" method="post">
   <input type="hidden" name="project_id" value="[% project.id %]" />
   <input type="submit" value="Manage" />

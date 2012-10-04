@@ -6,6 +6,8 @@ use warnings;
 use GDACAP::Table;
 our @ISA = qw(GDACAP::Table);
 
+use Try::Tiny;
+
 my @fields = qw(id experiment_id run_date accession);
 my $query_fields = join(',',@fields);
 our %permitted = map { $_ => 1 } @fields;
@@ -105,7 +107,7 @@ sub create {
 			foreach (@{$$info{file_copy_ids}}) {
 				if ($boffset_yet) { # only need to be done once
 					$ftype = $finfo->type($_);
-					if ($ftype eq 'FASTQ') { 
+					if (index($ftype, 'FASTQ')>=0) { 
 						die "Phred score offset is not available" unless $$info{phred_offset}; 
 						$dbh->do("INSERT INTO attribute (table_name, item_id, atype, avalue) VALUES ('run_core', ? , 'phred_offset', ?)", {}, $id, $$info{phred_offset}) or die  $dbh->errstr;
 						$boffset_yet = 0;
@@ -134,8 +136,13 @@ sub update {
 	foreach (@{$$info{file_copy_ids}}) {
 		$sth->execute($$self{id}, $_) or die $sth->errstr;
 	}
-	if ($$info{phred_offset}) { 
-		$dbh->do("UPDATE attribute SET avalue = ?  WHERE table_name = 'run_core' AND item_id = ? AND atype = 'phred_offset'",{},$$info{phred_offset}, $$self{id}) or die $dbh->errstr;
+	if ($$info{phred_offset}) {
+		my $old =  $self->get_attribute('phred_offset');
+		if ($old) {
+			$dbh->do("UPDATE attribute SET avalue = ?  WHERE table_name = 'run_core' AND item_id = ? AND atype = 'phred_offset'",{},$$info{phred_offset}, $$self{id}) or die $dbh->errstr;
+		} else {
+			$dbh->do("INSERT INTO attribute (table_name, item_id, atype, avalue) VALUES ('run_core', ? , 'phred_offset', ?)", {}, $$self{id}, $$info{phred_offset}) or die  $dbh->errstr;
+		}
 	}
 	$self->by_id($$self{id});
 }

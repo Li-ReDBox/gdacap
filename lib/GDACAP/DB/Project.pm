@@ -9,16 +9,15 @@ use GDACAP::Table;
 our @ISA = qw(GDACAP::Table);
 
 # Read from project_info (VIEW)
-my @fields = qw(id iname alias description start_date end_date phase);
+my @fields = qw(id iname alias description start_date end_date phase expoint);
 our $brief_fields = join(',',@fields); # This is a summary of a project
-# FIX: internal_name will be renamed to alias in the table
 @fields = (@fields, qw(anzsrc_for_code anzsrc_for phase_status_id memo));
 my $query_fields = join(',',@fields);
 our %permitted = map { $_ => 1 } @fields;
 
 # for Web interface, operates on project table
 our @creation = qw(iname alias description start_date anzsrc_for_code);
-our @creation_optional = qw(end_date memo);
+our @creation_optional = qw(end_date memo expoint);
 	
 sub new {
 	my ($class) = @_;
@@ -112,6 +111,27 @@ sub files {
 	my ($self, $project_id) = @_;
 	$project_id = $$self{id} unless $project_id;
 	return $self->array_hashref('SELECT id, hash, type, original_name, size, added_time FROM file_info WHERE project_id = ?',$project_id);
+}
+
+# Check if a project has expoint set
+sub can_export {
+	my ($self, $project_id) = @_;
+	$project_id = $$self{id} unless $project_id;
+	return $self->row_value('SELECT expoint FROM project WHERE id = ?',$project_id);
+}
+
+# Get files can be decomissioned from a project
+sub files_can_dec {
+	my ($self, $project_id) = @_;
+	$project_id = $$self{id} unless $project_id;
+	return $self->array_hashref('SELECT id, hash, type, original_name, size, added_time FROM file_info,single_copy WHERE file_info.file_id = single_copy.file_id AND deleted = FALSE AND project_id = ?',$project_id);
+}
+
+# Get files can be exported from a project
+sub files_can_expo {
+	my ($self, $project_id) = @_;
+	$project_id = $$self{id} unless $project_id;
+	return $self->array_hashref('SELECT id, hash, type, original_name, size, added_time FROM file_info WHERE deleted = FALSE AND project_id = ?',$project_id);
 }
 
 # End of Project file_copy section

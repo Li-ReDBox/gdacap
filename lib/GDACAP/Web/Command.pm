@@ -153,7 +153,7 @@ sub register {
 		action          => $GDACAP::Web::location.'/command/register/',
 		anzsrc_url      => $GDACAP::Web::location.'/command/get_anzsrc/',
 		anzsrcs         => $anzsrc->get_all(),
-		help_url        => $GDACAP::Web::location.'/commad/help/?id=self_register',
+		help_url        => $GDACAP::Web::location.'/command/help/?id=self_register',
 		message         => $msg,
 		organisations   => $org->name_list(),
 		person          => $person,
@@ -266,6 +266,7 @@ sub help {
 
     my $req = Apache2::Request->new($r);
     my $id  = $req->param("id");
+    $id = 'index' unless $id;
     my $function_vars = { template_name => 'help',  skip_menu => 1 };
 	my $template_vars = {
 		section_article_id	=> 'Help',

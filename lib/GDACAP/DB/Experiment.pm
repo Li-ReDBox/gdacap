@@ -33,6 +33,7 @@ sub by_id {
 	@{$self}{keys %$rcd} = values %$rcd; # if id has not been found, this line will not be executed, old value holds.
 	$self->nominal_size();
 	$self->in_rda();
+	$self->in_submission();
 	return $self->values();
 }
 
@@ -74,6 +75,40 @@ sub nominal_size {
 	return $nominal_size;
 }
 
+# attribute if an Experiment record has been in submission process
+# User has only one chance to submit. If it is failed, administrator has to be involved
+sub in_submission {
+	my ($self) = @_;
+	$$self{submitted} = $self->row_value('SELECT count(*) FROM submission WHERE type=? and item_id=?','experiment', $$self{id});
+	return $$self{submitted};
+}
+
+ sub register_submission {
+	 my ($self, $release_date, $exp_id) = @_;
+	 $exp_id = $self->id unless $exp_id;
+	 Carp::croak('Experiment id has not been set in either constructor or here.') unless $exp_id;
+	 my $statement = Ands::ADB::build_insert('submission', [qw(type item_id release_date)],1);
+	 my $sth = $self->dbh->prepare_cached($statement);
+	 my $id = undef;
+	 $self->dbh->begin_work;
+	 try {
+		 $id = $self->dbh->selectrow_array($sth,{},('experiment',$exp_id,$release_date));
+		 # print "Newly registered submission ID is $id.\n";
+		 # $self->dbh->rollback;
+		 $self->dbh->commit if $id;
+	 } catch {
+		 print STDERR "$_\n";
+		 $self->dbh->rollback;
+	 };
+	 return $id;
+ }
+
+# Log this experiment has been submitted even it does not mean sumbmission is or going to be successful.
+sub log_submission {
+	my ($self, $release_date, $id) = @_;
+	$id = $$self{id} unless $id;
+	$dbh->do("INSERT INTO submission (type, item_id, release_date) VALUES(?,?,?)", {}, ('experiment', $id, $release_date)) or die  $dbh->errstr;
+}
 # attribute if an Experiment record has been ready for RDA to harvest - in oai_headers
 sub in_rda {
 	my ($self) = @_;
@@ -145,11 +180,11 @@ sub runs {
 # The run file type can be set by $file_type. The default is FASTQ
 sub run_candidates {
 	my ($self, $file_type) = @_;
-	$file_type = 'FASTQ' unless $file_type;
+	$file_type = "'FASTQ', 'ZIPPEDFASTQ'" unless $file_type;
 	my $project_id = $self->project_id();
 	my $statement = "SELECT finf.id,original_name,added_time FROM file_info finf, process p, process_out_file po 
-	  WHERE finf.type = '$file_type' AND finf.project_id = ? AND finf.id = po.file_copy_id AND p.id = po.process_id and p.category = 'run upload'
-	  AND finf.id NOT IN (SELECT file_copy_id FROM run)";
+	  WHERE finf.type IN ($file_type) AND finf.project_id = ? AND finf.id = po.file_copy_id AND p.id = po.process_id and p.category = 'run upload'
+	  AND finf.id NOT IN (SELECT file_copy_id FROM run) ORDER BY original_name";
 	return $self->array_hashref($statement, $project_id);
 }
 
@@ -190,26 +225,6 @@ sub sample_ids {
 	$exp_id = $$self{id} unless $exp_id;
 	return $self->row_value('SELECT study_id, sample_id FROM experiment WHERE id = ?', $exp_id);
 }
-
-# sub register_submission {
-	# my ($self, $release_date, $exp_id) = @_;
-	# $exp_id = $self->id unless $exp_id;
-	# Carp::croak('Experiment id has not been set in either constructor or here.') unless $exp_id;
-	# my $statement = Ands::ADB::build_insert('submission', [qw(type item_id release_date)],1);
-	# my $sth = $self->dbh->prepare_cached($statement);
-	# my $id = undef;
-	# $self->dbh->begin_work;
-	# try {
-		# $id = $self->dbh->selectrow_array($sth,{},('experiment',$exp_id,$release_date));
-		# # print "Newly registered submission ID is $id.\n";
-		# # $self->dbh->rollback;
-		# $self->dbh->commit if $id;
-	# } catch {
-		# print STDERR "$_\n";
-		# $self->dbh->rollback;
-	# };
-	# return $id;
-# }
 
 # Collections
 sub platforms {
@@ -255,9 +270,24 @@ GDACAP::DB::Experiment - Experiment object
 
 C<GDACAP::DB::Experiment> returns a single record from experiment_info. As there are other ojbects assoicate to it, it is also the query interface to them. These interfaces only return fields summarise associated objects. The returned field lists are defined in associated fields.
 
-Most of attributes describe an experiment are defined in Table experiment expcept two: nominal_size and in_rda.
-nominal_size is defined in Table attribute and only be used when Run is in FASTQ and paired read.
-in_rda is a boolean and defined by if there is a corresponding record in oai_headers. It can only be set once - once published it cannot be deleted.
+Most of attributes describe an Experiment are defined in Table experiment expcept those listed here:
+
+=over 2
+
+=item * nominal_size is defined in Table attribute and only be used when Run is in FASTQ and paired read.
+
+=item * in_rda is a boolean and defined by if there is a corresponding record in Table oai_headers
+and RDA can harvest metadata. It is set by calling C<rda_allow>.
+It can only be set once - once published it cannot be deleted but the record can still be edited.
+The metadata in RDA is updated when there is RDA content update event.
+
+=item * submitted is a boolean and defined if it has a record in Table submission.
+In other words, it checks if the current Experiment has been submitted before.
+Once it is true (1) the record is not editable and no further submission from user is possible.
+User has only one chance to submit. If it is failed, administrator has to be involved.
+It does not matter if it has been successful or enve finished.
+
+=back
  
 =head1 METHODS
 
@@ -265,11 +295,16 @@ in_rda is a boolean and defined by if there is a corresponding record in oai_hea
 
   @candidates = @{ $exp->run_candidates($file_type) };
  
-C<run_candidates> - returns the files filtered by $file_type in category 'run upload' of a C<Process> which have not registered yet.
+Returns the files filtered by $file_type in category 'run upload' of a C<Process> which have not registered yet.
 
 =head2 rda_allow
 
-C<rda_allow> - inserts current Experiment into Table oai_headers in current format. It also checks if the depended Party and Activity records have been created in oai_headers. If they have not been inserted, insert them. The Person can be inserted has to have Manager role eithwise it dies.
+Inserts current Experiment into Table oai_headers in current format. It also checks if the depended Party and Activity records have been created in oai_headers. If they have not been inserted, insert them. The Person can be inserted has to have Manager role eithwise it dies.
+
+=head2 log_submission($release_date, optional $id)
+
+Logs an Experiment is being requested to be submitted. This occurs when a user clicks Submit button
+on an Experiment information page. An Experiment can only register a submission once and it has to have at least one run.
   
 =head1 AUTHOR
 
@@ -277,6 +312,21 @@ Jianfeng Li
 
 =head1 COPYRIGHT
 
-GDACAP package and its modules are copyrighted under the GPL, Version 3.0.
+Copyright (C) 2012  The University of Adelaide
+
+This file is part of GDACAP.
+
+GDACAP is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+GDACAP is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GDACAP.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut

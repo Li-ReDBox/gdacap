@@ -22,7 +22,7 @@
 			[% END %]
         </select>
 	</li>
-	<li><label for="lib_source"> Source*</label></li>
+	<li><label for="lib_source"> Library source*</label></li>
 	<li>
 		<select name="lib_source" required>
 		<option value=""></option>

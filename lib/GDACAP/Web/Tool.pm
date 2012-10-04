@@ -4,7 +4,6 @@ use warnings;
 
 use GDACAP::Web::Page;
 use GDACAP::DB::Tool;
-use Data::Dumper;
 
 my ($action, $person_id, $logger);
 my %known_action = map {$_ => 1} qw(list show);

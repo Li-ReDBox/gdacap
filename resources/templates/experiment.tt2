@@ -1,8 +1,7 @@
 [% IF write_permission %]
 [% UNLESS experiment.in_rda %]
-<p>Grant perimssion to Research Ddata Australia to harvest by clicking Edit button below.<br />
-Note, this is only possible if there is Manger has been appointed in the project, 
-</p> 
+<p>To grant perimssion to Research Data Australia for harvesting before submitting to EBI, edit the experiment.<br />
+Note, the check box will not be shown if there is no Manger has been appointed in the project.</p> 
 [% END %]
 <form action="[% edit_experiment_link %]" method="post">
   <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
@@ -33,7 +32,7 @@ Note, this is only possible if there is Manger has been appointed in the project
   </tr>
 </table>
 [% IF experiment.in_rda %]
-<p>Perimssion to Research Ddata Australia to harvest has been granted.</p> 
+<p>Perimssion to Research Data Australia to harvest has been granted.</p> 
 [% END %]
 <h3>Library </h3>
 	<strong> Source: </strong> [% experiment.lib_source %].
@@ -45,7 +44,7 @@ Note, this is only possible if there is Manger has been appointed in the project
 	[% END %]
 
 [% BLOCK run_edit %]
-[% IF write_permission %]
+[% IF write_permission && ! experiment.submitted %]
 <form method="POST" action="[% run_edit_action %]">
 <!-- input type="hidden" name="experiment_id" value="[% experiment.id %]" /-->
 <input type="hidden" name="run_id" value="[% run.id %]" />
@@ -57,19 +56,55 @@ Note, this is only possible if there is Manger has been appointed in the project
 [% IF runs.size > 0 %]
 <h3>Runs</h3>	
 [% INCLUDE run_fastq.tt2 %]
+[% IF submission_state.release_date %]
+<h3>Submission</h3>
+<ul>
+	<li><strong>Release date: </strong>[% submission_state.release_date %]</li>
+	[% IF submission_state.action_time %]
+	<li><strong>Recent action</strong>[% submission_state.action %]</li>
+	<li><strong>Action time</strong>[% submission_state.action_time %]</li>
+	[% IF submission_state.successful %] <li>Successfully</li> [% ELSE %] <li>Failed</li> [% END %]
+	[% ELSE %]
+	<li>Submission has been scheduled.</li>
+	[% END %]
+</ul>
+[% END %]
 [% END %]
 
 [% IF write_permission %]
 [% IF runs.size == 0 %] <h3>Runs</h3> [% END %]
+[% UNLESS experiment.submitted %]
 <form action="[% add_experiment_run %]" method="post">
   <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
   <input type="submit" value="Add" />
 </form>
-<h3>Submit to EBI</h3>
-<p> A submission can be held up to maximum of two years.</p>
-<form action="[% submit2ebi %]" method="post" onsubmit="return confirm('Are you sure to submit now?');">
+[% END %]
+[% IF runs.size > 0 && ! experiment.submitted %]
+<h3>Submit to EBI/SRA</h3>
+<p>Sequence files in this experiment run can be submitted to EBI but held in private up to maximum of two years from the date of submission. You can choose the current date or an earlier date to release immediately or use the default date for making them public.</p>
+<form name="ebi_submit" action="[% submit2ebi %]" method="post" onsubmit="return confirm('Are you sure to submit now?');">
   <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
-  <label>Release date <input type="date" name="release_date" required/></label>
+  <label>Release date <input type="date" name="release_date" required="required" onchange="check_releasedate(this)"/></label>
   <input type="submit" value="Submit" />
 </form>
+<script type="text/javascript">
+var r=new Date();
+r.setFullYear(r.getFullYear()+2);
+var rd=document.forms["ebi_submit"].elements["release_date"]; rd.value = r.toISOString().substring(0,10);
+
+function check_releasedate(obj){
+	try {
+		var rt_iso=obj.value;
+		var parts = rt_iso.match(/(\d+)/g);
+		var ss =  new Date();
+	  	var n = new Date(parts[0], parts[1]-1, parts[2], ss.getHours(), ss.getMinutes(), ss.getSeconds()); // months are 0-based
+	  	if (isNaN(n)) { throw("Wrong format"); }
+	  	if (n.getFullYear() !== Number(parts[0])) { throw("Wrong fomat"); }
+		var date1 = r.getTime(), date2 = n.getTime();
+		var timediff = date2 - date1;
+		if (timediff > 0) { obj.value = r.toISOString().substring(0,10); }
+	} catch(err) { obj.value = r.toISOString().substring(0,10); }
+};
+</script>
+[% END %]
 [% END %]

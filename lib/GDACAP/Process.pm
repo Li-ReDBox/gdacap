@@ -158,16 +158,18 @@ sub load_from_json {
 	if ($err) {	return 0; } else { return 1; }
 }
 
-# Register or verify thecontent of Process
-my $POOLPATHS = undef; # hash, file_copy information: the path of file pool, source and target
-
-# string, the paths to file pool, source and target
+# Paths related to Registration
+my $POOLPATHS = undef; 
+# string, the paths to file pool, source and target, optional reg_job
+# Other paths of Repository operations are not used but just checked
 sub pool_paths {
 	my ($self, $value) = @_;
 	if ($value) {
+		# If a path is gviven, it has to be readable
+		foreach (keys %$value) {
+			croak "Invalid pool path $_:'$$value{$_}'" unless -e -r $$value{$_};
+		}
 		$POOLPATHS = $value;
-		die "Invalid pool path ".$$POOLPATHS{'source'} if not -e $$POOLPATHS{'source'};
-		die "Invalid pool path ".$$POOLPATHS{'target'} if not -e $$POOLPATHS{'target'};
 	}
 	return $POOLPATHS;
 }
@@ -182,13 +184,14 @@ sub pool_path_source {
 	return $$POOLPATHS{'source'};
 }
 
+#TODO: Might remove this property as it might be better not worry repository
 sub pool_path_target {
 	my ($self, $value) = @_;
 	if ($value) {
 		die "Invalid target pool path ".$value if not -e $value;
 		$$POOLPATHS{'target'} = $value;
 	}
-	croak 'Target path does not exist.' unless (defined($POOLPATHS) && $$POOLPATHS{'target'});
+	croak 'Target path does not exist.' unless (defined($POOLPATHS) && -e $$POOLPATHS{'target'});
 	return $$POOLPATHS{'target'};
 }
 
@@ -314,18 +317,27 @@ sub register {
 	return $proc->create($self->get_hash());
 }
 
-# Move files from source into target
-# Only argument: $index is set, remove original and leave an empty file
+# Move files from source into target after successfully registered Process
+# return values: 1: successful, 0: not copied, 2: not removed
+#TODO: may need to move into Repository pacakge.
 sub copy_outfiles {
-	my ($self, $index) = @_;
+	my ($self, $perm_handler) = @_;
+	# if path for saving registraion job reg_job has been set, only lodge job then returns
+	# otherwise, move file into Repository by first copy and then delete
+	if (exists($$POOLPATHS{requests})) { return $self->create_job(); }
 	my $source_path = $self->pool_path_source;
 	my $target_path = $self->pool_path_target;
 	my ($cur_fn, $success);
 	my @outfiles = @{$self->{Output}};
 	foreach(@outfiles) {
+		$success = 0;
 		$success = try {
 			$cur_fn = File::Spec->catfile($source_path,$$_{Hash});
+			if ($perm_handler) { 
+				system((@$perm_handler,$cur_fn)); 
+			}
 			if (GDACAP::FileOp::copy_file($cur_fn,$$_{Hash},$target_path)) {
+				system('chmod','644',File::Spec->catfile($target_path,$$_{Hash}));
 				return 1;
 			} else {
 				print STDERR "Cannot copy file into secure place. Reason is: $!\nSource=",$cur_fn,"\tTarget=",$target_path;
@@ -335,16 +347,37 @@ sub copy_outfiles {
 			0;
 		};
 		if ($success) {
-			if (system('rm',$cur_fn)==0) { $success = 1; }
-			else { $success = 0; }
+			if (system('rm','-f',$cur_fn)==0) { $success = 1; }
+			else { $success = 2; }
 		}
-		if ($success && $index) {
-			if (system('cp','/dev/null',$cur_fn)==0) { $success = 1; }
-			else { $success = 0; }
-		}
-		return 0 unless $success;
+#		if ($success) {
+#			if (system('cp','/dev/null',$cur_fn)==0) { $success = 1; }
+#			else { $success = 0; }
+#		}
+		return $success unless $success==1;
 	}
 	return 1;
+}
+
+# Create a put job: to get a file into repository by other software when this running instance have no write permission
+# full_path_name repo_target_path
+sub create_job {
+	my ($self) = @_;
+	my $source_path = $self->pool_path_source;
+	my $target_path = $self->pool_path_target;
+	
+	my $status = try {
+		my $job_fn = File::Spec->catfile($$POOLPATHS{requests},'reg',time().'.req');
+		open(my $fh, '>', $job_fn) or croak "can't open $job_fn!", "\nreason=",$!,"\n";
+		foreach(@{$self->{Output}}) {
+			print $fh File::Spec->catfile($source_path,$$_{Hash})," ",$target_path,"\n";
+		}
+		close $fh;
+		return 1;
+	} catch {
+		return 0;
+	};
+	return $status;
 }
 
 1;
@@ -599,8 +632,19 @@ Uses the checked information to register new files submitted in Output and metad
 
 =item * copy_outfiles()
 
-First copy files listed as Output to Reopsiotry{Target} and then if successful, remove them. File permission has be be correct
-to allow removal. If successful, returns true otherwise false.
+Puts files into repository.  If done successfully, returns true otherwise false.
+
+This is not a necessary step of registeration so it is not called by C<register>. It is only needed when: 1. a repository exists;
+2. has working area and stroage area; 3. two areas are different.
+
+Depending on how the system is set up to interact with repository it can either move files into repository
+or create a job request asking other software to do it when repository is managed by another software/account.
+The switch is the B<requests> in [repository] section of configuration file.
+If B<requests> (a path) is set, it calls create_job() to create a job under B<requests/reg> (hard coded request type) instead of moving directly.
+A job request can have multiple rows. Each row has two columns which are delimited by space: a full path of file and repository_storage. 
+
+Otherwise, first copy files listed as Output to Reopsiotry{Target}
+and then if successful, remove them. File permission has be be correct to allow removal. 
 
 =back
 
