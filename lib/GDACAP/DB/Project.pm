@@ -17,6 +17,7 @@ our %permitted = map { $_ => 1 } @fields;
 
 # for Web interface, operates on project table
 our @creation = qw(iname alias description start_date anzsrc_for_code);
+our @update_fields = (@creation,'phase_status_id');
 our @creation_optional = qw(end_date memo expoint);
 	
 sub new {

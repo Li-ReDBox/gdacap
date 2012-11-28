@@ -120,7 +120,7 @@ sub edit {
 	}
 	my $project = GDACAP::DB::Project->new();
 	$project->by_id($project_id);
-	my $validated_form = GDACAP::Web::validate_form(\@GDACAP::DB::Project::creation, \@GDACAP::DB::Project::creation_optional, $req);
+	my $validated_form = GDACAP::Web::validate_form(\@GDACAP::DB::Project::update_fields, \@GDACAP::DB::Project::creation_optional, $req);
 	my $msg = $$validated_form{msg}; 
 	if ($msg eq '1') {	
 		# All filled in
