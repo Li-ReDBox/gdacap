@@ -9,9 +9,9 @@ use Apache2::Const -compile => qw(OK REDIRECT NOT_FOUND);
 
 use Try::Tiny;
 
-require GDACAP::Web::Session;
-require GDACAP::Web::Page;
-require GDACAP::Web::Command;
+use GDACAP::Web::Session;
+use GDACAP::Web::Page;
+use GDACAP::Web::Command;
 
 our ($logger, $folders, $location, $mail_settings, $expoints);
 { 
@@ -22,13 +22,10 @@ our ($logger, $folders, $location, $mail_settings, $expoints);
 	require GDACAP::Resource;
 	my $config = GDACAP::Resource->prepare($config_file,1);
 	$logger = Log::Log4perl::get_logger();
-	# $folders = get_section('folders');
 	$folders = $$config{'folders'};
 	$mail_settings = $$config{'mail'};
 	$expoints = $$config{'expoints'} if exists($$config{'expoints'});
 }
-
-# sub dump { use Data::Dumper; use Apache2::RequestIO (); my $r = shift; $r->content_type('text/plain'); $r->print(Dumper($r)); $logger->debug('it has been called'); }
 
 # function call entries
 my %implemented = (
@@ -41,13 +38,13 @@ my %implemented = (
     process    => ['GDACAP::Web::Process',    'GDACAP::Web::Process::handler'],
     tool       => ['GDACAP::Web::Tool',       'GDACAP::Web::Tool::handler'],
     person     => ['GDACAP::Web::Person',     'GDACAP::Web::Person::handler'],
-    # dumper   => ['Data::Dumper', \&dump],
 );
+
 # Only logged in users can access
 my %restricted = map { $_ => 1 } qw(project study sample experiment run process tool person organisation);
 
-# check if proper command has been given
-# in module, use $r->uri for interpreting commands:
+# check if a proper command has been given
+# in module, $r->uri holds the command for interpreting:
 # /location/project/edit
 # split('/',$uri); shift;shift;
 sub validate_command {
@@ -64,7 +61,7 @@ sub validate_command {
 }
 
 sub handler {
-    my $r = shift;    
+    my ($r) = @_;    
   
 	my $com_parts = validate_command($r->uri);
 	# $logger->debug("Command parts (uri) ",@$com_parts);
@@ -72,6 +69,7 @@ sub handler {
 		# $logger->debug('reconstructed command: ',join('/',@$com_parts));
 		my ($asset, $action) = @$com_parts; # only takes the first two parts
 		if (!exists($implemented{$asset})) {
+			$logger->info("Requested a not supported asseset: $asset");
 			$r->status(Apache2::Const::NOT_FOUND);
 			return Apache2::Const::OK;
 		}
@@ -90,7 +88,7 @@ sub handler {
 			act($r, $asset, $action);
 		}
 	} else {
-		$logger->debug("From Web.pm passing non-asset related action to Command");
+		# $logger->debug("From Web.pm passing non-asset related action to Command");
 		GDACAP::Web::Command::handler($r,'login');
 	}
     return Apache2::Const::OK;
@@ -102,13 +100,14 @@ sub act {
 	my ($mod, $func) = @{ $implemented{$asset} };
 	eval "require $mod";
 	if ($@) {
-		$logger->debug("Cannot load $mod. $@");
+		$logger->error("Cannot load module $mod. $@");
 	} else {
 		no strict 'refs';
 		 try {
+			$logger->info("Person_id = $person_id, accessing asset = $asset, action = $action.");
 			&{$func}($r, $action, $person_id);
 		 } catch {
-			$logger->debug("Cannot call function $func: $_");
+			$logger->error("Cannot call function $func: $_");
 			GDACAP::Web::Page::show_msg($r, 'Error: Please inform Adminstrator', $_);
 		 };
 	}
@@ -130,7 +129,6 @@ sub validate_form {
 		if (defined($var) && $var ne '') {$form_content{$_} = $var ;  $count += 1;	}
 	}
 	for (@booleans) {
-		$var = $req->param($_);
 		$form_content{$_} = $req->param($_) ? 1 : 0;
 	}
 	for (@optional) {

@@ -13,6 +13,9 @@ PerlRequire /where/your/startup.pl
 	PerlSetVar ANDSConfig configfile
 </Location>
 
+Website resource:
+[folders]/resources = /resources/gdacap # This is web site path. Used for web applcations.
+
 If the package is not going to be used with Apache mod_perl, add the path to @INC. One example solution is to add GDACAP to @INC by using ENVIRONMENT variable PERLLIB or PERL5LIB: 	
     export PERLLIB=WHERE_GDACAP_IS
 
@@ -24,14 +27,16 @@ user=USER_NAME
 passwd=PASSWORD
 
 [folders]
-session=/var/lib/gdacap/sessions
-template=/var/www/html/ANDS/root/templates
-upload=/var/lib/gdacap/uploaded
-resources=/resources/gdacap
+template = /var/www/dc08_source/resources/templates
+upload = /var/lib/gdacap/uploaded
+resources = /resources/gdacap # This is web site path. Used for web applcations.
+bin = /var/www/dc08_source/bin
+submission = /var/lib/gdacap/submission
 
 [repository]
 source = SOMEWHERE_FILE_SOURCE
 target = SOMEWHERE_TO_MOVE_TO
 
-[debug]
-has_http_only=1	
+[session]
+session = /var/lib/gdacap/sessions
+has_https = 1

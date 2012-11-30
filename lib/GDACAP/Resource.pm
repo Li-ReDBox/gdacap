@@ -31,20 +31,17 @@ sub prepare {
 	my ($class, $conf, $init_logger, $skip) = @_;
 	return if $INITIALISED;
 	if ($conf) { $CONF_PATH = $conf; } else { $CONF_PATH = 'config.conf'; }
-
-	# print "I will read $conf\n";
-	# # Open the config
-	# # When called by ModPerl, use absolute path
+	## Note: When called by ModPerl, use absolute path
 	return if ($skip && not $init_logger);
-	my $config = Config::Tiny->read($conf);
-	carp $Config::Tiny::errstr unless $config;
+	my $config = Config::Tiny->read($CONF_PATH);
+	croak $Config::Tiny::errstr unless $config;
 
 	if (! $skip) {
 		# Read properties
-		my $dbname = $config->{database}->{dbname} or carp "Cannot read dbname from $conf";
-		my $host = $config->{database}->{host} or carp "Cannot read host from $conf";
-		my $user = $config->{database}->{user} or carp "Cannot read username from $conf";
-		my $passwd = $config->{database}->{passwd} or carp "Cannot read password from $conf";
+		my $dbname = $config->{database}->{dbname} or croak "Cannot read dbname from $conf";
+		my $host = $config->{database}->{host} or croak "Cannot read host from $conf";
+		my $user = $config->{database}->{user} or croak "Cannot read username from $conf";
+		my $passwd = $config->{database}->{passwd} or croak "Cannot read password from $conf";
 
 		my @db = ($dbname, $host, $user, $passwd);
 		$dbh = GDACAP::DBA->connect(@db)->{DBH};
@@ -64,8 +61,8 @@ sub get_dbh {
 		# print "return a handle and it is \n\t",ref($dbh),"\n";
 		return $dbh;
 	} else {
-		print STDERR "Confpath=$CONF_PATH.\n";
-		carp "Usage: Need to be initialised first by calling ".__PACKAGE__."->prepare()\n";
+		print STDERR "Confpath=$CONF_PATH.\n" if $CONF_PATH;
+		die "Usage: Always initialise Resource first by calling ".__PACKAGE__."->prepare()\n";
 	}
 }
 
@@ -86,12 +83,12 @@ sub _read_repository {
 sub get_section {
 	my ($section) = @_;
 	unless ($CONF_PATH) {
-		carp "Call prepare first.";
+		croak "Call prepare first.";
 		return ;
 	}	
 
 	my $config = Config::Tiny->read($CONF_PATH);
-	carp $Config::Tiny::errstr unless $config;
+	croak $Config::Tiny::errstr unless $config;
 
 	return $config->{$section} if exists($config->{$section});
 }
@@ -102,7 +99,7 @@ sub init_logger {
 		my $config = ref($_[0]) eq 'GDACAP::Resource' ? $_[1] : $_[0]; # to support OO or none-OO
 		$log = $config->{log};
 	} else {
-		carp "Cannot initialise logger because do not know the setting" unless $CONF_PATH;
+		croak "Cannot initialise logger because do not know the setting" unless $CONF_PATH;
 		$log = get_section('log');
 	}
 	return unless $log;

@@ -92,12 +92,19 @@ sub row_value {
 	return $dbh->selectrow_array($sth,{},@bind_values);
 }
 
+# Insert a record defined by a hash to a table
+# Table has to have id field for returing the id of the newly created record.
+# Otherwise, explicitly say no_id as the third argument.
 sub create {
-    my ( $class, $table_name, $info ) = @_;
+    my ( $class, $table_name, $info, $no_id ) = @_;
 	my $insert_list = join(',', keys(%$info));
 	my @values = CORE::values(%$info);
-    my $sql = "INSERT INTO $table_name ($insert_list) VALUES (". join(",", ("?")x(@values)) .') RETURNING id';
-	return $dbh->selectrow_array($sql,{}, @values);
+    my $sql = "INSERT INTO $table_name ($insert_list) VALUES (". join(",", ("?")x(@values)) .')';
+    if ($no_id) {
+		$dbh->do($sql,{}, @values) or die $dbh->errstr;
+	} else {
+		return $dbh->selectrow_array($sql.' RETURNING id',{}, @values);
+	}
 }
 
 sub update {

@@ -120,7 +120,7 @@ sub edit {
 		GDACAP::Web::Page::show_msg($r, 'Accesse is denied','No information is available to you.');
 		return;
 	}
-	my $validated_form = GDACAP::Web::validate_form(\@GDACAP::DB::Experiment::edit, \@GDACAP::DB::Experiment::creation_optional, $req,['in_rda']);
+	my $validated_form = GDACAP::Web::validate_form(\@GDACAP::DB::Experiment::edit, \@GDACAP::DB::Experiment::creation_optional, $req,[qw(for_ebi in_rda)]);
 	my $msg = $$validated_form{msg}; 
 	if ($msg eq '1') {	
 		# All filled in
@@ -168,9 +168,8 @@ sub submit {
 		GDACAP::Web::Page::show_msg($r, 'Accesse is denied','No information is available to you.');
 		return;
 	}
-# Either creat a job or do it now
+	$exp->log_submission();
 	my $release_date = $req->param("release_date");
-	$exp->log_submission($release_date);
 	submit_reqest($experiment_id, $release_date);
 	$exp->by_id($experiment_id);
 	$r->headers_out->set( 'Location' => $GDACAP::Web::location.'/experiment/show?experiment_id='.$experiment_id );
@@ -183,14 +182,19 @@ sub display_experiment {
     my ($r, $exp, $right) = @_;
     my $write_permission = $right eq 'w' ? 1 : 0;
     my $project_id = $exp->project_id();
-    my %submission = (release_date=>'',successful=>'',action=>'Add',action_time=>'');
+	my %submission = (message=>'', action=>'Add',act_time=>'');
 	if ($$exp{submitted}) { # display the submission_state
 		my $subm = GDACAP::DB::Submission->new();
 		my $info = $subm->info('experiment',$$exp{id});
-		$submission{release_date} = $$info{release_date};
-		my $state = $subm->state($$info{id});
+		my $state = $subm->latest($$info{id});
 		if ($state) {
-			for (keys %$state) { $submission{$_} = $$info{$_}; }
+			# when submission was successful, message is empty otherwise, it has error message
+			#for (keys %$state) { $submission{$_} = $$info{$_}; }
+			$submission{act_time} = $$state{act_time};
+			$submission{action} = $$state{action};
+			$submission{message} = $$state{message};
+		} else {
+			$submission{message} = 'Scheduled.';
 		}
 	}
 #    if ($write_permission) {
@@ -217,6 +221,7 @@ sub display_experiment {
     GDACAP::Web::Page::display($r, $tpl_setting, $content, $person_id);
 }
 
+# Depends on configuration, it can be done now or by a cron job
 sub submit_reqest {
 	my ($experiment_id, $release_date) = @_;
 	my $repo = GDACAP::Resource::get_section('repository');
@@ -234,10 +239,12 @@ sub submit_reqest {
 			print STDERR $_;
 		};
 	} else {
-		my @args = ('perl','/var/www/perl/ebi-submitter_ondev.pl','experiment='.$experiment_id);
+		# This line here is only forr an alternative dmonstration of submission job can be done
+		# because it is not practical for submitting files with size of GB.
+		my $submit_script = File::Spec->catfile($$GDACAP::Web::folders{bin},'ebi-submitter.pl');
+		my @args = ('perl',$submit_script,'experiment='.$experiment_id, $release_date);
 		exec { $args[0] } @args  or print STDERR "Couldn't prepare the submission: $!";
 	}
-
 }
 
 1;

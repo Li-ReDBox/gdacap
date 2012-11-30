@@ -1,3 +1,17 @@
+<script>
+function showNominalSize(e) {
+	if (e.value == 'paired') {
+		document.getElementById('nominalSizeLbl').style.display='';
+		document.getElementById('nominalSizeValue').style.display='';
+		document.getElementById('nominal_size').required = true;
+	} else {
+		document.getElementById('nominalSizeLbl').style.display='none'
+		document.getElementById('nominalSizeValue').style.display='none';
+		document.getElementById('nominal_size').value ='';
+		document.getElementById('nominal_size').required = false;
+	}
+}
+</script>
 [% lib_sources = [ 'GENOMIC', 'TRANSCRIPTOMIC','METAGENOMIC', 'METATRANSCRIPTOMIC', 'SYNTHETIC', 'VIRAL RNA', 'OTHER'] %]			  
 
     <li><label for="iname">Name*</label></li>
@@ -34,22 +48,17 @@
 [% IF layout_changble %]	
 	<li><label for="library_layout"> Layout*</label></li>
 	<li>
-		<select name="library_layout" 
-				onchange="this.value == 'paired' ? document.getElementById('liNominalSize' ).setAttribute('class',''): document.getElementById('liNominalSize' ).setAttribute('class','hidden');
-						  this.value == 'paired' ? document.getElementById('liNominalSize2').setAttribute('class',''): document.getElementById('liNominalSize2').setAttribute('class','hidden');
-						  this.value == 'paired' ? document.getElementById('nominal_size'  ).required = true         : document.getElementById('nominal_size').value =''; document.getElementById('nominal_size').required = false;"
-				required="required">
-			<option value=""></option>
+		<select name="library_layout" onchange="showNominalSize(this);" required="required">
 			<option value="single" [% IF !experiment.nominal_size %]selected="selected"[% END %]>Single</option>
 			<option value="paired" [% IF  experiment.nominal_size %]selected="selected"[% END %]>Paired</option>
 		</select>
     </li>
-    <li id="liNominalSize" [% IF !experiment.nominal_size %]class="hidden"[% END %]>
+    <li id="nominalSizeLbl" [% IF !experiment.nominal_size %] style="display:none" [% END %]>
         Nominal Size*
     </li>
-    <li id="liNominalSize2" [% IF !experiment.nominal_size %]class="hidden"[% END %]>
+    <li id="nominalSizeValue" [% IF !experiment.nominal_size %] style="display:none" [% END %]>
         <input type="text" id="nominal_size" name="nominal_size" [% IF experiment.nominal_size %]value="[% experiment.nominal_size %]"[% END %]/>
     </li>
 [% ELSE %]
-    <li> Layout: [% IF  experiment.nominal_size %] Paired [% ELSE %] Single [% END %]</option></li>
+    <li> Layout: [% IF  experiment.nominal_size %] Paired [% ELSE %] Single [% END %]</li>
 [% END %]	

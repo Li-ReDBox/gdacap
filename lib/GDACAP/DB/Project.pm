@@ -70,8 +70,8 @@ sub by_id {
 }
 
 sub alias2id {
-	my ($self, $name) = @_;
-	return $self->row_value("SELECT id FROM project WHERE alias = ?",$name);
+	my ($self, $alias) = @_;
+	return $self->row_value("SELECT id FROM project WHERE alias = ?",$alias);
 }
 
 sub has_Manager {

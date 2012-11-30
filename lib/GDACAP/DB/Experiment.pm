@@ -10,7 +10,7 @@ our @ISA = qw(GDACAP::Table);
 
 my @fields = qw(id iname sample platform accession);
 our $brief_fields = join(',',@fields); 
-@fields = (@fields, qw(study_id sample_id platform_id design lib_source));
+@fields = (@fields, qw(study_id sample_id platform_id design lib_source for_ebi));
 my $query_fields = join(',',@fields);
 our %permitted = map { $_ => 1 } @fields;
 $permitted{nominal_size} = 1;
@@ -75,40 +75,6 @@ sub nominal_size {
 	return $nominal_size;
 }
 
-# attribute if an Experiment record has been in submission process
-# User has only one chance to submit. If it is failed, administrator has to be involved
-sub in_submission {
-	my ($self) = @_;
-	$$self{submitted} = $self->row_value('SELECT count(*) FROM submission WHERE type=? and item_id=?','experiment', $$self{id});
-	return $$self{submitted};
-}
-
- sub register_submission {
-	 my ($self, $release_date, $exp_id) = @_;
-	 $exp_id = $self->id unless $exp_id;
-	 Carp::croak('Experiment id has not been set in either constructor or here.') unless $exp_id;
-	 my $statement = Ands::ADB::build_insert('submission', [qw(type item_id release_date)],1);
-	 my $sth = $self->dbh->prepare_cached($statement);
-	 my $id = undef;
-	 $self->dbh->begin_work;
-	 try {
-		 $id = $self->dbh->selectrow_array($sth,{},('experiment',$exp_id,$release_date));
-		 # print "Newly registered submission ID is $id.\n";
-		 # $self->dbh->rollback;
-		 $self->dbh->commit if $id;
-	 } catch {
-		 print STDERR "$_\n";
-		 $self->dbh->rollback;
-	 };
-	 return $id;
- }
-
-# Log this experiment has been submitted even it does not mean sumbmission is or going to be successful.
-sub log_submission {
-	my ($self, $release_date, $id) = @_;
-	$id = $$self{id} unless $id;
-	$dbh->do("INSERT INTO submission (type, item_id, release_date) VALUES(?,?,?)", {}, ('experiment', $id, $release_date)) or die  $dbh->errstr;
-}
 # attribute if an Experiment record has been ready for RDA to harvest - in oai_headers
 sub in_rda {
 	my ($self) = @_;
@@ -155,6 +121,7 @@ sub rda_insert {
 	$dbh->do('INSERT INTO oai_headers (oai_set, set_type, ori_table_name,ori_id) values(?,?,?,?)',undef,@{$parts{$type}},$id) or die $dbh->errstr;
 }
 
+# Layout can only be changed when there is no run(s) been attached
 sub layout_changeable {
 	my ($self) = @_;
 	my $run_ids = $self->row_value('SELECT count(id) FROM run_core WHERE experiment_id = ?',$$self{id});
@@ -213,19 +180,44 @@ sub update_nominal_size {
 
 # Section -- for submission to EBI
 # Return run file list for preparing submission
+# Published Run files are excluded
 sub run_files {
 	my ($self, $exp_id) = @_;
 	$exp_id = $$self{id} unless $exp_id;
-	return $self->arrayref('SELECT hash, raw_file_name FROM run WHERE experiment_id = ?', $exp_id);
+	return $self->arrayref('SELECT hash, raw_file_name FROM run WHERE accession = \'\' AND experiment_id = ?', $exp_id);
 }
 
-# Returns study and sample ids of an Experiment
-sub sample_ids {
+# Pseudo-boolean attribute. 
+# It is non-zero if an Experiment has been logged for submission individually.
+sub in_submission {
+	my ($self) = @_;
+	$$self{submitted} = $self->row_value('SELECT count(*) FROM submission WHERE type=? and item_id=?','experiment', $$self{id});
+	return $$self{submitted};
+}
+
+# Log this Experiment has been submitted even it does not mean sumbmission is or going to be successful.
+sub log_submission {
+	my ($self, $id) = @_;
+	$id = $$self{id} unless $id;
+	$dbh->do("INSERT INTO submission (type, item_id) VALUES(?,?)", {}, ('experiment', $id)) or die  $dbh->errstr;
+}
+
+# Returns all unique study and sample ids of an Experiment or a list of Experiments
+# The accession status of objects have to be checked by SRA
+sub submission_object_ids {
 	my ($self, $exp_id) = @_;
 	$exp_id = $$self{id} unless $exp_id;
-	return $self->row_value('SELECT study_id, sample_id FROM experiment WHERE id = ?', $exp_id);
+	if ($exp_id =~ /^[\d]+(,[\d]+)+$/) {
+		my $sql = "SELECT DISTINCT study_id, sample_id FROM experiment WHERE id IN ($exp_id)";
+		return $dbh->selectall_arrayref($sql, {Slice=>{}});
+	} elsif ($exp_id =~ /^[\d]+$/)  {
+		return $self->row_value('SELECT study_id, sample_id FROM experiment WHERE id = ?', $exp_id);
+	} else {
+		die "$exp_id: Not a valid experiment id or list: Single id or list of ids without space between comma and ids.\n";
+	}
 }
 
+# For any Experiment object
 # Collections
 sub platforms {
 	my ($self) = @_;
@@ -301,10 +293,18 @@ Returns the files filtered by $file_type in category 'run upload' of a C<Process
 
 Inserts current Experiment into Table oai_headers in current format. It also checks if the depended Party and Activity records have been created in oai_headers. If they have not been inserted, insert them. The Person can be inserted has to have Manager role eithwise it dies.
 
-=head2 log_submission($release_date, optional $id)
+=head2 log_submission([ $id ])
 
 Logs an Experiment is being requested to be submitted. This occurs when a user clicks Submit button
-on an Experiment information page. An Experiment can only register a submission once and it has to have at least one run.
+on an Experiment information page. An Experiment can register for submission only once and has to have at least one run.
+
+=head2 submission_object_ids($exp_id)
+
+Returns all unique Study and Sample ids of an Experiment in a hash or a hash array when a list of Experiment ids is given.
+This function only returns ids. 
+
+$exp_id in single id form is used in Experiment context. $exp_id in list form is used in Study context. The accession status of objects have to be checked by caller.
+Caller also needs to know either a hash or an array of hash is expecting to be returned.
   
 =head1 AUTHOR
 

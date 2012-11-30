@@ -1,0 +1,163 @@
+#!/bin/bash
+# copy2ebi - Copy a file using ascp to EBI/SRA
+# ------------------------------------------------------------------------#
+# It takes two mandatory parameters:                                      #
+# Parameter 1: working directory                                          #
+# Parameter 2: a file contains a list of files are going to be processed. #
+# ------------------------------------------------------------------------#
+
+# To test:
+# First make up a list file, e.g. ex_runlist.txt:
+# 65df5f23b5926a76b08762467a3448d403ef6043 bad_names.bam
+# be022bdf6ab140e590adc67ad0f6be0b2d84879d copy2ebi.fastq
+# d436e51efeb02cbb5415667c0186fac52330f9ec ex_file.fastq.gz
+# export_them_none_exist.sh ex_fastq.gz
+# 
+# The first column is file names, they have to be existing.
+# The second column is the targeted name: names will be copied to or used for gzip
+#
+# Then, run:
+# rm *.md5 *.gz;gzip -c export_them.sh.debug > ex_file.fastq.gz;clear;bash copy2ebi . ex_runlist.txt
+
+# When runs on Apache/mod_perl, httpd captures stderr to its log.
+
+if [ $# -ne 5 ]
+then
+	echo "Usage: `basename $0` ascp_path drop_account drop_account_pass working_dir listfile_name" 1>&2
+	exit 1
+fi
+
+ASCP="$1"
+if [ ! -f $ASCP ]; then
+	echo "Cannot find ascp: $ASCP does not exist"
+	exit 1
+fi
+DROP_ACCOUNT="$2"
+ASCP_PASS="$3"
+export ASPERA_SCP_PASS=$ASCP_PASS
+
+echo "\$ASCP=$ASCP"
+echo "\$DROP_ACCOUNT=$DROP_ACCOUNT"
+echo "\$ASPERA_SCP_PASS=$ASPERA_SCP_PASS"
+
+#---------------------------------------------------------------------------#
+# comp_md5()                                                                #
+# Copy a file to current directory, and name it to original readable name,  #
+#+ then run md5sum on fastq.gz or bam file.                                 #
+#                                                                           #
+# Parameter1: full path of a targeting file. Name part is in hash (sha1sum) #
+#	format (NO EXTENSION)                                                   #
+# Parameter2: orginal file name                                             #
+#                                                                           #
+# If the file is in FASTQ format, first compress (gzip) and save as         #
+#+ original_file_name.gz                                                    #
+# Otherwise, only copy and rename it to its original name                   #
+# Then run md5sum on copied or gzipped file and save md5 to hash_key.md5    #
+#---------------------------------------------------------------------------#
+comp_md5 () {
+	echo "In $FUNCNAME, incoming args: $1 $2"
+
+	# Test whether the first argument is present (non-empty).
+	if [[ -n "$1" ]];	then
+		sfn=$1
+	else
+		return 1
+	fi
+	if [ ! -f "$sfn" ]; then
+		echo "$sfn cannot be found"
+		return 1
+	fi
+	zip_it=0 # by default, no compression is needed
+	if [ $# -eq 1 ]; then 
+	# rarely used. For simple tests only. Assume hash_key name for fastq file
+		tfn=`basename $sfn`.fastq.gz
+	elif [ $# -eq 2 ]; then
+# If file extension from variable substitution is not elegant enough, use file:
+# li@dc08:Downloads$ file -b --mime-type tedia2sql-1.2.12.tar.gz 
+# application/x-gzip
+		ext=${2##*.}
+		ext=`echo "$ext" | tr '[:lower:]' '[:upper:]'`
+		echo "File extension: $ext"
+		if [ $ext == 'FASTQ' ]; then
+			zip_it=1
+			tfn=$2.gz
+		else
+			tfn=$2
+		fi
+	else
+		return 1
+	fi
+	md5_name=`basename $sfn`.md5 # always use hash_key as md5 file's name
+	md5sum -c --status $md5_name 2>/dev/null
+	# md5 checks failed, do it now
+	if [ $? -ne 0 ]; then
+		if [ $zip_it -eq 1 ]; then
+		echo "Compressing $sfn to $tfn" 1>&2
+			gzip -cn $sfn > $tfn
+			if [ $? -ne 0 ]; then 
+				return 1
+			fi
+			gzip -l $tfn
+		else
+			cp $sfn $tfn
+		fi
+		echo "Running md5sum of $tfn and save result to $md5_name"
+		if ! md5sum $tfn > $md5_name; then
+		#md5sum $tfn > $md5_name
+		#if [ $? -ne 0 ]; then
+			return 1
+		fi
+		cat $md5_name 1>&2
+		echo "md5sum of $tfn has been done."
+	fi
+	return
+}
+
+TARGET_DIR=$4
+if [ ! -e $TARGET_DIR ]; then
+	mkdir -p $TARGET_DIR
+elif [ ! -d $TARGET_DIR ]; then
+	exit 1
+fi
+if [ $? -ne 0 ]; then
+	exit 1
+fi
+
+filename=$5
+echo "EBI/SRA copy list file is $filename" 1>&2
+if [ ! -e "$filename" ]; then
+	echo "Run list file $filename does not exist." 1>&2
+	exit 1
+fi
+cat $filename
+echo
+echo
+
+#export HOME=/var/www
+# This is only needed when run by Apache/httpd: 
+#+ ascp needs to generate random seed in $HOME,
+#+ but mod_perl does not have this variable.
+
+IFS=$'\x09'
+cd $TARGET_DIR
+while read line; do
+	echo "Reading $line" 1>&2
+	comp_md5 $line
+	if [ $? -ne 0 ]; then
+		echo "When processing $line, an error raised" 1>&2
+		exit 1
+	fi
+	if [ ! -f "$tfn" ]; then
+		exit 1
+	fi
+	echo -e "y" | $ASCP -QT -l300M -L $TARGET_DIR -q $tfn $DROP_ACCOUNT@fasp.sra.ebi.ac.uk:/.
+	if [ $? -ne 0 ]; then
+		echo "When copying $tfn, an error raised" 1>&2
+		exit 1
+	else
+		echo "$tfn has been copied over to EBI" 1>&2
+	fi
+	echo; echo;
+done < $filename
+
+exit

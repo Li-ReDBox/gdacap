@@ -60,6 +60,7 @@ sub login {
 						$logger->debug("Session cannot be created. $_");
 					};
 					$msg = "Welcome back $user.";
+					$logger->info("$user ($person_id) logged in.");
                 # } else {
 					# # person is deactivated
 					# $msg = "You have been deactivated $user.";

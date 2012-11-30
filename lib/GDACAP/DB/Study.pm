@@ -53,17 +53,28 @@ sub experiments {
 
 # Section -- for submission to EBI
 # Returns run file list for preparing submission
+# Published Run files are excluded
 sub run_files {
 	my ($self, $study_id) = @_;
 	$study_id = $$self{id} unless $study_id;
-	return $self->arrayref('SELECT hash, raw_file_name FROM run, experiment WHERE run.experiment_id = experiment.id AND experiment.study_id = ?', $study_id);
+	return $self->arrayref('SELECT hash, raw_file_name FROM run, experiment WHERE run.accession = \'\' AND run.experiment_id = experiment.id AND experiment.study_id = ?', $study_id);
 }
 
-# Returns experiment and sample ids of a Study 
-sub sample_ids {
+# Log this Study has been submitted even it does not mean sumbmission is or going to be successful.
+sub log_submission {
+	my ($self, $id) = @_;
+	$id = $$self{id} unless $id;
+	$dbh->do("INSERT INTO submission (type, item_id) VALUES(?,?)", {}, ('study', $id)) or die  $dbh->errstr;
+}
+
+# Returns experiment and sample ids of a Study for a submission
+# Only include Experiments which having run files and not excluded from submission and their associated Samples.
+# SRA has to check accession status
+sub submission_object_ids {
 	my ($self, $study_id) = @_;
 	$study_id = $$self{id} unless $study_id;
-	return $self->arrayref('SELECT id, sample_id FROM experiment WHERE study_id = ?', $study_id);
+	return $self->arrayref('SELECT DISTINCT exp.id, sample_id FROM experiment exp, run WHERE study_id = ? 
+	AND for_ebi = true AND run.experiment_id=exp.id', $study_id);
 }
 
 # Utility function
@@ -88,6 +99,20 @@ GDACAP::DB::Study - Access to experiment information
 =head1 DESCRIPTION
 
 Users need to log in to access this page. $person_id is needed.
+
+=head1 METHODS
+
+=head2 submission_object_ids( [ $id ])
+
+Returns Experiment and Sample ids of a Study for a Submission.
+Only Experiments which having run files and not excluded from submission and their associated Samples
+are returned. GDACAP::DB::SRA has to check accession status
+
+=head2 log_submission([ $id ])
+
+Logs a Study is being requested to be submitted. This occurs when a user clicks Submit button
+on a Study information page. A Study can register for submission only once and it has to have all
+its Experiments have at least one run.
 
 =head1 AUTHOR
 

@@ -8,6 +8,7 @@
 [% ELSIF rda_ready %]  
   <li><label>Allow RDA to harvest<input type="checkbox" name="in_rda" /></label></li>
 [% END %]
+	<li><label> Allow for submission to EBI: <input type="checkbox" name="for_ebi" [% IF experiment.for_ebi %] checked="checked" [% END %] /></li>
     <li><input type="submit" value="Save" /></li>
   </ul>
 </form>

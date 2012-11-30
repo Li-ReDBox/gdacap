@@ -56,16 +56,16 @@ Note, the check box will not be shown if there is no Manger has been appointed i
 [% IF runs.size > 0 %]
 <h3>Runs</h3>	
 [% INCLUDE run_fastq.tt2 %]
-[% IF submission_state.release_date %]
+[% IF submission_state.message %]
 <h3>Submission</h3>
 <ul>
-	<li><strong>Release date: </strong>[% submission_state.release_date %]</li>
-	[% IF submission_state.action_time %]
-	<li><strong>Recent action</strong>[% submission_state.action %]</li>
-	<li><strong>Action time</strong>[% submission_state.action_time %]</li>
-	[% IF submission_state.successful %] <li>Successfully</li> [% ELSE %] <li>Failed</li> [% END %]
+	[% IF submission_state.message == 'Scheduled.' %]
+	<li>A submission job has been scheduled.</li>
 	[% ELSE %]
-	<li>Submission has been scheduled.</li>
+	<li><strong>Recent action:</strong> [% submission_state.action %].</li>
+	<li><strong>Action time:</strong> [% submission_state.act_time %].</li>
+	<li>Attention is needed.</li>
+	<li>[% submission_state.message %]</li>
 	[% END %]
 </ul>
 [% END %]
@@ -80,11 +80,12 @@ Note, the check box will not be shown if there is no Manger has been appointed i
 </form>
 [% END %]
 [% IF runs.size > 0 && ! experiment.submitted %]
+[% IF experiment.for_ebi %]
 <h3>Submit to EBI/SRA</h3>
 <p>Sequence files in this experiment run can be submitted to EBI but held in private up to maximum of two years from the date of submission. You can choose the current date or an earlier date to release immediately or use the default date for making them public.</p>
 <form name="ebi_submit" action="[% submit2ebi %]" method="post" onsubmit="return confirm('Are you sure to submit now?');">
   <input type="hidden" name="experiment_id" value="[% experiment.id %]" />
-  <label>Release date <input type="date" name="release_date" required="required" onchange="check_releasedate(this)"/></label>
+  <label>Release date (Greenwich Mean Time) <input type="date" name="release_date" required="required" onchange="check_releasedate(this)"/></label>
   <input type="submit" value="Submit" />
 </form>
 <script type="text/javascript">
@@ -106,5 +107,8 @@ function check_releasedate(obj){
 	} catch(err) { obj.value = r.toISOString().substring(0,10); }
 };
 </script>
+[% ELSE %]
+<p> Not included in submission to EBI</p>
+[% END %]
 [% END %]
 [% END %]
