@@ -1,6 +1,9 @@
 # The usage: 
-# export PERLLIB=/var/www/dc08_source/lib
-# Or include "use lib '/var/www/dc08_source/lib'" as below
+# This script is in bin directory which is under PACKAGE's installation directory.
+# The library is under PACKAGE/lib
+# The script assumes this directory structure holds. Otherwise, use any line below:
+# export PERLLIB=PACKAGE/lib
+# Or include "use lib 'PACKAGE/lib'" 
 
 # perl /var/www/perl/ebi-submitter.pl study=8 release_date
 # or 
@@ -8,11 +11,14 @@
 # if no compression and ascp are needed, anything in the second position will stop calling copy2ebi
 # perl /var/www/perl/ebi-submitter.pl experiment=2 release_date skip
 # It effectively just submit XML files to EBI/SRA assuming run files are there.
-#
-# One actual example:
-# perl ebi-submitter.pl experiment=27 2014-01-01 skip ebi-submitter.pl
 
-use lib '/var/www/dc08_source/lib';
+use File::Basename;
+#use lib '/var/www/dc08_source/lib';
+BEGIN {
+	my (undef,$path) = fileparse($0);
+	unshift(@INC, "$path../lib") if (-d "$path../lib");
+	chdir($path);
+}
 
 use warnings;
 use strict;
@@ -272,7 +278,6 @@ sub upload_xml {
 #	print Dumper($file_names);
 #	print "$submission_xml\n";
 	
-	use File::Basename;
 	my $receipt = $submission_dir.'/'.'receipt_'.basename($submission_xml);
 	my $curl_call = sprintf("curl -k -F \"SUBMISSION=\@%s\"", $submission_xml,$$file_names{study});
 	# Keep the order of objects is important
