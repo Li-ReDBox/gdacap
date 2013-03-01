@@ -1,24 +1,17 @@
 # The usage: 
 # This script is in bin directory which is under PACKAGE's installation directory.
 # The library is under PACKAGE/lib
-# The script assumes this directory structure holds. Otherwise, use any line below:
-# export PERLLIB=PACKAGE/lib
-# Or include "use lib 'PACKAGE/lib'" 
+# To use the script directly, set up PERLLIB environment variable:
+#    export PERLLIB=PACKAGE/lib
+# Or modify this script to include "use lib 'PACKAGE/lib'" 
+# Or use its shell wraper which understands this structure.
 
-# perl /var/www/perl/ebi-submitter.pl study=8 release_date
+# perl bin_path/ebi-submitter.pl study=8 release_date
 # or 
-# perl /var/www/perl/ebi-submitter.pl experiment=2
+# perl bin_path/ebi-submitter.pl experiment=2
 # if no compression and ascp are needed, anything in the second position will stop calling copy2ebi
-# perl /var/www/perl/ebi-submitter.pl experiment=2 release_date skip
+# perl bin_path/ebi-submitter.pl experiment=2 release_date skip
 # It effectively just submit XML files to EBI/SRA assuming run files are there.
-
-use File::Basename;
-#use lib '/var/www/dc08_source/lib';
-BEGIN {
-	my (undef,$path) = fileparse($0);
-	unshift(@INC, "$path../lib") if (-d "$path../lib");
-	chdir($path);
-}
 
 use warnings;
 use strict;
